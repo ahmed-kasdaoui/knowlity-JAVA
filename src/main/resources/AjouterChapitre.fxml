@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<?import java.net.URL?>
+<AnchorPane fx:id="root" prefHeight="700.0" prefWidth="800.0" styleClass="root" xmlns="http://javafx.com/javafx/20.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterChapitreController">
+    <children>
+        <VBox fx:id="mainBox" alignment="CENTER" layoutX="50.0" layoutY="30.0" prefHeight="640.0" prefWidth="700.0" spacing="20.0" styleClass="glass-card">
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
+            <children>
+                <!-- Header -->
+                <HBox alignment="CENTER">
+                    <children>
+                        <Label text="📑 Créer un Chapitre" styleClass="display-5">
+                            <font>
+                                <Font name="System Bold" size="32.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+
+                <!-- Form Grid -->
+                <GridPane hgap="20" vgap="15" styleClass="form-grid">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50.0" />
+                        <ColumnConstraints percentWidth="50.0" />
+                    </columnConstraints>
+
+                    <!-- Title -->
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" spacing="8">
+                        <Label text="Titre *" styleClass="form-label">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="titleField" promptText="Ex: Introduction au cours" styleClass="form-control">
+                            <tooltip>
+                                <Tooltip text="5 à 255 caractères" styleClass="tooltip" />
+                            </tooltip>
+                        </TextField>
+                        <Label fx:id="titleError" styleClass="invalid-feedback" visible="false" managed="false" />
+                    </VBox>
+
+                    <!-- ChapOrder -->
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" spacing="8">
+                        <Label text="Ordre *" styleClass="form-label">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="chapOrderField" promptText="Ex: 1" styleClass="form-control">
+                            <tooltip>
+                                <Tooltip text="Nombre positif ou zéro" styleClass="tooltip" />
+                            </tooltip>
+                        </TextField>
+                        <Label fx:id="chapOrderError" styleClass="invalid-feedback" visible="false" managed="false" />
+                    </VBox>
+
+                    <!-- DureeEstimée -->
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" spacing="8">
+                        <Label text="Durée (minutes) *" styleClass="form-label">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="dureeEstimeeField" promptText="Ex: 30" styleClass="form-control">
+                            <tooltip>
+                                <Tooltip text="Durée en minutes, positif ou zéro" styleClass="tooltip" />
+                            </tooltip>
+                        </TextField>
+                        <Label fx:id="dureeEstimeeError" styleClass="invalid-feedback" visible="false" managed="false" />
+                    </VBox>
+
+
+                    <!-- Brochure -->
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2" spacing="8">
+                        <Label text="Fichier PDF *" styleClass="form-label">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Button fx:id="uploadButton" onAction="#uploadButtonAction" text="Choisir PDF" styleClass="btn, btn-outline-primary">
+                                <graphic>
+                                    <Label text="📄" styleClass="icon" />
+                                </graphic>
+                                <tooltip>
+                                    <Tooltip text="PDF uniquement, max 10 Mo" styleClass="tooltip" />
+                                </tooltip>
+                            </Button>
+                            <Label fx:id="fileLabel" text="Aucun PDF" styleClass="text-muted" />
+                        </HBox>
+                        <Label fx:id="brochureError" styleClass="invalid-feedback" visible="false" managed="false" />
+                        <Label text="Formats acceptés : PDF (max 10 Mo)" styleClass="text-muted" />
+                    </VBox>
+                </GridPane>
+
+                <!-- Buttons -->
+                <HBox spacing="10" alignment="CENTER">
+                    <Button fx:id="saveButton" onAction="#saveAction" text="Enregistrer" styleClass="btn, btn-primary, btn-animated">
+                        <graphic>
+                            <Label text="💾" styleClass="icon" />
+                        </graphic>
+                        <font>
+                            <Font name="System Bold" size="16.0" />
+                        </font>
+                    </Button>
+                    <Button fx:id="addAnotherButton" onAction="#addAnotherAction" text=" Chapitre" styleClass="btn, btn-success, btn-animated">
+                        <graphic>
+                            <Label text="➕" styleClass="icon" />
+                        </graphic>
+                        <font>
+                            <Font name="System Bold" size="16.0" />
+                        </font>
+                    </Button>
+                    <Button fx:id="addEvaluationButton" onAction="#addEvaluationAction" text="+ Évaluation" styleClass="btn, btn-success, btn-animated">
+                        <graphic>
+                            <Label text="📋" styleClass="icon" />
+                        </graphic>
+                        <font>
+                            <Font name="System Bold" size="16.0" />
+                        </font>
+                    </Button>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+    <stylesheets>
+        <URL value="@/styles/forms1.css" />
+    </stylesheets>
+</AnchorPane>

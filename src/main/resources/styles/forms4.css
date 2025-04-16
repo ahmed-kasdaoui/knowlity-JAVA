@@ -1,0 +1,145 @@
+/* Root */
+.root {
+    -fx-background-color: #f4f7fa;
+}
+
+/* Glass card effect */
+.glass-card {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: rgba(255, 255, 255, 0.2);
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 5);
+}
+
+/* Header */
+.display-5 {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+/* Form grid */
+.form-grid {
+    -fx-padding: 0;
+}
+
+/* Form labels */
+.form-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #333;
+    -fx-font-weight: bold;
+}
+
+/* Form inputs */
+.form-control {
+    -fx-background-color: #fff;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1;
+    -fx-padding: 8;
+    -fx-font-size: 14px;
+}
+
+.form-control:hover {
+    -fx-border-color: #007bff;
+}
+
+/* ComboBox (used as form-select equivalent) */
+.form-control .combo-box {
+    -fx-background-color: #fff;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1;
+    -fx-padding: 8;
+}
+
+.form-control .combo-box:hover {
+    -fx-border-color: #007bff;
+}
+
+/* Error labels */
+.invalid-feedback {
+    -fx-text-fill: #dc3545;
+    -fx-font-size: 12px;
+}
+
+/* Tooltip */
+.tooltip {
+    -fx-font-size: 12px;
+    -fx-background-color: #333;
+    -fx-text-fill: #fff;
+    -fx-background-radius: 5;
+    -fx-padding: 5;
+}
+
+/* Buttons */
+.btn {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-padding: 8 16;
+    -fx-font-size: 14px;
+}
+
+.btn-primary {
+    -fx-background-color: #007bff;
+    -fx-text-fill: #fff;
+    -fx-font-weight: bold;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #0056b3;
+}
+
+.btn-outline-primary {
+    -fx-background-color: transparent;
+    -fx-border-color: #007bff;
+    -fx-border-width: 1;
+    -fx-text-fill: #007bff;
+}
+
+.btn-outline-primary:hover {
+    -fx-background-color: #007bff;
+    -fx-text-fill: #fff;
+}
+
+.btn-animated {
+    -fx-cursor: hand;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+.btn-animated:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* Icon (for button graphics) */
+.icon {
+    -fx-font-size: 16px;
+}
+
+/* Text styles (for Categorie compatibility) */
+.text-muted {
+    -fx-text-fill: #6c757d;
+}
+
+.text-success {
+    -fx-text-fill: #28a745;
+}
+
+.text-danger {
+    -fx-text-fill: #dc3545;
+}
+
+/* Image preview (for Categorie compatibility) */
+.preview-image {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);
+}
