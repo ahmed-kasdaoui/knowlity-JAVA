@@ -1,0 +1,97 @@
+/* Style général */
+.root {
+    -fx-background-color: #f5f5f5;
+}
+
+/* Style pour les titres */
+.card-title {
+    -fx-text-fill: #2c3e50;
+}
+
+/* Style pour la table */
+.table {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+}
+
+.table .column-header {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px;
+}
+
+.table .table-row-cell:odd {
+    -fx-background-color: #f9f9f9;
+}
+
+.table .table-row-cell:hover {
+    -fx-background-color: #eaf2f8;
+}
+
+/* Style pour les boutons */
+.btn {
+    -fx-padding: 8px 15px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+}
+
+.btn-success {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: white;
+}
+
+.btn-success:hover {
+    -fx-background-color: #27ae60;
+}
+
+.btn-primary {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #2980b9;
+}
+
+.btn-danger {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #c0392b;
+}
+
+.btn-info {
+    -fx-background-color: #2cc0c9;
+    -fx-text-fill: white;
+}
+
+.btn-info:hover {
+    -fx-background-color: #21a0a8;
+}
+
+.btn-sm {
+    -fx-padding: 5px 10px;
+    -fx-font-size: 11px;
+}
+
+/* Style pour le ScrollPane */
+.scroll-pane {
+    -fx-background: transparent;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Style pour les alertes */
+.text-muted {
+    -fx-text-fill: #7f8c8d;
+}

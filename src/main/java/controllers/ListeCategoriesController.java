@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -152,5 +153,25 @@ public class ListeCategoriesController {
             serviceCategorie.delete(categorie);
             categoriesTable.getItems().remove(categorie);
         }
+    }
+    void handleListes(ActionEvent event) {
+        System.out.println("handleListes clicked");
+        loadScene("/ListeCategories.fxml");
+    }
+    private void loadScene(String fxmlPath) {
+        try {
+            // Load the new FXML
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+            // Get the current stage from a known node
+            Stage stage = (Stage) mainBox.getScene().getWindow();
+            // Create a new scene with the loaded root
+            Scene scene = new Scene(root, 1000, 700); // Match FXML dimensions
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 }

@@ -15,11 +15,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="root" prefHeight="800.0" prefWidth="1000.0" style="-fx-background-color: linear-gradient(to bottom, #f3f4f6, #e3e4e8);" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChapitreDetailsController">
+<AnchorPane fx:id="root" prefHeight="800.0" prefWidth="1000.0" style="-fx-background-color: linear-gradient(to bottom, #f3f4f6, #e3e4e8);" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChapitreDetailsControllerEtudiant">
     <children>
         <!-- Navigation Bar from ListeCoursControllerEtudiant -->
         <HBox alignment="CENTER_LEFT" spacing="30" style="-fx-background-color: linear-gradient(to right, #c9eaff, #eaf6ff); -fx-padding: 15; -fx-border-width: 0 0 2 0; -fx-border-color: #b3d1f5; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
-            <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #002244; -fx-font-family: 'Segoe UI', sans-serif;" text="Knowlity App pour les enseignant" textFill="#436839">
+            <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #002244; -fx-font-family: 'Segoe UI', sans-serif;" text="Knowlity App pour les étudiants" textFill="#436839">
                 <font>
                     <Font name="Blackadder ITC" size="12.0" />
                 </font>
@@ -41,7 +41,7 @@
         </HBox>
 
         <!-- Main Content -->
-        <VBox fx:id="mainBox" alignment="CENTER" spacing="30.0" style="-fx-background-color: white; -fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 40; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 5);" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="115.0">
+        <VBox fx:id="mainBox" alignment="CENTER" spacing="30.0" style="-fx-background-color: white; -fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 40; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 5);" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="116.0">
             <children>
                 <!-- Header -->
                 <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: linear-gradient(to right, #8eb1ff, #2575fc); -fx-padding: 20; -fx-border-radius: 20; -fx-background-radius: 20;">
@@ -72,14 +72,14 @@
                                 <Label fx:id="titleDetailLabel" style="-fx-font-size: 16; -fx-text-fill: #1f2937;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                                 <Label style="-fx-font-size: 16; -fx-text-fill: #6b7280;" text="Ordre" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                                 <Label fx:id="orderDetailLabel" style="-fx-font-size: 16; -fx-text-fill: #1f2937;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <columnConstraints>
-                           <ColumnConstraints />
-                           <ColumnConstraints />
-                        </columnConstraints>
-                        <rowConstraints>
-                           <RowConstraints />
-                           <RowConstraints />
-                        </rowConstraints>
+                                <columnConstraints>
+                                    <ColumnConstraints />
+                                    <ColumnConstraints />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                </rowConstraints>
                             </GridPane>
                         </VBox>
 
@@ -94,9 +94,9 @@
                                 <Label fx:id="contentLabel" style="-fx-text-fill: #9ca3af; -fx-font-size: 14;" text="Aucun PDF" />
                             </VBox>
                         </VBox>
-                  <rowConstraints>
-                     <RowConstraints />
-                  </rowConstraints>
+                        <rowConstraints>
+                            <RowConstraints />
+                        </rowConstraints>
                     </GridPane>
                 </VBox>
 
@@ -104,8 +104,6 @@
                 <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: linear-gradient(to right, #7bbaef, #009ffd); -fx-padding: 20; -fx-border-radius: 20; -fx-background-radius: 20;">
                     <Button fx:id="backButton" onAction="#backAction" style="-fx-border-color: white; -fx-text-fill: #1e40af; -fx-padding: 10 20; -fx-border-radius: 10;" text="Retour au cours" />
                     <HBox HBox.hgrow="ALWAYS" />
-                    <Button fx:id="editButton" onAction="#editAction" style="-fx-background-color: #f9c369; -fx-text-fill: white; -fx-padding: 10 20; -fx-background-radius: 10;" text="Modifier" />
-                    <Button fx:id="deleteButton" onAction="#deleteAction" style="-fx-background-color: #de1616; -fx-text-fill: white; -fx-padding: 10 20; -fx-background-radius: 10;" text="Supprimer" />
                 </HBox>
             </children>
         </VBox>

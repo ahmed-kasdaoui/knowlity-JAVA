@@ -19,11 +19,10 @@ import tn.esprit.services.ServiceCours;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-public class ChapitreDetailsController {
+public class ChapitreDetailsControllerEtudiant {
 
     @FXML private Label titleLabel;
     @FXML private Label orderLabel;
@@ -177,9 +176,9 @@ public class ChapitreDetailsController {
 
     private void navigateToCourseDetails() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CourseDetails.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CourseDetailsEtudiant.fxml"));
             Parent root = loader.load();
-            CourseDetailsController controller = loader.getController();
+            CourseDetailsControllerEtudiant controller = loader.getController();
             controller.setCourse(cours);
             mainBox.getScene().setRoot(root);
         } catch (IOException e) {
@@ -198,7 +197,7 @@ public class ChapitreDetailsController {
     @FXML
     void handleListes(ActionEvent event) {
         System.out.println("handleListes clicked");
-        loadScene("/ListeCours.fxml");
+        loadScene("/ListeCoursEtudiant.fxml");
     }
     private void loadScene(String fxmlPath) {
         try {

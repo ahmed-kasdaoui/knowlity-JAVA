@@ -4,8 +4,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import tn.esprit.models.Chapitre;
 import tn.esprit.models.Cours;
 import tn.esprit.services.ServiceChapitre;
@@ -292,5 +294,42 @@ public class AjouterChapitreController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public void retourAction(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CourseDetails.fxml"));
+            Scene scene = new Scene(loader.load(), 1000, 800); // Match CourseDetails.fxml dimensions
+            CourseDetailsController controller = loader.getController();
+            controller.setCourse(cours); // Pass the Cours object
+            Stage stage = (Stage) fileLabel.getScene().getWindow(); // Adjust to your @FXML node
+            stage.setScene(scene);
+            stage.setTitle("Détails du Cours - " + cours.getTitle());
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading CourseDetails.fxml: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void handleListes(ActionEvent event) {
+        System.out.println("handleListes clicked");
+        loadScene("/ListeCours.fxml");
+    }
+    private void loadScene(String fxmlPath) {
+        try {
+            // Load the new FXML
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+            // Get the current stage from a known node
+            Stage stage = (Stage) fileLabel.getScene().getWindow();
+            // Create a new scene with the loaded root
+            Scene scene = new Scene(root, 1000, 700); // Match FXML dimensions
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 }

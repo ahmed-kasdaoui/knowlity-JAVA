@@ -1,14 +1,20 @@
 package controllers;
 
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import tn.esprit.models.Categorie;
 import tn.esprit.models.Matiere;
 import tn.esprit.services.ServiceCategorie;
 import tn.esprit.services.ServiceMatiere;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
@@ -172,13 +178,31 @@ public class AjouterMatiereController {
             serviceMatiere.add(matiere);
             showAlert(Alert.AlertType.INFORMATION, "Succès", "Matière enregistrée.");
             clearForm(); // Vider le formulaire après une soumission réussie
-
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("/ListeMatiere.fxml"));
+                titreField.getScene().setRoot(root);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
         } catch (Exception e) {
             System.err.println("Save error: " + e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
         }
     }
+    @FXML
+    private void retourAuxMatiere(Event event){
+ try {FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListeMatiere.fxml"));
+     Scene scene = new Scene(loader.load(), 1150, 700); // Match CourseDetails.fxml dimensions
 
+     Stage stage = (Stage) titreField.getScene().getWindow(); // Adjust to your @FXML node
+     stage.setScene(scene);
+     stage.setTitle("Liste des Matieres ");
+     stage.show();
+
+
+    } catch (IOException e) {
+        System.out.println(e.getMessage());
+    }}
     /** Méthode pour vider le formulaire */
     private void clearForm() {
         // Vider les champs texte
@@ -224,5 +248,25 @@ public class AjouterMatiereController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    void handleListes(ActionEvent event) {
+        System.out.println("handleListes clicked");
+        loadScene("/ListeCategories.fxml");
+    }
+    private void loadScene(String fxmlPath) {
+        try {
+            // Load the new FXML
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+            // Get the current stage from a known node
+            Stage stage = (Stage) titreField.getScene().getWindow();
+            // Create a new scene with the loaded root
+            Scene scene = new Scene(root, 1000, 700); // Match FXML dimensions
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 }

@@ -4,10 +4,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import tn.esprit.models.Categorie;
 import tn.esprit.services.ServiceCategorie;
 
@@ -212,6 +214,26 @@ public class EditCategorieController {
                 showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de télécharger l'image : " + e.getMessage());
             }
         }
+    }
+    void handleListes(ActionEvent event) {
+        System.out.println("handleListes clicked");
+        loadScene("/ListeCategories.fxml");
+    }
+    private void loadScene(String fxmlPath) {
+        try {
+            // Load the new FXML
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+            // Get the current stage from a known node
+            Stage stage = (Stage) nameField.getScene().getWindow();
+            // Create a new scene with the loaded root
+            Scene scene = new Scene(root, 1000, 700); // Match FXML dimensions
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 
 }

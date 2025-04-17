@@ -127,3 +127,53 @@
     -fx-font-size: 14px;
     -fx-text-fill: #6c757d;
 }
+/* /css/matieres.css */
+.root {
+    -fx-background-color: #f4f4f4;
+}
+
+.card-title {
+    -fx-text-fill: #333;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+}
+
+.table-view .column-header {
+    -fx-background-color: #f8f8f8;
+    -fx-border-color: #ddd;
+}
+
+.btn {
+    -fx-cursor: hand;
+}
+
+.btn-success {
+    -fx-background-color: #28a745;
+    -fx-text-fill: white;
+}
+
+.btn-primary {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+}
+
+.btn-danger {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: white;
+}
+
+.btn-sm {
+    -fx-padding: 2 8;
+    -fx-font-size: 12px;
+}
+
+.text-muted {
+    -fx-text-fill: #6c757d;
+}

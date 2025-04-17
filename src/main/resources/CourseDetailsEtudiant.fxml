@@ -18,11 +18,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="root" prefHeight="800.0" prefWidth="1000.0" styleClass="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CourseDetailsController">
+<AnchorPane fx:id="root" prefHeight="800.0" prefWidth="1000.0" styleClass="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CourseDetailsControllerEtudiant">
     <children>
         <!-- Navigation Bar from ListeCoursControllerEtudiant -->
         <HBox alignment="CENTER_LEFT" spacing="30" style="-fx-background-color: linear-gradient(to right, #c9eaff, #eaf6ff); -fx-padding: 15; -fx-border-width: 0 0 2 0; -fx-border-color: #b3d1f5; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
-            <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #002244; -fx-font-family: 'Segoe UI', sans-serif;" text="Knowlity App pour les enseignants" textFill="#436839">
+            <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #002244; -fx-font-family: 'Segoe UI', sans-serif;" text="Knowlity App pour les étudiants" textFill="#436839">
                 <font>
                     <Font name="Blackadder ITC" size="12.0" />
                 </font>
@@ -44,7 +44,7 @@
         </HBox>
 
         <!-- Main Content -->
-        <VBox fx:id="mainBox" alignment="TOP_CENTER" spacing="20.0" styleClass="container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="112.0">
+        <VBox fx:id="mainBox" alignment="TOP_CENTER" spacing="20.0" styleClass="container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="80.0">
             <padding>
                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
             </padding>
@@ -56,9 +56,6 @@
                             <font>
                                 <Font name="System Bold" size="36.0" />
                             </font>
-                     <HBox.margin>
-                        <Insets left="26.0" />
-                     </HBox.margin>
                         </Label>
                         <HBox HBox.hgrow="ALWAYS" />
                         <Button fx:id="backButton" onAction="#handleBackAction" styleClass="btn, btn-outline-secondary, btn-animated" text="Retour">
@@ -66,17 +63,10 @@
                                 <Label styleClass="icon" text="←" />
                             </graphic>
                         </Button>
-                        <Button fx:id="deleteButton" onAction="#handleDeleteAction" styleClass="btn, btn-danger, btn-animated" text="Supprimer">
-                            <graphic>
-                                <Label styleClass="icon" text="🗑️" />
-                            </graphic>
-                        </Button>
-                        <Button fx:id="editButton" onAction="#handleEditAction" styleClass="btn, btn-warning, btn-animated" text="Modifier">
-                            <graphic>
-                                <Label styleClass="icon" text="✏️" />
-                            </graphic>
-                        </Button>
                     </children>
+               <VBox.margin>
+                  <Insets top="27.0" />
+               </VBox.margin>
                 </HBox>
 
                 <!-- Main Course Card -->
@@ -191,13 +181,6 @@
                                 </Label>
                             </HBox>
 
-                            <!-- Stats Button -->
-                            <Button fx:id="statsButton" onAction="#handleStatsAction" styleClass="btn, btn-info, w-100, btn-animated" text="Afficher les statistiques">
-                                <graphic>
-                                    <Label styleClass="icon" text="📊" />
-                                </graphic>
-                            </Button>
-
                             <!-- Description Section -->
                             <VBox spacing="8.0">
                                 <Label styleClass="section-title" text="Description">
@@ -235,5 +218,6 @@
     </children>
     <stylesheets>
         <URL value="@/styles/course-details.css" />
+        <URL value="@/css/cours.css" />
     </stylesheets>
 </AnchorPane>

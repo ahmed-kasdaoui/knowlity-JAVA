@@ -149,7 +149,16 @@
     -fx-transform: translateY(-5px);
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 25, 0, 0, 10);
 }
-
+.btn-danger {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: white;
+}
+.btn-danger:hover {
+    -fx-background-color: #c82333;
+}
+.btn-danger:pressed {
+    -fx-background-color: #bd2130;
+}
 /* Responsive Design */
 @media screen and (max-width: 900px) {
     .container {

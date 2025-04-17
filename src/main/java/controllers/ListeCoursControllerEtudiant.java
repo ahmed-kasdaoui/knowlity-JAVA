@@ -19,7 +19,7 @@ import tn.esprit.services.ServiceCours;
 
 import java.io.IOException;
 
-public class ListeCoursController {
+public class ListeCoursControllerEtudiant {
 
     @FXML
     private AnchorPane root;
@@ -178,14 +178,8 @@ public class ListeCoursController {
         // TODO: Naviguer vers le formulaire de création
         System.out.println("Naviguer vers création de cours");
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutCours.fxml"));
-            Scene scene = new Scene(loader.load(), 1000, 900); // Match CourseDetails.fxml dimensions
-
-            Stage stage = (Stage) mainBox.getScene().getWindow(); // Adjust to your @FXML node
-            stage.setScene(scene);
-            stage.setTitle("Ajouter un cours");
-            stage.show();
-
+            Parent root = FXMLLoader.load(getClass().getResource("/AjoutCours.fxml"));
+            mainBox.getScene().setRoot(root);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -201,9 +195,9 @@ public class ListeCoursController {
 
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CourseDetails.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CourseDetailsEtudiant.fxml"));
             Scene scene = new Scene(loader.load(), 1000, 900); // Match CourseDetails.fxml dimensions
-            CourseDetailsController controller = loader.getController();
+            CourseDetailsControllerEtudiant controller = loader.getController();
             controller.setCourse(cours); // Pass the Cours object
             Stage stage = (Stage) mainBox.getScene().getWindow(); // Adjust to your @FXML node
             stage.setScene(scene);
@@ -215,10 +209,23 @@ public class ListeCoursController {
         }
     }
     @FXML
-    void handleListes(ActionEvent event) {
-        System.out.println("handleListes clicked");
+    void handleMesOffres(ActionEvent event) {
+        System.out.println("handleMesOffres clicked");
         loadScene("/ListeCours.fxml");
     }
+
+    @FXML
+    void handleListes(ActionEvent event) {
+        System.out.println("handleListes clicked");
+        loadScene("/ListeCoursEtudiant.fxml");
+    }
+
+    @FXML
+    void handleAutresOffres(ActionEvent event) {
+        System.out.println("handleAutresOffres clicked");
+        loadScene("/ListeCours.fxml");
+    }
+
     private void loadScene(String fxmlPath) {
         try {
             // Load the new FXML
@@ -233,6 +240,5 @@ public class ListeCoursController {
             System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
             e.printStackTrace();
         }
-
     }
 }

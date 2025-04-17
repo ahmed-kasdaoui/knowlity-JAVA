@@ -3,6 +3,7 @@ package controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -12,7 +13,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import tn.esprit.models.Chapitre;
 import tn.esprit.models.Cours;
@@ -21,7 +21,7 @@ import tn.esprit.services.ServiceCours;
 import java.io.IOException;
 import java.util.List;
 
-public class CourseDetailsController {
+public class CourseDetailsControllerEtudiant {
     @FXML private AnchorPane root;
     @FXML private VBox mainBox;
     @FXML private Button backButton;
@@ -45,7 +45,7 @@ public class CourseDetailsController {
     private Cours course;
     private final ServiceCours serviceCours;
 
-    public CourseDetailsController() {
+    public CourseDetailsControllerEtudiant() {
         this.serviceCours = new ServiceCours();
     }
 
@@ -135,8 +135,8 @@ public class CourseDetailsController {
             }
         }
         // Add "New" card
-        VBox newCard = createNewCard("Chapitre");
-        grid.add(newCard, col, row);
+
+
     }
 
     private VBox createChapitreCard(Chapitre chapitre) {
@@ -165,34 +165,22 @@ public class CourseDetailsController {
         viewBtn.getStyleClass().addAll("btn", "btn-outline-primary", "btn-sm");
         viewBtn.setGraphic(new Label("👁️"));
         viewBtn.setOnAction(e -> handleChapitreView(chapitre));
-        Button editBtn = new Button("Modifier");
-        editBtn.getStyleClass().addAll("btn", "btn-outline-warning", "btn-sm");
-        editBtn.setGraphic(new Label("✏️"));
-        editBtn.setOnAction(e -> handleChapitreEdit(chapitre));
-        buttons.getChildren().addAll(viewBtn, editBtn);
+
+        buttons.getChildren().addAll(viewBtn);
 
         card.getChildren().addAll(header, title, buttons);
         return card;
     }
 
-    private VBox createNewCard(String type) {
-        VBox card = new VBox();
-        card.getStyleClass().addAll("card", "chapter-card");
-        Button addBtn = new Button("Ajouter un " + type.toLowerCase());
-        addBtn.getStyleClass().addAll("btn", "btn-outline-success", "btn-sm", "w-100", "h-100");
-        addBtn.setGraphic(new Label("➕"));
-        addBtn.setOnAction(e -> handleAddChapitre());
-        card.getChildren().add(addBtn);
-        return card;
-    }
+
 
     private void handleChapitreView(Chapitre chapitre) {
         System.out.println("Viewing chapter: " + chapitre.getTitle());
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ChapitreDetails.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ChapitreDetailsEtudiant.fxml"));
             Parent root = loader.load();
             System.out.println(chapitre);
-            ChapitreDetailsController controller = loader.getController();
+            ChapitreDetailsControllerEtudiant controller = loader.getController();
             controller.setChapitre(chapitre,course);
             mainBox.getScene().setRoot(root);
         } catch (IOException e) {
@@ -235,7 +223,7 @@ public class CourseDetailsController {
     @FXML
     private void handleBackAction() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListeCours.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListeCoursEtudiant.fxml"));
             Scene scene = new Scene(loader.load(), 1150, 800); // Match CourseDetails.fxml dimensions
 
             Stage stage = (Stage) mainBox.getScene().getWindow(); // Adjust to your @FXML node
@@ -256,16 +244,10 @@ public class CourseDetailsController {
                 return;
             }
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/EditCours.fxml"));
-            Scene scene = new Scene(loader.load(), 1000, 900); // Match CourseDetails.fxml dimensions
+            Parent root = loader.load();
             EditCoursController controller = loader.getController();
             controller.setCourse(course);
-            Stage stage = (Stage) mainBox.getScene().getWindow(); // Adjust to your @FXML node
-            stage.setScene(scene);
-            stage.setTitle("Modifier un cours");
-            stage.show();
-
-
-
+            mainBox.getScene().setRoot(root);
         } catch (IOException e) {
             System.err.println("Failed to load EditCours.fxml: " + e.getMessage());
         }
@@ -329,7 +311,7 @@ public class CourseDetailsController {
     @FXML
     void handleListes(ActionEvent event) {
         System.out.println("handleListes clicked");
-        loadScene("/ListeCours.fxml");
+        loadScene("/ListeCoursEtudiant.fxml");
     }
     private void loadScene(String fxmlPath) {
         try {
@@ -346,6 +328,4 @@ public class CourseDetailsController {
             e.printStackTrace();
         }
 
-    }
-
-}
+}}

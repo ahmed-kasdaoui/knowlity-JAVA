@@ -5,10 +5,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import tn.esprit.models.Cours;
 import tn.esprit.models.Matiere;
@@ -361,5 +363,26 @@ public class EditCoursController {
             System.err.println("Facebook sharing error: " + e.getMessage());
             showErrorAlert("Erreur", "Erreur lors du partage Facebook : " + e.getMessage());
         }
+    }
+    @FXML
+    void handleListes(ActionEvent event) {
+        System.out.println("handleListes clicked");
+        loadScene("/ListeCours.fxml");
+    }
+    private void loadScene(String fxmlPath) {
+        try {
+            // Load the new FXML
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+            // Get the current stage from a known node
+            Stage stage = (Stage) langueComboBox.getScene().getWindow();
+            // Create a new scene with the loaded root
+            Scene scene = new Scene(root, 1000, 700); // Match FXML dimensions
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 }
