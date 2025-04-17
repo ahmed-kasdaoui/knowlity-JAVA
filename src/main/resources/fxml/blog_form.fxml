@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox xmlns="http://javafx.com/javafx/17" 
+      xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="view.BlogFormController"
+      stylesheets="@../styles/blog.css"
+      styleClass="blog-form" 
+      spacing="20">
+    
+    <padding>
+        <Insets top="30" right="40" bottom="30" left="40"/>
+    </padding>
+    
+    <VBox styleClass="form-container" spacing="20">
+        <Text fx:id="formTitle" text="Nouveau Blog" styleClass="form-title"/>
+        
+        <VBox spacing="10">
+            <Label text="Titre"/>
+            <TextField fx:id="titleField" styleClass="form-field" promptText="Entrez le titre du blog"/>
+        </VBox>
+        
+        <VBox spacing="10">
+            <Label text="Créateur"/>
+            <TextField fx:id="creatorField" styleClass="form-field" promptText="Entrez le nom du créateur"/>
+        </VBox>
+        
+        <VBox spacing="10">
+            <Label text="Contenu"/>
+            <TextArea fx:id="contentArea" styleClass="form-field" 
+                     promptText="Entrez le contenu du blog"
+                     wrapText="true" prefRowCount="5"/>
+        </VBox>
+        
+        <VBox spacing="10">
+            <Label text="Image de l'utilisateur"/>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="userImageField" styleClass="form-field" 
+                          promptText="URL de l'image de l'utilisateur" HBox.hgrow="ALWAYS"/>
+            </HBox>
+        </VBox>
+        
+        <VBox spacing="10">
+            <Label text="Image du blog"/>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="blogImageField" styleClass="form-field" 
+                          promptText="URL de l'image du blog" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="uploadImageButton" onAction="#handleUploadImage" styleClass="button, upload-button">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-upload" iconSize="16"/>
+                    </graphic>
+                    <text>Charger une image</text>
+                </Button>
+            </HBox>
+            <Label fx:id="imageNameLabel" styleClass="image-name-label"/>
+            <ImageView fx:id="previewImage" fitWidth="200" fitHeight="150" 
+                      preserveRatio="true" styleClass="preview-image"/>
+        </VBox>
+        
+        <HBox spacing="15" alignment="CENTER_RIGHT">
+            <Button fx:id="cancelButton" onAction="#handleCancel" styleClass="button, cancel-button">
+                <graphic>
+                    <FontIcon iconLiteral="fas-times" iconSize="16"/>
+                </graphic>
+                <text>Annuler</text>
+            </Button>
+            <Button fx:id="saveButton" onAction="#handleSave" styleClass="button, save-button">
+                <graphic>
+                    <FontIcon iconLiteral="fas-save" iconSize="16"/>
+                </graphic>
+                <text>Enregistrer</text>
+            </Button>
+        </HBox>
+    </VBox>
+</VBox>

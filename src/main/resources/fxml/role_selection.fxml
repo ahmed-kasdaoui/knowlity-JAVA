@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox alignment="CENTER" spacing="40" 
+      stylesheets="@../styles/blog.css"
+      styleClass="role-selection-container" 
+      xmlns="http://javafx.com/javafx/17" 
+      xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="view.RoleSelectionController">
+      
+    <padding>
+        <Insets top="50" right="50" bottom="50" left="50"/>
+    </padding>
+
+    <Text styleClass="welcome-text" text="Bienvenue sur BlogStream"/>
+    <Text styleClass="select-role-text" text="Sélectionnez votre rôle"/>
+
+    <HBox alignment="CENTER" spacing="30">
+        <VBox styleClass="role-card" onMouseClicked="#handleAdminSelection" alignment="CENTER" spacing="15">
+            <padding>
+                <Insets top="30" right="40" bottom="30" left="40"/>
+            </padding>
+            <Text styleClass="role-icon" text="👨‍💼"/>
+            <Text styleClass="role-title" text="Administrateur"/>
+            <Text styleClass="role-description" text="Gérer tous les blogs" textAlignment="CENTER" wrappingWidth="200"/>
+        </VBox>
+
+        <VBox styleClass="role-card" onMouseClicked="#handleUserSelection" alignment="CENTER" spacing="15">
+            <padding>
+                <Insets top="30" right="40" bottom="30" left="40"/>
+            </padding>
+            <Text styleClass="role-icon" text="👤"/>
+            <Text styleClass="role-title" text="Utilisateur"/>
+            <Text styleClass="role-description" text="Consulter les blogs" textAlignment="CENTER" wrappingWidth="200"/>
+        </VBox>
+    </HBox>
+</VBox>
