@@ -43,7 +43,7 @@ public class BlogServices {
             pst.setString(1, blog.getTitle());
             pst.setString(2, blog.getContent());
             pst.setString(3, blog.getCreatorName());
-            pst.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now())); // Update the updated_at timestamp
+            pst.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
             pst.setString(5, blog.getUserImage());
             pst.setString(6, blog.getBlogImage());
             pst.setInt(7, blog.getId());
@@ -80,7 +80,6 @@ public class BlogServices {
                 );
                 blog.setId(rs.getInt("id"));
                 
-                // Handle potentially null timestamps
                 Timestamp createdAt = rs.getTimestamp("created_at");
                 if (createdAt != null) {
                     blog.setCreatedAt(createdAt.toLocalDateTime());

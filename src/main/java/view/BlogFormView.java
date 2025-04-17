@@ -53,18 +53,18 @@ public class BlogFormView {
 
         Label titleLabel = new Label("Titre du Blog");
         titleField = new TextField();
-        titleField.setPromptText("Entrez le titre");
+        titleField.setPromptText("Entrez le titre (minimum 3 caractères)");
         titleField.getStyleClass().add("form-field");
 
         Label contentLabel = new Label("Contenu");
         contentArea = new TextArea();
-        contentArea.setPromptText("Entrez le contenu");
+        contentArea.setPromptText("Entrez le contenu (minimum 10 caractères)");
         contentArea.getStyleClass().add("form-field");
         contentArea.setPrefRowCount(5);
 
         Label creatorLabel = new Label("Nom du Créateur");
         creatorNameField = new TextField();
-        creatorNameField.setPromptText("Entrez votre nom");
+        creatorNameField.setPromptText("Entrez votre nom (obligatoire)");
         creatorNameField.getStyleClass().add("form-field");
 
         Button userImageButton = new Button("Choisir Photo de Profil");
@@ -120,29 +120,92 @@ public class BlogFormView {
     }
 
     private void saveBlog() {
-        String title = titleField.getText().trim();
-        String content = contentArea.getText().trim();
-        String creatorName = creatorNameField.getText().trim();
+        String title = titleField.getText();
+        String content = contentArea.getText();
+        String creatorName = creatorNameField.getText();
 
-        if (title.isEmpty() || content.isEmpty() || creatorName.isEmpty()) {
-            showAlert("Veuillez remplir tous les champs obligatoires.");
+        System.out.println("Tentative de sauvegarde du blog:");
+        System.out.println("Titre (avant trim): '" + title + "' longueur: " + (title != null ? title.length() : 0));
+        System.out.println("Contenu (avant trim): '" + content + "' longueur: " + (content != null ? content.length() : 0));
+        System.out.println("Créateur (avant trim): '" + creatorName + "'");
+
+        // Nettoyage des espaces
+        title = title != null ? title.trim() : "";
+        content = content != null ? content.trim() : "";
+        creatorName = creatorName != null ? creatorName.trim() : "";
+
+        System.out.println("Après nettoyage:");
+        System.out.println("Titre: '" + title + "' longueur: " + title.length());
+        System.out.println("Contenu: '" + content + "' longueur: " + content.length());
+        System.out.println("Créateur: '" + creatorName + "'");
+
+        // Validation
+        if (title.length() < 3) {
+            String message = "Le titre doit contenir au moins 3 caractères (actuel: " + title.length() + ")";
+            System.out.println("Erreur de validation: " + message);
+            showAlert(message);
+            titleField.requestFocus();
             return;
         }
 
-        Blog blog = new Blog(title, content, creatorName);
-        blog.setCreatedAt(LocalDateTime.now());
-
-        if (selectedUserImage != null) {
-            blog.setUserImage(ImageUtils.saveImage(selectedUserImage));
-        }
-        if (selectedBlogImage != null) {
-            blog.setBlogImage(ImageUtils.saveImage(selectedBlogImage));
+        if (content.length() < 10) {
+            String message = "Le contenu doit contenir au moins 10 caractères (actuel: " + content.length() + ")";
+            System.out.println("Erreur de validation: " + message);
+            showAlert(message);
+            contentArea.requestFocus();
+            return;
         }
 
-        controller.addBlog(blog);
-        onSaveCallback.run();
-        clearForm();
-        stage.close();
+        if (creatorName.isEmpty()) {
+            String message = "Le nom du créateur est obligatoire";
+            System.out.println("Erreur de validation: " + message);
+            showAlert(message);
+            creatorNameField.requestFocus();
+            return;
+        }
+
+        System.out.println("Validation réussie, tentative de sauvegarde...");
+
+        try {
+            if (currentBlog != null) {
+                // Mode modification
+                currentBlog.setTitle(title);
+                currentBlog.setContent(content);
+                currentBlog.setCreatorName(creatorName);
+                currentBlog.setUpdatedAt(LocalDateTime.now());
+                
+                if (selectedUserImage != null) {
+                    currentBlog.setUserImage(ImageUtils.saveImage(selectedUserImage));
+                }
+                if (selectedBlogImage != null) {
+                    currentBlog.setBlogImage(ImageUtils.saveImage(selectedBlogImage));
+                }
+                
+                controller.updateBlog(currentBlog);
+                showSuccessAlert("Blog mis à jour avec succès!");
+            } else {
+                // Mode création
+                Blog newBlog = new Blog(title, content, creatorName);
+                
+                if (selectedUserImage != null) {
+                    newBlog.setUserImage(ImageUtils.saveImage(selectedUserImage));
+                }
+                if (selectedBlogImage != null) {
+                    newBlog.setBlogImage(ImageUtils.saveImage(selectedBlogImage));
+                }
+                
+                controller.addBlog(newBlog);
+                showSuccessAlert("Blog créé avec succès!");
+            }
+
+            System.out.println("Sauvegarde réussie!");
+            onSaveCallback.run();
+            clearForm();
+            stage.close();
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la sauvegarde: " + e.getMessage());
+            showAlert("Erreur lors de l'enregistrement: " + e.getMessage());
+        }
     }
 
     private void clearForm() {
@@ -161,12 +224,21 @@ public class BlogFormView {
         alert.showAndWait();
     }
 
+    private void showSuccessAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Succès");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     public void show() {
         stage.show();
     }
 
     public void setCurrentBlog(Blog blog) {
         this.currentBlog = blog;
+        stage.setTitle("Modifier le Blog");
         titleField.setText(blog.getTitle());
         contentArea.setText(blog.getContent());
         creatorNameField.setText(blog.getCreatorName());
