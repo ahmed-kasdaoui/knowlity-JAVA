@@ -1,0 +1,241 @@
+/* Import font similar to events.css */
+@import url("https://fonts.googleapis.com/css2?family=Baloo+2&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Muli:300,400,600,700,800,900");
+
+/* Define color variables */
+.root {
+  -main-green: #79dd09;
+  -main-green-rgb-015: rgba(121, 221, 9, 0.1);
+  -main-yellow: #bdbb49;
+  -main-yellow-rgb-015: rgba(189, 187, 73, 0.1);
+  -main-red: #bd150b;
+  -main-red-rgb-015: rgba(189, 21, 11, 0.1);
+  -main-blue: #0076bd;
+  -main-blue-rgb-015: rgba(0, 118, 189, 0.1);
+  -fx-background-color: #f3f5f7; /* Light theme background */
+}
+
+/* Hero Area Styling */
+.hero-area {
+  -fx-background-color: #5672f9;
+  -fx-alignment: center;
+  -fx-spacing: 20;
+  -fx-padding: 20;
+  -fx-font-family: "Muli";
+}
+
+.hero-title {
+  -fx-font-family: "Baloo 2";
+  -fx-font-size: 35px;
+  -fx-text-fill: #ffffff;
+  -fx-font-weight: 600;
+}
+
+.hero-subtitle {
+  -fx-font-family: "Muli";
+  -fx-font-size: 20px;
+  -fx-text-fill: #ffffff;
+}
+
+/* Category Buttons */
+.category-button {
+  -fx-background-color: #ffffff;
+  -fx-text-fill: #666;
+  -fx-font-family: "Muli";
+  -fx-font-size: 14px;
+  -fx-padding: 10;
+  -fx-border-radius: 3;
+  -fx-background-radius: 3;
+  -fx-border-color: transparent;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 1, 1);
+}
+
+.category-button:hover {
+  -fx-background-color: #5672f9;
+  -fx-text-fill: #ffffff;
+}
+
+/* Search Form */
+.search-form {
+  -fx-background-color: #ffffff;
+  -fx-padding: 15;
+  -fx-border-radius: 3;
+  -fx-background-radius: 3;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 6, 0, -1, 3);
+}
+
+.search-input {
+  -fx-background-color: transparent;
+  -fx-border-color: #dedede;
+  -fx-border-width: 1;
+  -fx-border-radius: 2;
+  -fx-background-radius: 2;
+  -fx-font-family: "Muli";
+  -fx-font-size: 15px;
+  -fx-text-fill: #666;
+  -fx-padding: 10;
+  -fx-prompt-text-fill: #666;
+}
+
+.search-input:focused {
+  -fx-border-color: #5672f9;
+}
+
+.search-combo {
+  -fx-background-color: transparent;
+  -fx-border-color: #dedede;
+  -fx-border-width: 1;
+  -fx-border-radius: 2;
+  -fx-background-radius: 2;
+  -fx-font-family: "Muli";
+  -fx-font-size: 15px;
+  -fx-text-fill: #666;
+  -fx-padding: 10;
+}
+
+.search-combo .list-cell {
+  -fx-text-fill: #666;
+}
+
+.search-combo:focused {
+  -fx-border-color: #5672f9;
+}
+
+.search-button {
+  -fx-background-color: #5672f9;
+  -fx-text-fill: #ffffff;
+  -fx-font-family: "Muli";
+  -fx-font-size: 15px;
+  -fx-padding: 10 20;
+  -fx-border-radius: 4;
+  -fx-background-radius: 4;
+}
+
+.search-button:hover {
+  -fx-background-color: #082de1;
+}
+
+/* Toggle Buttons */
+.toggle-button {
+  -fx-background-color: #ffffff;
+  -fx-text-fill: #666;
+  -fx-font-family: "Muli";
+  -fx-font-size: 16px;
+  -fx-padding: 10;
+  -fx-border-radius: 3;
+  -fx-background-radius: 3;
+  -fx-border-color: transparent;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);
+}
+
+.toggle-button:hover {
+  -fx-background-color: #5672f9;
+  -fx-text-fill: #ffffff;
+}
+
+/* More Button */
+.more-button {
+  -fx-background-color: #5672f9;
+  -fx-text-fill: #ffffff;
+  -fx-font-family: "Muli";
+  -fx-font-size: 15px;
+  -fx-padding: 10 20;
+  -fx-border-radius: 4;
+  -fx-background-radius: 4;
+}
+
+.more-button:hover {
+  -fx-background-color: #082de1;
+}
+
+/* ScrollPane */
+.event-scroll-pane {
+  -fx-background: transparent;
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-padding: 10;
+}
+
+.event-scroll-pane .viewport {
+  -fx-background-color: transparent;
+}
+
+.event-scroll-pane .scroll-bar:vertical {
+  -fx-pref-width: 10;
+  -fx-background-color: transparent;
+}
+
+.event-scroll-pane .scroll-bar:vertical .track {
+  -fx-background-color: #f3f5f7;
+  -fx-border-color: transparent;
+}
+
+.event-scroll-pane .scroll-bar:vertical .thumb {
+  -fx-background-color: #5672f9;
+  -fx-background-radius: 5;
+}
+
+.event-scroll-pane .scroll-bar:vertical .thumb:hover {
+  -fx-background-color: #082de1;
+}
+
+.event-scroll-pane .scroll-bar:horizontal {
+  -fx-opacity: 0;
+  -fx-pref-height: 0;
+}
+
+/* Event Grid */
+.event-grid {
+  -fx-alignment: center;
+  -fx-padding: 20;
+}
+
+/* Event Card */
+.event-card {
+  -fx-background-color: #e1e5ea;
+  -fx-border-radius: 10;
+  -fx-background-radius: 10;
+  -fx-padding: 15;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.66), 21, 0, 0, 4);
+  -fx-max-width: 300;
+  -fx-alignment: center;
+}
+
+.event-card .event-title {
+  -fx-font-family: "Muli";
+  -fx-font-size: 20px;
+  -fx-text-fill: #333;
+  -fx-font-weight: 600;
+}
+
+.event-card .event-date,
+.event-card .event-category,
+.event-card .event-description {
+  -fx-font-family: "Muli";
+  -fx-font-size: 14px;
+  -fx-text-fill: #777;
+}
+
+.event-card .event-description {
+  -fx-wrap-text: true;
+  -fx-max-height: 60;
+}
+
+.event-card .reserve-button {
+  -fx-background-color: #5672f9;
+  -fx-text-fill: #ffffff;
+  -fx-font-family: "Muli";
+  -fx-font-size: 14px;
+  -fx-padding: 8 16;
+  -fx-border-radius: 4;
+  -fx-background-radius: 4;
+}
+
+.event-card .reserve-button:hover {
+  -fx-background-color: #082de1;
+}
+
+.event-card:hover {
+  -fx-scale-x: 1.05;
+  -fx-scale-y: 1.05;
+}

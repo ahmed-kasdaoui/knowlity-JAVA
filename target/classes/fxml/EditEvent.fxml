@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="20" styleClass="form-section" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EditEventController" stylesheets="/event_admin.css">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+    <Label fx:id="titleLabel" text="Edit Event" styleClass="title"/>
+    <fx:include source="EventAdminForm.fxml" fx:id="eventForm">
+    </fx:include>
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="backButton" text="Back to List" styleClass="reset-btn"/>
+        <Button fx:id="deleteButton" text="Delete" styleClass="reset-btn"/>
+    </HBox>
+</VBox>

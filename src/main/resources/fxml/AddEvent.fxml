@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+
+<StackPane prefHeight="493.0" prefWidth="807.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AddEvent">
+   <children>
+      <AnchorPane fx:id="AddEvent" prefHeight="373.0" prefWidth="770.0">
+         <children>
+            <GridPane hgap="20.0" layoutX="160.0" layoutY="55.0" prefHeight="258.0" prefWidth="566.0" vgap="20.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="293.20001220703125" minWidth="10.0" prefWidth="290.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="293.20001220703125" minWidth="10.0" prefWidth="290.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <TextField fx:id="titleTF" promptText="Title" />
+                  <DatePicker fx:id="startdate" prefHeight="30.0" prefWidth="274.0" promptText="Start Date" GridPane.rowIndex="1" />
+                  <DatePicker fx:id="enddate" prefHeight="30.0" prefWidth="290.0" promptText="End Date" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <TextField fx:id="max_participants" promptText="Max Participants" GridPane.rowIndex="2" />
+                  <ChoiceBox fx:id="category" prefHeight="28.0" prefWidth="294.0" GridPane.columnIndex="1" />
+                  <TextField fx:id="locationTF" promptText="Location" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <TextField fx:id="imageTF" promptText="Image" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <TextField fx:id="LatitudeTF" promptText="Latitude" GridPane.rowIndex="4" />
+                  <TextField fx:id="longitudeTF" promptText="Longitude" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <ChoiceBox fx:id="typeTF" prefHeight="28.0" prefWidth="294.0" GridPane.rowIndex="3" />
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </GridPane>
+            <TextArea fx:id="descriptionTF" layoutX="160.0" layoutY="337.0" prefHeight="139.0" prefWidth="274.0" promptText="Description" />
+            <Button layoutX="572.0" layoutY="351.0" mnemonicParsing="false" onAction="#save" prefHeight="46.0" prefWidth="103.0" style="-fx-background-color: green;" stylesheets="@../addevent.css" text="Save" />
+            <Button layoutX="572.0" layoutY="417.0" mnemonicParsing="false" onAction="#clear" prefHeight="46.0" prefWidth="103.0" stylesheets="@../addevent.css" text="Clear" />
+            <Button layoutX="14.0" layoutY="55.0" mnemonicParsing="false" onAction="#display" text="Dispaly" />
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="20" styleClass="form-section" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EventRegistrationListController" stylesheets="/event_admin.css">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+    <Label text="Event Registration Index" styleClass="title"/>
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="createButton" text="Create New" styleClass="submit-btn"/>
+        <Button fx:id="backToEventsButton" text="Back to Events" styleClass="reset-btn"/>
+    </HBox>
+    <TableView fx:id="registrationsTable" styleClass="table-view">
+        <columns>
+            <TableColumn fx:id="idColumn" text="Id" prefWidth="100"/>
+            <TableColumn fx:id="eventIdColumn" text="Event ID" prefWidth="100"/>
+            <TableColumn fx:id="userIdColumn" text="User ID" prefWidth="100"/>
+            <TableColumn fx:id="statusColumn" text="Status" prefWidth="120"/>
+            <TableColumn fx:id="registrationDateColumn" text="Registration Date" prefWidth="150"/>
+            <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="200"/>
+        </columns>
+        <placeholder>
+            <Label text="No records found" styleClass="value-label"/>
+        </placeholder>
+    </TableView>
+</VBox>
