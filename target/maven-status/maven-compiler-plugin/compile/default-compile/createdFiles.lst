@@ -1,12 +1,12 @@
 tn\esprit\test\MainFX.class
 controllers\EventRegistrationListController.class
-controllers\EventListController$2.class
 controllers\NewEventRegistrationFormController.class
 controllers\EventListController.class
 tn\esprit\test\TestEventList.class
 controllers\NewEventRegistrationFormController$1.class
 tn\esprit\test\TestEventRegistrationList.class
 controllers\NewEventRegistrationController.class
+controllers\ActionCellController.class
 controllers\UserEventRegistrationFormController.class
 controllers\AddEvent.class
 controllers\EventRegistrationListController$1.class

@@ -112,7 +112,6 @@ public class EventListingController {
         int endIndex = Math.min(startIndex + BATCH_SIZE, currentDisplayList.size());
 
         if (currentDisplayList.isEmpty()) {
-            // Display a "No events found" message
             Label noEventsLabel = new Label("No events found.");
             noEventsLabel.getStyleClass().add("no-events-label");
             eventGrid.add(noEventsLabel, 0, 0);

@@ -1,33 +1,141 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.SVGPath?>
 
-<VBox alignment="CENTER" spacing="20" styleClass="form-section" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EventRegistrationListController" stylesheets="/event_admin.css">
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
-    <Label text="Event Registration Index" styleClass="title"/>
-    <HBox spacing="10" alignment="CENTER">
-        <Button fx:id="createButton" text="Create New" styleClass="submit-btn"/>
-        <Button fx:id="backToEventsButton" text="Back to Events" styleClass="reset-btn"/>
-    </HBox>
-    <TableView fx:id="registrationsTable" styleClass="table-view">
-        <columns>
-            <TableColumn fx:id="idColumn" text="Id" prefWidth="100"/>
-            <TableColumn fx:id="eventIdColumn" text="Event ID" prefWidth="100"/>
-            <TableColumn fx:id="userIdColumn" text="User ID" prefWidth="100"/>
-            <TableColumn fx:id="statusColumn" text="Status" prefWidth="120"/>
-            <TableColumn fx:id="registrationDateColumn" text="Registration Date" prefWidth="150"/>
-            <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="200"/>
-        </columns>
-        <placeholder>
-            <Label text="No records found" styleClass="value-label"/>
-        </placeholder>
-    </TableView>
-</VBox>
+<?import java.lang.String?>
+<StackPane fx:id="root" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: white; -fx-border-color: -light-gray-2; -fx-border-width: 0 1 0 0;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EventRegistrationListController">
+    <stylesheets>
+        <URL value="@/colors.css" />
+        <URL value="@/drawer.css" />
+        <URL value="@/dash.css" />
+        <URL value="@/skeleton.css" />
+        <URL value="@/bootstrap.css" />
+        <URL value="@/immersive_scroll.css" />
+        <URL value="@/typographic.css" />
+        <URL value="@/shapes.css" />
+    </stylesheets>
+    <children>
+        <AnchorPane prefHeight="600.0" prefWidth="1000.0">
+            <children>
+                <!-- Header with Back Button, Delete Button, Search Field, and Title -->
+                <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                    <children>
+                        <Button fx:id="backToEventsButton" contentDisplay="GRAPHIC_ONLY" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Back to Events">
+                            <styleClass>
+                                <String fx:value="round" />
+                                <String fx:value="btn-warning" />
+                            </styleClass>
+                            <graphic>
+                                <SVGPath content="M19 11H7.83l4.88-4.88c.39-.39.39-1.02 0-1.41-.39-.39-1.02-.39-1.41 0l-6.59 6.59c-.39.39-.39 1.02 0 1.41l6.59 6.59c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" fill="WHITE" mouseTransparent="true" style="-fx-fill: white;" />
+                            </graphic>
+                            <tooltip>
+                                <Tooltip text="Back to Events" />
+                            </tooltip>
+                        </Button>
+                        <Button fx:id="deleteButton" contentDisplay="GRAPHIC_ONLY" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Delete Registration">
+                            <styleClass>
+                                <String fx:value="round" />
+                                <String fx:value="btn-warning" />
+                            </styleClass>
+                            <graphic>
+                                <SVGPath content="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="WHITE" mouseTransparent="true" style="-fx-fill: white;" />
+                            </graphic>
+                            <tooltip>
+                                <Tooltip text="Delete Registration" />
+                            </tooltip>
+                        </Button>
+                        <TextField fx:id="searchField" prefHeight="40.0" promptText="Search" HBox.hgrow="ALWAYS">
+                            <styleClass>
+                                <String fx:value="field-outlined" />
+                                <String fx:value="clearable-field" />
+                            </styleClass>
+                            <padding>
+                                <Insets left="15.0" />
+                            </padding>
+                            <HBox.margin>
+                                <Insets left="10.0" right="10.0" />
+                            </HBox.margin>
+                        </TextField>
+                        <Label text="Event Registration Index" styleClass="title">
+                            <HBox.margin>
+                                <Insets left="10.0" />
+                            </HBox.margin>
+                        </Label>
+                    </children>
+                    <padding>
+                        <Insets left="10.0" right="10.0" />
+                    </padding>
+                </HBox>
+
+                <!-- TableView -->
+                <TableView fx:id="registrationsTable" layoutX="30.0" layoutY="70.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="70.0">
+                    <columns>
+                        <TableColumn fx:id="eventIdColumn" prefWidth="100.0" text="Event ID">
+                            <graphic>
+                                <Group>
+                                    <children>
+                                        <SVGPath content="M512 64H368V32c0-17.7-14.3-32-32-32h-96c-17.7 0-32 14.3-32 32v32H64C28.7 64 0 92.7 0 128v320c0 35.3 28.7 64 64 64h448c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64zM256 48h64v64h-64V48zm272 400c0 8.8-7.2 16-16 16H399.2c.2-1.1.8-2.1.8-3.2v-19.2c0-31.8-30.1-57.6-67.2-57.6-10.8 0-18.7 8-44.8 8-26.9 0-33.4-8-44.8-8-37.1 0-67.2 25.8-67.2 57.6v19.2c0 1.1.5 2.1.8 3.2H64c-8.8 0-16-7.2-16-16V128c0-8.8 7.2-16 16-16h144v48h160v-48h144c8.8 0 16 7.2 16 16v320zM288 224c-35.3 0-64 28.7-64 64s28.7 64 64 64 64-28.7 64-64-28.7-64-64-64z" scaleX="0.03" scaleY="0.03" style="-fx-fill: -dark-gray;" />
+                                    </children>
+                                </Group>
+                            </graphic>
+                        </TableColumn>
+                        <TableColumn fx:id="userIdColumn" prefWidth="100.0" text="User ID">
+                            <graphic>
+                                <Group>
+                                    <children>
+                                        <SVGPath content="M512 64H368V32c0-17.7-14.3-32-32-32h-96c-17.7 0-32 14.3-32 32v32H64C28.7 64 0 92.7 0 128v320c0 35.3 28.7 64 64 64h448c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64zM256 48h64v64h-64V48zm272 400c0 8.8-7.2 16-16 16H399.2c.2-1.1.8-2.1.8-3.2v-19.2c0-31.8-30.1-57.6-67.2-57.6-10.8 0-18.7 8-44.8 8-26.9 0-33.4-8-44.8-8-37.1 0-67.2 25.8-67.2 57.6v19.2c0 1.1.5 2.1.8 3.2H64c-8.8 0-16-7.2-16-16V128c0-8.8 7.2-16 16-16h144v48h160v-48h144c8.8 0 16 7.2 16 16v320zM288 224c-35.3 0-64 28.7-64 64s28.7 64 64 64 64-28.7 64-64-28.7-64-64-64z" scaleX="0.03" scaleY="0.03" style="-fx-fill: -dark-gray;" />
+                                    </children>
+                                </Group>
+                            </graphic>
+                        </TableColumn>
+                        <TableColumn fx:id="statusColumn" prefWidth="120.0" text="Status">
+                            <graphic>
+                                <Group>
+                                    <children>
+                                        <SVGPath content="M512 64H368V32c0-17.7-14.3-32-32-32h-96c-17.7 0-32 14.3-32 32v32H64C28.7 64 0 92.7 0 128v320c0 35.3 28.7 64 64 64h448c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64zM256 48h64v64h-64V48zm272 400c0 8.8-7.2 16-16 16H399.2c.2-1.1.8-2.1.8-3.2v-19.2c0-31.8-30.1-57.6-67.2-57.6-10.8 0-18.7 8-44.8 8-26.9 0-33.4-8-44.8-8-37.1 0-67.2 25.8-67.2 57.6v19.2c0 1.1.5 2.1.8 3.2H64c-8.8 0-16-7.2-16-16V128c0-8.8 7.2-16 16-16h144v48h160v-48h144c8.8 0 16 7.2 16 16v320zM288 224c-35.3 0-64 28.7-64 64s28.7 64 64 64 64-28.7 64-64-28.7-64-64-64z" scaleX="0.03" scaleY="0.03" style="-fx-fill: -dark-gray;" />
+                                    </children>
+                                </Group>
+                            </graphic>
+                        </TableColumn>
+                        <TableColumn fx:id="registrationDateColumn" prefWidth="150.0" text="Registration Date">
+                            <graphic>
+                                <Group>
+                                    <children>
+                                        <SVGPath content="M512 64H368V32c0-17.7-14.3-32-32-32h-96c-17.7 0-32 14.3-32 32v32H64C28.7 64 0 92.7 0 128v320c0 35.3 28.7 64 64 64h448c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64zM256 48h64v64h-64V48zm272 400c0 8.8-7.2 16-16 16H399.2c.2-1.1.8-2.1.8-3.2v-19.2c0-31.8-30.1-57.6-67.2-57.6-10.8 0-18.7 8-44.8 8-26.9 0-33.4-8-44.8-8-37.1 0-67.2 25.8-67.2 57.6v19.2c0 1.1.5 2.1.8 3.2H64c-8.8 0-16-7.2-16-16V128c0-8.8 7.2-16 16-16h144v48h160v-48h144c8.8 0 16 7.2 16 16v320zM288 224c-35.3 0-64 28.7-64 64s28.7 64 64 64 64-28.7 64-64-28.7-64-64-64z" scaleX="0.03" scaleY="0.03" style="-fx-fill: -dark-gray;" />
+                                    </children>
+                                </Group>
+                            </graphic>
+                        </TableColumn>
+                        <TableColumn fx:id="actionsColumn" minWidth="100.0" prefWidth="120.0" styleClass="actions" text="Actions">
+                            <graphic>
+                                <Group>
+                                    <children>
+                                        <SVGPath content="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z" scaleX="0.03" scaleY="0.03" style="-fx-fill: -dark-gray;" />
+                                    </children>
+                                </Group>
+                            </graphic>
+                        </TableColumn>
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                    <placeholder>
+                        <Label text="No records found" styleClass="value-label" />
+                    </placeholder>
+                </TableView>
+            </children>
+        </AnchorPane>
+    </children>
+</StackPane>

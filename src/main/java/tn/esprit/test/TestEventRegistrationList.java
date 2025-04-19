@@ -26,7 +26,7 @@ public class TestEventRegistrationList extends Application {
         service.add(registration);
 
         // Load FXML
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NewEventRegistration.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EventRegistrationList.fxml"));
         Scene scene = new Scene(loader.load());
         stage.setScene(scene);
         stage.setTitle("Event Registration List");
