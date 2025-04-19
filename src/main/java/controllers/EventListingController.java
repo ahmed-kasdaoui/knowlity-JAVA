@@ -4,17 +4,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.text.TextAlignment;
 import tn.esprit.models.Events;
 import tn.esprit.services.ServiceEvents;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class EventListingController {
 
@@ -31,7 +33,7 @@ public class EventListingController {
     @FXML
     private Button showRecommended;
     @FXML
-    private GridPane eventGrid;
+    private VBox eventContainer;
     @FXML
     private Button moreButton;
 
@@ -41,9 +43,17 @@ public class EventListingController {
     private ServiceEvents serviceEvents = new ServiceEvents();
     private int displayedCount = 0;
     private final int BATCH_SIZE = 4;
-    private final int COLUMNS_PER_ROW = 4;
+
+    // Color themes for cards
+    private final List<String> cardThemes = Arrays.asList("blue", "red", "green", "yellow");
 
     public void initialize() {
+        // Set the container to light theme
+        eventContainer.getStyleClass().add("light");
+
+        // Set the root to light theme
+        root.getStyleClass().add("light-theme");
+
         // Fetch all events from the database
         try {
             events.addAll(serviceEvents.getAll());
@@ -104,7 +114,7 @@ public class EventListingController {
 
     private void displayEventsBatch(boolean clearList) {
         if (clearList) {
-            eventGrid.getChildren().clear();
+            eventContainer.getChildren().clear();
             displayedCount = 0;
         }
 
@@ -114,14 +124,17 @@ public class EventListingController {
         if (currentDisplayList.isEmpty()) {
             Label noEventsLabel = new Label("No events found.");
             noEventsLabel.getStyleClass().add("no-events-label");
-            eventGrid.add(noEventsLabel, 0, 0);
+            eventContainer.getChildren().add(noEventsLabel);
         } else {
             for (int i = startIndex; i < endIndex; i++) {
                 Events event = currentDisplayList.get(i);
-                VBox card = createEventCard(event);
-                int row = i / COLUMNS_PER_ROW;
-                int col = i % COLUMNS_PER_ROW;
-                eventGrid.add(card, col, row);
+
+                // Alternate the card themes
+                String theme = cardThemes.get(i % cardThemes.size());
+
+                // Create a postcard with alternating directions based on even/odd index
+                HBox card = createPostcard(event, theme, i % 2 == 0);
+                eventContainer.getChildren().add(card);
             }
         }
 
@@ -133,62 +146,120 @@ public class EventListingController {
         displayEventsBatch(false);
     }
 
-    private VBox createEventCard(Events event) {
-        VBox card = new VBox(5);
-        card.getStyleClass().add("event-card");
+    private HBox createPostcard(Events event, String colorTheme, boolean isLeftToRight) {
+        HBox postcard = new HBox();
+        postcard.getStyleClass().addAll("postcard", "light", colorTheme);
+        postcard.getStyleClass().add("postcard-bg-" + colorTheme);
+        // Create image section
+        ImageView imageView = new ImageView();
+        imageView.setFitWidth(300);
+        imageView.setFitHeight(180);
+        imageView.setPreserveRatio(true);
+        imageView.getStyleClass().add("postcard__img");
 
-        // Load image, fallback to placeholder if null or invalid
-        Image img;
+        // Load image
         String imagePath = event.getImage() != null ? event.getImage().trim() : "/images/placeholder.png";
         if (!imagePath.startsWith("/images/") && !imagePath.equals("/images/placeholder.png")) {
             imagePath = "/images/" + imagePath;
-            System.out.println("Adjusted image path to: " + imagePath + " for event: " + event.getTitle());
         }
+
         try {
-            System.out.println("Attempting to load image: " + imagePath + " for event: " + event.getTitle());
             java.io.InputStream stream = getClass().getResourceAsStream(imagePath);
             if (stream == null) {
-                System.err.println("Image not found: " + imagePath);
                 imagePath = "/images/placeholder.png";
                 stream = getClass().getResourceAsStream(imagePath);
                 if (stream == null) {
-                    System.err.println("Placeholder image not found: " + imagePath);
-                    img = new Image("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=");
+                    imageView.setImage(new Image("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="));
                 } else {
-                    img = new Image(stream);
+                    imageView.setImage(new Image(stream));
                 }
             } else {
-                img = new Image(stream);
+                imageView.setImage(new Image(stream));
             }
         } catch (Exception e) {
-            System.err.println("Error loading image: " + imagePath + " for event: " + event.getTitle() + ". Error: " + e.getMessage());
-            img = new Image(getClass().getResourceAsStream("/images/placeholder.png"));
+            System.err.println("Error loading image: " + e.getMessage());
+            try {
+                imageView.setImage(new Image(getClass().getResourceAsStream("/images/placeholder.png")));
+            } catch (Exception ex) {
+                imageView.setImage(new Image("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="));
+            }
         }
 
-        ImageView imageView = new ImageView(img);
-        imageView.setFitWidth(200);
-        imageView.setFitHeight(150);
-        imageView.setPreserveRatio(true);
+        // Create clickable image container
+        StackPane imageContainer = new StackPane(imageView);
+        imageContainer.getStyleClass().add("postcard__img_link");
 
-        Label title = new Label(event.getTitle() != null ? event.getTitle() : "Untitled Event");
-        title.getStyleClass().add("event-title");
+        // Create content section
+        VBox textContent = new VBox(10);
+        textContent.getStyleClass().addAll("postcard__text", "t-dark");
+        textContent.setPadding(new Insets(30, 35, 30, 35));
+        HBox.setHgrow(textContent, Priority.ALWAYS);
 
-        Label date = new Label(event.getStartDate() != null ? event.getStartDate().toString() : "No Date");
-        date.getStyleClass().add("event-date");
+        // Event Title
+        Hyperlink title = new Hyperlink(event.getTitle() != null ? event.getTitle() : "Untitled Event");
+        title.getStyleClass().addAll("postcard__title", colorTheme);
+        title.setWrapText(true);
+        title.setOnAction(e -> handleReserve(event));
 
-        Label category = new Label("Category: " + (event.getCategory() != null ? event.getCategory() : "None"));
-        category.getStyleClass().add("event-category");
+        // Event Date with icon
+        HBox dateBox = new HBox(5);
+        dateBox.getStyleClass().add("postcard__subtitle");
+        dateBox.setAlignment(Pos.CENTER_LEFT);
 
-        Label description = new Label(event.getDescription() != null ? event.getDescription() : "No Description");
-        description.getStyleClass().add("event-description");
+        Label calendarIcon = new Label("\uf073"); // Font Awesome calendar icon
+        calendarIcon.getStyleClass().add("fas");
+
+        Label dateText = new Label(event.getStartDate() != null ?
+                event.getStartDate().toString() : "Fri, Mar 14th 2025");
+        dateText.getStyleClass().add("small");
+
+        dateBox.getChildren().addAll(calendarIcon, dateText);
+
+        // Decorative bar
+        Region bar = new Region();
+        bar.getStyleClass().add("postcard__bar");
+        bar.setPrefSize(50, 10);
+
+        // Event Description
+        Label description = new Label(event.getDescription() != null ?
+                event.getDescription() :
+                "We are proud to announce that we are organizing a 2-day hybrid workshop on Explainable AI (XAI), bringing together students, experts, researchers, and professionals to explore the latest advancements in making AI systems more transparent, interpretable, a");
+        description.getStyleClass().add("postcard__preview-txt");
         description.setWrapText(true);
+        description.setTextAlignment(TextAlignment.JUSTIFY);
 
-        Button reserve = new Button("Reserve");
-        reserve.getStyleClass().add("reserve-button");
-        reserve.setOnAction(e -> handleReserve(event));
+        // Tag items
+        HBox tagBox = new HBox(10);
+        tagBox.getStyleClass().add("postcard__tagbox");
+        tagBox.setAlignment(Pos.CENTER_LEFT);
 
-        card.getChildren().addAll(imageView, title, date, category, description, reserve);
-        return card;
+        // Category tag
+        Label categoryTag = new Label(event.getCategory() != null ?
+                event.getCategory() : "Conference");
+        categoryTag.getStyleClass().add("tag__item");
+
+        // Free tag
+        Label freeTag = new Label("FREE");
+        freeTag.getStyleClass().add("tag__item");
+
+        // Reserve button
+        Hyperlink reserveButton = new Hyperlink("Reserve");
+        reserveButton.getStyleClass().addAll("tag__item", "play", colorTheme);
+        reserveButton.setOnAction(e -> handleReserve(event));
+
+        tagBox.getChildren().addAll(categoryTag, freeTag, reserveButton);
+
+        // Add all elements to the text content
+        textContent.getChildren().addAll(title, dateBox, bar, description, tagBox);
+
+        // Add components to postcard based on direction
+        if (isLeftToRight) {
+            postcard.getChildren().addAll(imageContainer, textContent);
+        } else {
+            postcard.getChildren().addAll(textContent, imageContainer);
+        }
+
+        return postcard;
     }
 
     private void handleReserve(Events event) {

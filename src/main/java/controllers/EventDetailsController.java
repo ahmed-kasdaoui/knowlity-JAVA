@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
+import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 import javafx.util.Duration;
 import tn.esprit.models.Events;
@@ -30,7 +31,7 @@ public class EventDetailsController {
     @FXML
     private Label dateLocationLabel;
     @FXML
-    private Label descriptionLabel;
+    private Text descriptionText;
     @FXML
     private Label LocationLabel;
     @FXML
@@ -68,9 +69,8 @@ public class EventDetailsController {
     }
 
     public void initialize() {
-        // Initialize UI components that don't depend on event data
         reserveButton.setOnAction(e -> handleReserve());
-        backButton.setOnAction(e -> handleBack()); // Set up the back button handler
+        backButton.setOnAction(e -> handleBack());
         mapView.setVisible(true);
     }
 
@@ -80,7 +80,6 @@ public class EventDetailsController {
             return;
         }
 
-        // Fetch event from service
         Events event = null;
         try {
             event = serviceEvents.getById(eventId);
@@ -93,29 +92,26 @@ public class EventDetailsController {
             return;
         }
 
-        // Date formatter for readable output
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
 
-        // Populate UI
         titleLabel.setText(event.getTitle());
-        categoryLabel.setText("Category: Event"); // Placeholder; update Events model to include category
+        categoryLabel.setText("Category: Event");
         dateLocationLabel.setText(event.getStartDate() != null ? event.getStartDate().format(formatter) + " | " + event.getLocation() : "TBD | " + event.getLocation());
-        descriptionLabel.setText(event.getDescription());
+        descriptionText.setText(event.getDescription()); // Updated
         LocationLabel.setText(event.getLocation());
         maxParticipantsLabel.setText(event.getMaxParticipants() != null ? event.getMaxParticipants() + "+ Seats" : "N/A");
         seatsAvailableLabel.setText(event.getSeatsAvailable() != null ? event.getSeatsAvailable() + " Tickets" : "N/A");
         durationLabel.setText(calculateDuration(event.getStartDate(), event.getEndDate()));
-        userNameLabel.setText("Organizer Name"); // Placeholder; update Events model to include organizer name
+        userNameLabel.setText("Organizer Name");
         loadImage(eventImage, event.getImage());
-        loadImage(organizerImage, null); // No organizer image; use placeholder
+        loadImage(organizerImage, null);
 
-        // Initialize timer
         LocalDateTime startDate = event.getStartDate();
         timer = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateTimer(startDate)));
         timer.setCycleCount(Timeline.INDEFINITE);
         timer.play();
 
-        // TODO: Load map (e.g., Google Maps URL)
+        // TODO: Load map
         // mapView.getEngine().load("https://maps.google.com/maps?q=" + URLEncoder.encode(event.getLocation(), "UTF-8") + "&t=&z=13&ie=UTF8&iwloc=&output=embed");
     }
 
