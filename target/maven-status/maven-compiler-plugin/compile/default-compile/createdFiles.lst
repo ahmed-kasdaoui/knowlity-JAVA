@@ -17,4 +17,3 @@ controllers\EditEventController.class
 controllers\ShowEventRegistrationController.class
 controllers\EditEventRegistrationController.class
 tn\esprit\interfaces\EventControllerInterface.class
-controllers\EventAdminFormController.class

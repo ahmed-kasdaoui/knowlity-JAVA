@@ -2,12 +2,9 @@ package controllers;
 
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.*;
+import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import tn.esprit.models.Events;
 import tn.esprit.services.ServiceEvents;
@@ -23,6 +20,7 @@ import java.time.LocalTime;
 
 public class EventFormController {
 
+    public Button backToEventsButton;
     @FXML
     private TextField titleField;
     @FXML
@@ -102,18 +100,16 @@ public class EventFormController {
 
     private final ServiceEvents serviceEvents;
     private String imagePath;
-    private File selectedImageFile; // Added to store the full file path temporarily
+    private File selectedImageFile;
 
     public EventFormController() {
         this.serviceEvents = new ServiceEvents();
     }
 
     public void initialize() {
-        // Populate ComboBoxes
         typeCombo.getItems().addAll("On-Ligne", "On-Site");
         categoryCombo.getItems().addAll("Workshop", "Hackathon", "Sports", "Networking", "Cultural");
 
-        // Bind floating labels
         bindFloatingLabel(titleField, titleLabel);
         bindFloatingLabel(descriptionField, descriptionLabel);
         bindFloatingLabel(maxParticipantsField, maxParticipantsLabel);
@@ -126,7 +122,6 @@ public class EventFormController {
         bindFloatingLabel(typeCombo, typeLabel);
         bindFloatingLabel(categoryCombo, categoryLabel);
 
-        // Real-time validation
         titleField.textProperty().addListener((obs, old, newValue) -> validateTitle());
         descriptionField.textProperty().addListener((obs, old, newValue) -> validateDescription());
         startDatePicker.valueProperty().addListener((obs, old, newValue) -> validateStartDate());
@@ -139,10 +134,10 @@ public class EventFormController {
         latitudeField.textProperty().addListener((obs, old, newValue) -> validateLatitude());
         longitudeField.textProperty().addListener((obs, old, newValue) -> validateLongitude());
 
-        // Button actions
         imageButton.setOnAction(e -> chooseImage());
         saveButton.setOnAction(e -> saveEvent());
         resetButton.setOnAction(e -> resetForm());
+        backToEventsButton.setOnAction(event -> navigateToEvents());
     }
 
     private void bindFloatingLabel(TextField field, Label label) {
@@ -182,7 +177,7 @@ public class EventFormController {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
         File file = fileChooser.showOpenDialog(imageButton.getScene().getWindow());
         if (file != null) {
-            selectedImageFile = file; // Store the full file path
+            selectedImageFile = file;
             imageLabel.setText(file.getName());
             validateImage();
         }
@@ -289,7 +284,7 @@ public class EventFormController {
             }
             maxParticipantsErrorLabel.setVisible(false);
             maxParticipantsErrorLabel.setManaged(false);
-            validateSeatsAvailable(); // Re-validate seats
+            validateSeatsAvailable();
             return true;
         } catch (NumberFormatException e) {
             maxParticipantsErrorLabel.setText("Must be a number");
@@ -326,7 +321,6 @@ public class EventFormController {
                         return false;
                     }
                 } catch (NumberFormatException ignored) {
-                    // Max participants invalid; skip this check
                 }
             }
             seatsAvailableErrorLabel.setVisible(false);
@@ -419,7 +413,7 @@ public class EventFormController {
     }
 
     private boolean validateImage() {
-        if (selectedImageFile == null) { // Updated to check selectedImageFile
+        if (selectedImageFile == null) {
             imageErrorLabel.setText("Image is required");
             imageErrorLabel.setVisible(true);
             imageErrorLabel.setManaged(true);
@@ -451,26 +445,21 @@ public class EventFormController {
         }
 
         try {
-            // Copy the image to the /images directory
-            String imagesDirPath = "src/main/resources/images"; // Adjust path as needed
+            String imagesDirPath = "src/main/resources/images";
             File imagesDir = new File(imagesDirPath);
             if (!imagesDir.exists()) {
-                imagesDir.mkdirs(); // Create the directory if it doesn't exist
+                imagesDir.mkdirs();
             }
 
-            // Generate a unique filename to avoid overwriting
             String originalFileName = selectedImageFile.getName();
             String fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'));
             String uniqueFileName = System.currentTimeMillis() + "_" + originalFileName;
             Path destinationPath = Paths.get(imagesDirPath, uniqueFileName);
 
-            // Copy the file to the /images directory
             Files.copy(selectedImageFile.toPath(), destinationPath);
 
-            // Update imagePath to the new filename (relative path or just the filename)
             imagePath = uniqueFileName;
 
-            // Create Events object
             Events event = new Events();
             event.setTitle(titleField.getText());
             event.setDescription(descriptionField.getText());
@@ -484,20 +473,16 @@ public class EventFormController {
             event.setLatitude(Float.parseFloat(latitudeField.getText()));
             event.setLongitude(Float.parseFloat(longitudeField.getText()));
             event.setImage(imagePath);
-            event.setOrganizerId(1); // Default; replace with user context
+            event.setOrganizerId(1);
 
-            // Save event
             serviceEvents.add(event);
-            imageLabel.setText("Event saved successfully");
-            imageLabel.setStyle("-fx-text-fill: #5543ca;");
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Event saved successfully!");
             resetForm();
         } catch (IOException e) {
-            imageLabel.setText("Error saving image: " + e.getMessage());
-            imageLabel.setStyle("-fx-text-fill: #f4524d;");
+            showAlert(Alert.AlertType.ERROR, "Error", "Error saving image: " + e.getMessage());
             e.printStackTrace();
         } catch (Exception e) {
-            imageLabel.setText("Error saving event: " + e.getMessage());
-            imageLabel.setStyle("-fx-text-fill: #f4524d;");
+            showAlert(Alert.AlertType.ERROR, "Error", "Error saving event: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -515,11 +500,9 @@ public class EventFormController {
         latitudeField.clear();
         longitudeField.clear();
         imagePath = null;
-        selectedImageFile = null; // Reset the selected file
+        selectedImageFile = null;
         imageLabel.setText("No file chosen");
-        imageLabel.setStyle("-fx-text-fill: #5543ca;");
 
-        // Clear error labels
         titleErrorLabel.setVisible(false);
         titleErrorLabel.setManaged(false);
         descriptionErrorLabel.setVisible(false);
@@ -544,5 +527,23 @@ public class EventFormController {
         longitudeErrorLabel.setManaged(false);
         imageErrorLabel.setVisible(false);
         imageErrorLabel.setManaged(false);
+    }
+
+    private void navigateToEvents() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EventList.fxml"));
+            backToEventsButton.getScene().setRoot(loader.load());
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Navigation Error", "Failed to load events list: " + e.getMessage());
+        }
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        alert.showAndWait();
     }
 }
