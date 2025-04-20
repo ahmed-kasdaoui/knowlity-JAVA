@@ -27,6 +27,94 @@
     font-family: 'Segoe UI', Arial, sans-serif;
 }
 
+/* Role Selection Screen */
+.role-selection-container {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    background-color: rgba(255, 255, 255, 0.95);
+    -fx-background-radius: 20;
+    border-radius: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 4);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    -fx-max-width: 800px;
+    max-width: 800px;
+    -fx-min-height: 600px;
+    min-height: 600px;
+}
+
+.welcome-text {
+    -fx-font-size: 36px;
+    font-size: 36px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+    -fx-fill: #2C3E50;
+    fill: #2C3E50;
+    color: #2C3E50;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 0, 1);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.select-role-text {
+    -fx-font-size: 20px;
+    font-size: 20px;
+    -fx-fill: #7F8C8D;
+    fill: #7F8C8D;
+    color: #7F8C8D;
+    -fx-font-weight: normal;
+    font-weight: normal;
+}
+
+.role-card {
+    -fx-background-color: white;
+    background-color: white;
+    -fx-background-radius: 15;
+    border-radius: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    -fx-min-width: 250px;
+    min-width: 250px;
+    -fx-max-width: 250px;
+    max-width: 250px;
+    -fx-cursor: hand;
+    cursor: pointer;
+    -fx-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+.role-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 12, 0, 0, 4);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    -fx-translate-y: -5;
+    transform: translateY(-5px);
+    -fx-background-color: linear-gradient(to bottom right, #ECF0F1, #FFFFFF);
+    background-color: #ECF0F1;
+    background-image: linear-gradient(to bottom right, #ECF0F1, #FFFFFF);
+}
+
+.role-icon {
+    -fx-font-size: 48px;
+    font-size: 48px;
+}
+
+.role-title {
+    -fx-font-size: 24px;
+    font-size: 24px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+    -fx-fill: #2C3E50;
+    fill: #2C3E50;
+    color: #2C3E50;
+}
+
+.role-description {
+    -fx-font-size: 14px;
+    font-size: 14px;
+    -fx-fill: #7F8C8D;
+    fill: #7F8C8D;
+    color: #7F8C8D;
+    -fx-text-alignment: center;
+    text-align: center;
+}
+
 /* Header Bar */
 .header-bar {
     -fx-background-color: -background-light;
@@ -71,6 +159,46 @@
     cursor: pointer;
     -fx-transition: all -transition-speed ease-in-out;
     transition: all 0.2s ease-in-out;
+}
+
+.edit-button {
+    -fx-background-color: #2ECC71;
+    background-color: #2ECC71;
+    -fx-text-fill: white;
+    color: white;
+    -fx-min-width: 40px;
+    min-width: 40px;
+    -fx-min-height: 40px;
+    min-height: 40px;
+    -fx-padding: 8;
+    padding: 8px;
+}
+
+.edit-button:hover {
+    -fx-background-color: #27AE60;
+    background-color: #27AE60;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 2);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.delete-button {
+    -fx-background-color: #E74C3C;
+    background-color: #E74C3C;
+    -fx-text-fill: white;
+    color: white;
+    -fx-min-width: 40px;
+    min-width: 40px;
+    -fx-min-height: 40px;
+    min-height: 40px;
+    -fx-padding: 8;
+    padding: 8px;
+}
+
+.delete-button:hover {
+    -fx-background-color: #C0392B;
+    background-color: #C0392B;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 2);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .new-blog-button {

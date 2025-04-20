@@ -1,0 +1,120 @@
+.root {
+    -fx-background-color: linear-gradient(to right, #1CD8D2, #93EDC7);
+    background-color: #1CD8D2;
+}
+
+.scroll-pane {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+    background: transparent;
+    background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+    background-color: transparent;
+}
+
+.search-box {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 5 15 5 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 2);
+    background-color: white;
+    padding: 5px 15px;
+}
+
+.blog-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 2);
+    -fx-padding: 15;
+    background-color: white;
+    padding: 15px;
+}
+
+.blog-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.blog-description {
+    -fx-font-size: 14px;
+    -fx-wrap-text: true;
+    font-size: 14px;
+}
+
+/* Action Buttons */
+.action-button {
+    -fx-background-radius: 24;
+    border-radius: 24px;
+    -fx-padding: 8 20;
+    padding: 8px 20px;
+    -fx-font-size: 14;
+    font-size: 14px;
+    -fx-cursor: hand;
+    cursor: pointer;
+}
+
+.edit-button {
+    -fx-background-color: #2ECC71;
+    background-color: #2ECC71;
+    -fx-text-fill: white;
+    color: white;
+    -fx-min-width: 40px;
+    min-width: 40px;
+    -fx-min-height: 40px;
+    min-height: 40px;
+    -fx-padding: 8;
+    padding: 8px;
+}
+
+.edit-button:hover {
+    -fx-background-color: #27AE60;
+    background-color: #27AE60;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 2);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.delete-button {
+    -fx-background-color: #E74C3C;
+    background-color: #E74C3C;
+    -fx-text-fill: white;
+    color: white;
+    -fx-min-width: 40px;
+    min-width: 40px;
+    -fx-min-height: 40px;
+    min-height: 40px;
+    -fx-padding: 8;
+    padding: 8px;
+}
+
+.delete-button:hover {
+    -fx-background-color: #C0392B;
+    background-color: #C0392B;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 2);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.action-buttons {
+    -fx-spacing: 10;
+    -fx-padding: 10 0 0 0;
+    padding: 10px 0 0 0;
+}
+
+.header {
+    -fx-padding: 20;
+    -fx-spacing: 10;
+    -fx-alignment: center;
+    padding: 20px;
+}
+
+.page-title {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    font-size: 32px;
+    font-weight: bold;
+}

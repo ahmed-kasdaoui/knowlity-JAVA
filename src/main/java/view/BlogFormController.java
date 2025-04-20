@@ -62,6 +62,7 @@ public class BlogFormController {
     private Label titleErrorLabel;
     private Label contentErrorLabel;
     private Label creatorErrorLabel;
+    private Runnable onSaveCallback;
     
     @FXML
     private void initialize() {
@@ -98,6 +99,10 @@ public class BlogFormController {
         this.dialogStage = dialogStage;
     }
     
+    public void setOnSaveCallback(Runnable callback) {
+        this.onSaveCallback = callback;
+    }
+
     public void setBlog(Blog blog) {
         this.blog = blog;
         
@@ -258,8 +263,13 @@ public class BlogFormController {
                 blogService.update(blog);
             }
             
-            dialogStage.close();
+            // Run the callback before closing
+            if (onSaveCallback != null) {
+                onSaveCallback.run();
+            }
             
+            // Close the dialog
+            dialogStage.close();
         } catch (Exception e) {
             showValidationDialog("Erreur", "Impossible de sauvegarder le blog: " + e.getMessage());
         }

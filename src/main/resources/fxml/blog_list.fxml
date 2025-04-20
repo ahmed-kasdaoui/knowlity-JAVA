@@ -1,56 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
-      fx:controller="view.BlogListController" 
-      stylesheets="@../styles/blog.css"
-      styleClass="blog-container">
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="view.BlogListController"
+      stylesheets="/styles/blog-list.css"
+      spacing="20">
 
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
+    <VBox styleClass="header" alignment="CENTER">
+        <Label text="Dernières Actualités" styleClass="page-title"/>
+        <HBox spacing="10" alignment="CENTER">
+            <TextField fx:id="searchField" promptText="Rechercher un article..." styleClass="search-box" prefWidth="300"/>
+            <Button fx:id="newBlogButton" text="Nouveau Blog" styleClass="action-button">
+                <graphic>
+                    <FontIcon iconLiteral="fas-plus"/>
+                </graphic>
+            </Button>
+            <Button fx:id="logoutButton" text="Déconnexion" styleClass="action-button">
+                <graphic>
+                    <FontIcon iconLiteral="fas-sign-out-alt"/>
+                </graphic>
+            </Button>
+        </HBox>
+    </VBox>
 
-    <HBox alignment="CENTER" spacing="20" styleClass="header-bar">
-        <TextField fx:id="searchField" promptText="Rechercher un blog..." styleClass="search-field"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <Button fx:id="newBlogButton" styleClass="action-button, new-blog-button" onAction="#handleNewBlog">
-            <graphic>
-                <HBox spacing="5" alignment="CENTER">
-                    <FontIcon iconLiteral="fas-plus" iconSize="14"/>
-                    <Text text="Nouveau Blog" styleClass="button-text"/>
-                </HBox>
-            </graphic>
-        </Button>
-        
-        <Button fx:id="logoutButton" styleClass="action-button, logout-button" onAction="#handleLogout">
-            <graphic>
-                <HBox spacing="5" alignment="CENTER">
-                    <FontIcon iconLiteral="fas-sign-out-alt" iconSize="14"/>
-                    <Text text="Déconnexion" styleClass="button-text"/>
-                </HBox>
-            </graphic>
-        </Button>
-    </HBox>
-
-    <ScrollPane fx:id="scrollPane" fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="blog-scroll">
-        <content>
-            <GridPane fx:id="blogContainer" alignment="CENTER" hgap="20" vgap="20" style="-fx-padding: 20;">
-                <columnConstraints>
-                    <ColumnConstraints hgrow="SOMETIMES" minWidth="300" prefWidth="300"/>
-                    <ColumnConstraints hgrow="SOMETIMES" minWidth="300" prefWidth="300"/>
-                </columnConstraints>
-            </GridPane>
-        </content>
+    <ScrollPane fx:id="scrollPane" fitToWidth="true" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+        <GridPane fx:id="blogContainer" hgap="20" vgap="20"/>
     </ScrollPane>
+
 </VBox>
