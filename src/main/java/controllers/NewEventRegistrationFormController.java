@@ -4,7 +4,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import tn.esprit.models.EventRegistration;
 import tn.esprit.models.Events;
@@ -12,15 +12,10 @@ import tn.esprit.services.ServiceEventRegistration;
 import tn.esprit.services.ServiceEvents;
 
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.regex.Pattern;
 
 public class NewEventRegistrationFormController {
 
-    @FXML
-    private HBox stepIndicator;
-    @FXML
-    private TabPane tabPane;
     @FXML
     private TextField nameField;
     @FXML
@@ -42,149 +37,205 @@ public class NewEventRegistrationFormController {
     @FXML
     private Label agreeTermsErrorLabel;
     @FXML
-    private Button prevButton;
+    private Button submitButton;
     @FXML
-    private Button nextButton;
+    private GridPane formGrid;
     @FXML
     private VBox successMessage;
 
     private final ServiceEventRegistration serviceEventRegistration;
     private Events event;
-    private int currentTab = 0;
+    private static final Pattern NAME_CITY_PATTERN = Pattern.compile("^[a-zA-Z\\s]*$");
 
     public NewEventRegistrationFormController() {
         this.serviceEventRegistration = new ServiceEventRegistration();
     }
 
+
     @FXML
     public void initialize() {
-        // Disable tab selection
-        tabPane.getSelectionModel().selectedIndexProperty().addListener((obs, old, newValue) -> {
-            if (newValue.intValue() != currentTab) {
-                tabPane.getSelectionModel().select(currentTab);
+        // Real-time validation for Name
+        nameField.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue.isEmpty()) {
+                nameErrorLabel.setText("Name is required");
+                nameErrorLabel.setVisible(true);
+                nameErrorLabel.setManaged(true);
+            } else if (!NAME_CITY_PATTERN.matcher(newValue).matches()) {
+                nameErrorLabel.setText("Name must contain only letters and spaces");
+                nameErrorLabel.setVisible(true);
+                nameErrorLabel.setManaged(true);
+            } else {
+                nameErrorLabel.setVisible(false);
+                nameErrorLabel.setManaged(false);
             }
         });
 
-        // Set up navigation buttons
-        prevButton.setOnAction(e -> nextPrev(-1));
-        nextButton.setOnAction(e -> nextPrev(1));
+        // Real-time validation for Coming From
+        comingFromField.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue.isEmpty()) {
+                comingFromErrorLabel.setText("City is required");
+                comingFromErrorLabel.setVisible(true);
+                comingFromErrorLabel.setManaged(true);
+            } else if (!NAME_CITY_PATTERN.matcher(newValue).matches()) {
+                comingFromErrorLabel.setText("City must contain only letters and spaces");
+                comingFromErrorLabel.setVisible(true);
+                comingFromErrorLabel.setManaged(true);
+            } else {
+                comingFromErrorLabel.setVisible(false);
+                comingFromErrorLabel.setManaged(false);
+            }
+        });
 
-        // Show initial tab
-        showTab(currentTab);
+        // Real-time validation for Places Reserved
+        placesReservedField.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue.isEmpty()) {
+                placesReservedErrorLabel.setText("Number of places is required");
+                placesReservedErrorLabel.setVisible(true);
+                placesReservedErrorLabel.setManaged(true);
+            } else {
+                try {
+                    int value = Integer.parseInt(newValue);
+                    if (value < 1 || value > 5) {
+                        placesReservedErrorLabel.setText("Must be between 1 and 5");
+                        placesReservedErrorLabel.setVisible(true);
+                        placesReservedErrorLabel.setManaged(true);
+                    } else {
+                        placesReservedErrorLabel.setVisible(false);
+                        placesReservedErrorLabel.setManaged(false);
+                    }
+                } catch (NumberFormatException e) {
+                    placesReservedErrorLabel.setText("Must be a number");
+                    placesReservedErrorLabel.setVisible(true);
+                    placesReservedErrorLabel.setManaged(true);
+                }
+            }
+        });
+
+        // Real-time validation for Agree Terms
+        agreeTermsCheckBox.selectedProperty().addListener((obs, oldValue, newValue) -> {
+            if (!newValue) {
+                agreeTermsErrorLabel.setText("You must agree to the terms and conditions");
+                agreeTermsErrorLabel.setVisible(true);
+                agreeTermsErrorLabel.setManaged(true);
+            } else {
+                agreeTermsErrorLabel.setVisible(false);
+                agreeTermsErrorLabel.setManaged(false);
+            }
+        });
+
+        // No validation for Disabled Parking
+        disabledParkingErrorLabel.setVisible(false);
+        disabledParkingErrorLabel.setManaged(false);
+
+        // Set up submit button
+        submitButton.setOnAction(e -> handleSubmit());
     }
 
     public void setEvent(Events event) {
         this.event = event;
     }
 
-    private void showTab(int n) {
-        currentTab = n;
-        tabPane.getSelectionModel().select(n);
-
-        // Update step indicator
-        for (int i = 0; i < stepIndicator.getChildren().size(); i++) {
-            Label step = (Label) stepIndicator.getChildren().get(i);
-            step.getStyleClass().remove("active");
-            if (i <= n) {
-                step.getStyleClass().add("active");
-            }
-            if (i < n) {
-                step.getStyleClass().add("finish");
-            }
-        }
-
-        // Update navigation buttons
-        prevButton.setVisible(n > 0);
-        if (n == tabPane.getTabs().size() - 1) {
-            nextButton.setText("Submit");
-        } else {
-            nextButton.setText("Next");
-        }
-    }
-
-    private void nextPrev(int n) {
-        if (n == 1 && !validateForm()) {
+    private void handleSubmit() {
+        if (!validateForm()) {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Validation Error");
+            errorAlert.setHeaderText(null);
+            errorAlert.setContentText("Please correct the errors in the form before submitting.");
+            errorAlert.showAndWait();
             return;
         }
 
-        int newTab = currentTab + n;
-        if (newTab >= tabPane.getTabs().size()) {
-            submitForm();
-            return;
-        }
-
-        if (newTab >= 0) {
-            showTab(newTab);
-        }
+        // Confirmation Alert
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Confirm Submission");
+        confirmAlert.setHeaderText(null);
+        confirmAlert.setContentText("Are you sure you want to submit the registration?");
+        confirmAlert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
+        confirmAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                submitForm();
+            }
+        });
     }
 
     private boolean validateForm() {
         boolean valid = true;
 
-        switch (currentTab) {
-            case 0: // Step 1: Name
-                if (nameField.getText().isEmpty()) {
-                    nameErrorLabel.setText("Name is required");
-                    nameErrorLabel.setVisible(true);
-                    nameErrorLabel.setManaged(true);
-                    valid = false;
-                } else {
-                    nameErrorLabel.setVisible(false);
-                    nameErrorLabel.setManaged(false);
-                }
-                break;
-            case 1: // Step 2: Coming From
-                if (comingFromField.getText().isEmpty()) {
-                    comingFromErrorLabel.setText("City is required");
-                    comingFromErrorLabel.setVisible(true);
-                    comingFromErrorLabel.setManaged(true);
-                    valid = false;
-                } else {
-                    comingFromErrorLabel.setVisible(false);
-                    comingFromErrorLabel.setManaged(false);
-                }
-                break;
-            case 2: // Step 3: Places Reserved
-                String placesText = placesReservedField.getText();
-                if (placesText.isEmpty()) {
-                    placesReservedErrorLabel.setText("Number of places is required");
+        // Validate Name
+        String name = nameField.getText();
+        if (name.isEmpty()) {
+            nameErrorLabel.setText("Name is required");
+            nameErrorLabel.setVisible(true);
+            nameErrorLabel.setManaged(true);
+            valid = false;
+        } else if (!NAME_CITY_PATTERN.matcher(name).matches()) {
+            nameErrorLabel.setText("Name must contain only letters and spaces");
+            nameErrorLabel.setVisible(true);
+            nameErrorLabel.setManaged(true);
+            valid = false;
+        } else {
+            nameErrorLabel.setVisible(false);
+            nameErrorLabel.setManaged(false);
+        }
+
+        // Validate Coming From
+        String city = comingFromField.getText();
+        if (city.isEmpty()) {
+            comingFromErrorLabel.setText("City is required");
+            comingFromErrorLabel.setVisible(true);
+            comingFromErrorLabel.setManaged(true);
+            valid = false;
+        } else if (!NAME_CITY_PATTERN.matcher(city).matches()) {
+            comingFromErrorLabel.setText("City must contain only letters and spaces");
+            comingFromErrorLabel.setVisible(true);
+            comingFromErrorLabel.setManaged(true);
+            valid = false;
+        } else {
+            comingFromErrorLabel.setVisible(false);
+            comingFromErrorLabel.setManaged(false);
+        }
+
+        // Validate Places Reserved
+        String placesText = placesReservedField.getText();
+        if (placesText.isEmpty()) {
+            placesReservedErrorLabel.setText("Number of places is required");
+            placesReservedErrorLabel.setVisible(true);
+            placesReservedErrorLabel.setManaged(true);
+            valid = false;
+        } else {
+            try {
+                int value = Integer.parseInt(placesText);
+                if (value < 1 || value > 5) {
+                    placesReservedErrorLabel.setText("Must be between 1 and 5");
                     placesReservedErrorLabel.setVisible(true);
                     placesReservedErrorLabel.setManaged(true);
                     valid = false;
                 } else {
-                    try {
-                        int value = Integer.parseInt(placesText);
-                        if (value < 1 || value > 5) {
-                            placesReservedErrorLabel.setText("Must be between 1 and 5");
-                            placesReservedErrorLabel.setVisible(true);
-                            placesReservedErrorLabel.setManaged(true);
-                            valid = false;
-                        } else {
-                            placesReservedErrorLabel.setVisible(false);
-                            placesReservedErrorLabel.setManaged(false);
-                        }
-                    } catch (NumberFormatException e) {
-                        placesReservedErrorLabel.setText("Must be a number");
-                        placesReservedErrorLabel.setVisible(true);
-                        placesReservedErrorLabel.setManaged(true);
-                        valid = false;
-                    }
+                    placesReservedErrorLabel.setVisible(false);
+                    placesReservedErrorLabel.setManaged(false);
                 }
-                break;
-            case 3: // Step 4: Disabled Parking (no validation needed)
-                break;
-            case 4: // Step 5: Agree Terms
-                if (!agreeTermsCheckBox.isSelected()) {
-                    agreeTermsErrorLabel.setText("You must agree to the terms and conditions");
-                    agreeTermsErrorLabel.setVisible(true);
-                    agreeTermsErrorLabel.setManaged(true);
-                    valid = false;
-                } else {
-                    agreeTermsErrorLabel.setVisible(false);
-                    agreeTermsErrorLabel.setManaged(false);
-                }
-                break;
+            } catch (NumberFormatException e) {
+                placesReservedErrorLabel.setText("Must be a number");
+                placesReservedErrorLabel.setVisible(true);
+                placesReservedErrorLabel.setManaged(true);
+                valid = false;
+            }
         }
+
+        // Validate Agree Terms
+        if (!agreeTermsCheckBox.isSelected()) {
+            agreeTermsErrorLabel.setText("You must agree to the terms and conditions");
+            agreeTermsErrorLabel.setVisible(true);
+            agreeTermsErrorLabel.setManaged(true);
+            valid = false;
+        } else {
+            agreeTermsErrorLabel.setVisible(false);
+            agreeTermsErrorLabel.setManaged(false);
+        }
+
+        // Disabled Parking requires no validation
+        disabledParkingErrorLabel.setVisible(false);
+        disabledParkingErrorLabel.setManaged(false);
 
         return valid;
     }
@@ -196,9 +247,11 @@ public class NewEventRegistrationFormController {
 
             // Check if enough seats are available
             if (placesReserved > event.getSeatsAvailable()) {
-                nameErrorLabel.setText("Not enough seats available!");
-                nameErrorLabel.setVisible(true);
-                nameErrorLabel.setManaged(true);
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setTitle("Submission Error");
+                errorAlert.setHeaderText(null);
+                errorAlert.setContentText("Not enough seats available!");
+                errorAlert.showAndWait();
                 return;
             }
 
@@ -216,48 +269,44 @@ public class NewEventRegistrationFormController {
 
             // Update event's available seats
             ServiceEvents serviceEvents = new ServiceEvents();
-            serviceEvents.updateSeatsAvailable(event.getId(),event.getSeatsAvailable() - placesReserved,placesReserved);
+            serviceEvents.updateSeatsAvailable(event.getId(), event.getSeatsAvailable() - placesReserved, placesReserved);
 
-            // Show success message
-            tabPane.setVisible(false);
-            tabPane.setManaged(false);
-            prevButton.setVisible(false);
-            nextButton.setVisible(false);
-            successMessage.setVisible(true);
-            successMessage.setManaged(true);
+            // Show success alert
+            Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+            successAlert.setTitle("Success");
+            successAlert.setHeaderText(null);
+            successAlert.setContentText("Registration submitted successfully!");
+            successAlert.showAndWait();
 
-            // Navigate back after a delay (e.g., 2 seconds)
-            new Timer().schedule(
-                    new TimerTask() {
-                        @Override
-                        public void run() {
-                            Platform.runLater(() -> navigateBack());
-                        }
-                    },
-                    2000
-            );
+            // Navigate back after user acknowledges the success alert
+            navigateBack();
+
         } catch (NumberFormatException e) {
-            nameErrorLabel.setText("Invalid number of places reserved!");
-            nameErrorLabel.setVisible(true);
-            nameErrorLabel.setManaged(true);
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Submission Error");
+            errorAlert.setHeaderText(null);
+            errorAlert.setContentText("Invalid number of places reserved!");
+            errorAlert.showAndWait();
         } catch (Exception e) {
-            nameErrorLabel.setText("Error saving registration: " + e.getMessage());
-            nameErrorLabel.setVisible(true);
-            nameErrorLabel.setManaged(true);
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Submission Error");
+            errorAlert.setHeaderText(null);
+            errorAlert.setContentText("Error saving registration: " + e.getMessage());
+            errorAlert.showAndWait();
             e.printStackTrace();
         }
     }
-    
-    
-    
+
     private void navigateBack() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EventListing.fxml"));
             nameField.getScene().setRoot(loader.load());
         } catch (IOException e) {
-            nameErrorLabel.setText("Navigation Error: " + e.getMessage());
-            nameErrorLabel.setVisible(true);
-            nameErrorLabel.setManaged(true);
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Navigation Error");
+            errorAlert.setHeaderText(null);
+            errorAlert.setContentText("Navigation Error: " + e.getMessage());
+            errorAlert.showAndWait();
         }
     }
 }

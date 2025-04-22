@@ -3,9 +3,7 @@ controllers\EventRegistrationListController.class
 controllers\NewEventRegistrationFormController.class
 controllers\EventListController.class
 tn\esprit\test\TestEventList.class
-controllers\NewEventRegistrationFormController$1.class
 tn\esprit\test\TestEventRegistrationList.class
-controllers\NewEventRegistrationController.class
 controllers\ActionCellController.class
 controllers\UserEventRegistrationFormController.class
 controllers\AddEvent.class

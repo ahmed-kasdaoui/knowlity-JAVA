@@ -1,80 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.NewEventRegistrationFormController"
-      spacing="20" alignment="TOP_CENTER" styleClass="registration-form" stylesheets="/new_event_registration.css">
+<?import java.lang.String?>
+<StackPane fx:id="root" alignment="CENTER" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.NewEventRegistrationFormController">
+    <stylesheets>
+        <URL value="@/colors.css" />
+        <URL value="@/skeleton.css" />
+        <URL value="@/bootstrap.css" />
+        <URL value="@/shapes.css" />
+        <URL value="@/typographic.css" />
+        <URL value="@/helpers.css" />
+    </stylesheets>
     <padding>
-        <Insets top="20" right="20" bottom="20" left="20" />
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
 
-    <!-- Step Indicator -->
-    <HBox fx:id="stepIndicator" spacing="10" alignment="CENTER">
-        <Label text="1" styleClass="step" />
-        <Label text="2" styleClass="step" />
-        <Label text="3" styleClass="step" />
-        <Label text="4" styleClass="step" />
-        <Label text="5" styleClass="step" />
-    </HBox>
+    <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="scroll-pane">
+        <VBox alignment="CENTER" spacing="20.0" maxWidth="600.0" styleClass="content-container">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+            <Text text="Event Registration Form">
+                <styleClass>
+                    <String fx:value="h4" />
+                    <String fx:value="text-bold" />
+                </styleClass>
+            </Text>
 
-    <!-- TabPane for steps -->
-    <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" maxWidth="400">
-        <!-- Step 1: Name -->
-        <Tab text="Step 1">
-            <VBox spacing="10" alignment="CENTER">
-                <Label text="Full Name:"/>
-                <TextField fx:id="nameField" promptText="Enter your name"/>
-                <Label fx:id="nameErrorLabel" textFill="red" visible="false" managed="false"/>
+            <!-- Form Fields -->
+            <GridPane fx:id="formGrid" hgap="10" vgap="10" maxWidth="400.0" alignment="CENTER">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="100" />
+                </columnConstraints>
+                <!-- Name -->
+                <Label text="Full Name:" styleClass="h4" GridPane.rowIndex="0"/>
+                <TextField fx:id="nameField" promptText="Enter your name" styleClass="form-control" GridPane.rowIndex="1"/>
+                <Label fx:id="nameErrorLabel" styleClass="text-danger" visible="false" managed="false" GridPane.rowIndex="2"/>
+                <!-- Coming From -->
+                <Label text="City you're coming from:" styleClass="h4" GridPane.rowIndex="3"/>
+                <TextField fx:id="comingFromField" promptText="City name" styleClass="form-control" GridPane.rowIndex="4"/>
+                <Label fx:id="comingFromErrorLabel" styleClass="text-danger" visible="false" managed="false" GridPane.rowIndex="5"/>
+                <!-- Places Reserved -->
+                <Label text="How many places do you want to reserve? (1-5)" styleClass="h4" GridPane.rowIndex="6"/>
+                <TextField fx:id="placesReservedField" promptText="1 to 5" styleClass="form-control" GridPane.rowIndex="7"/>
+                <Label fx:id="placesReservedErrorLabel" styleClass="text-danger" visible="false" managed="false" GridPane.rowIndex="8"/>
+                <!-- Disabled Parking -->
+                <Label text="Do you need disabled parking?" styleClass="h4" GridPane.rowIndex="9"/>
+                <CheckBox fx:id="disabledParkingCheckBox" text="Yes, I need disabled parking" styleClass="form-control" GridPane.rowIndex="10"/>
+                <Label fx:id="disabledParkingErrorLabel" styleClass="text-danger" visible="false" managed="false" GridPane.rowIndex="11"/>
+                <!-- Agree Terms -->
+                <CheckBox fx:id="agreeTermsCheckBox" text="I agree to the terms and conditions" styleClass="form-control" GridPane.rowIndex="12"/>
+                <Label fx:id="agreeTermsErrorLabel" styleClass="text-danger" visible="false" managed="false" GridPane.rowIndex="13"/>
+            </GridPane>
+
+            <!-- Submit Button -->
+            <HBox spacing="10" alignment="CENTER">
+                <Button fx:id="submitButton" text="Submit" styleClass="btn-primary"/>
+            </HBox>
+
+            <!-- Success Message -->
+            <VBox fx:id="successMessage" alignment="CENTER" visible="false" managed="false" spacing="10">
+                <Label text="Registration submitted successfully!" styleClass="h4"/>
             </VBox>
-        </Tab>
-
-        <!-- Step 2: Coming From -->
-        <Tab text="Step 2">
-            <VBox spacing="10" alignment="CENTER">
-                <Label text="City you're coming from:"/>
-                <TextField fx:id="comingFromField" promptText="City name"/>
-                <Label fx:id="comingFromErrorLabel" textFill="red" visible="false" managed="false"/>
-            </VBox>
-        </Tab>
-
-        <!-- Step 3: Places Reserved -->
-        <Tab text="Step 3">
-            <VBox spacing="10" alignment="CENTER">
-                <Label text="How many places do you want to reserve? (1-5)"/>
-                <TextField fx:id="placesReservedField" promptText="1 to 5"/>
-                <Label fx:id="placesReservedErrorLabel" textFill="red" visible="false" managed="false"/>
-            </VBox>
-        </Tab>
-
-        <!-- Step 4: Parking -->
-        <Tab text="Step 4">
-            <VBox spacing="10" alignment="CENTER">
-                <Label text="Do you need disabled parking?" />
-                <CheckBox fx:id="disabledParkingCheckBox" text="Yes, I need disabled parking"/>
-                <Label fx:id="disabledParkingErrorLabel" textFill="red" visible="false" managed="false"/>
-            </VBox>
-        </Tab>
-
-        <!-- Step 5: Agree Terms -->
-        <Tab text="Step 5">
-            <VBox spacing="10" alignment="CENTER">
-                <CheckBox fx:id="agreeTermsCheckBox" text="I agree to the terms and conditions"/>
-                <Label fx:id="agreeTermsErrorLabel" textFill="red" visible="false" managed="false"/>
-            </VBox>
-        </Tab>
-    </TabPane>
-
-    <!-- Navigation Buttons -->
-    <HBox spacing="10" alignment="CENTER">
-        <Button fx:id="prevButton" text="Previous"/>
-        <Button fx:id="nextButton" text="Next"/>
-    </HBox>
-
-    <!-- Success Message -->
-    <VBox fx:id="successMessage" alignment="CENTER" visible="false" managed="false" spacing="10">
-        <Label text="Registration submitted successfully!" styleClass="success-message"/>
-    </VBox>
-</VBox>
+        </VBox>
+    </ScrollPane>
+</StackPane>

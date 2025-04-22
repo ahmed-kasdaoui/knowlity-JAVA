@@ -138,9 +138,9 @@ public class EventDetailsController {
 
     private void handleReserve() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NewEventRegistration.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NewEventRegistrationForm.fxml"));
             reserveButton.getScene().setRoot(loader.load());
-            NewEventRegistrationController controller = loader.getController();
+            NewEventRegistrationFormController controller = loader.getController();
             controller.setEvent(serviceEvents.getById(eventId));
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Navigation Error", "Failed to load new registration form: " + e.getMessage());
