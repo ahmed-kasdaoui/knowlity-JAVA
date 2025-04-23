@@ -7,6 +7,10 @@
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -51,15 +55,52 @@
                         <font>
                             <Font name="Bell MT" size="36.0" />
                         </font>
-                  <HBox.margin>
-                     <Insets left="33.0" />
-                  </HBox.margin>
+                        <HBox.margin>
+                            <Insets left="33.0" />
+                        </HBox.margin>
                     </Label>
                 </children>
-            <VBox.margin>
-               <Insets top="31.0" />
-            </VBox.margin>
+                <VBox.margin>
+                    <Insets top="31.0" />
+                </VBox.margin>
             </HBox>
+
+            <!-- Search, Filter, and Sort Section -->
+            <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 15; -fx-background-color: #f3f7ff; -fx-border-radius: 10; -fx-border-color: #d0e4ff; -fx-border-width: 1;">
+                <!-- Search Field -->
+                <TextField fx:id="searchField" prefHeight="48.0" prefWidth="400.0" promptText="🔍 Rechercher un cours..." style="-fx-font-size: 16px; -fx-background-radius: 12; -fx-border-color: #b3d1f5; -fx-border-radius: 12; -fx-padding: 8; -fx-background-color: rgba(255, 255, 255, 0.8);">
+                    <HBox.margin>
+                        <Insets left="103.0" />
+                    </HBox.margin>
+                </TextField>
+
+                <!-- Filter by Subject -->
+                <ChoiceBox fx:id="filterChoiceBox" prefWidth="200.0" style="-fx-font-size: 16px; -fx-background-radius: 12; -fx-border-color: #8dbbff; -fx-border-width: 1; -fx-background-color: rgba(255, 255, 255, 0.8); -fx-padding: 8;">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Toutes les matières" />
+                            <String fx:value="Mathématiques" />
+                            <String fx:value="Physique" />
+                            <String fx:value="Informatique" />
+                            <String fx:value="Langues" />
+                        </FXCollections>
+                    </items>
+                </ChoiceBox>
+
+                <ChoiceBox fx:id="sortChoiceBox" prefWidth="200.0" style="-fx-font-size: 16px; -fx-background-radius: 12; -fx-border-color: #8dbbff; -fx-border-width: 1; -fx-background-color: rgba(255, 255, 255, 0.8); -fx-padding: 8;">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Trier par" />
+                            <String fx:value="Nom (A-Z)" />
+                            <String fx:value="Nom (Z-A)" />
+                            <String fx:value="Date (Plus récent)" />
+                            <String fx:value="Date (Plus ancien)" />
+                            <String fx:value="Popularité" />
+                        </FXCollections>
+                    </items>
+                </ChoiceBox>
+            </HBox>
+
             <!-- ScrollPane for Courses -->
             <ScrollPane fx:id="scrollPane" fitToWidth="true" pannable="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
                 <content>
@@ -89,7 +130,7 @@
                                             <Font size="24.0" />
                                         </font>
                                     </Label>
-                                    <Label styleClass="text-muted" text="Commencez par créer un nouveau cours" />
+                                    <Label styleClass="text-muted" text="Aucun cours ne correspond à vos critères" />
                                 </children>
                             </VBox>
                             <!-- Load More Button -->
