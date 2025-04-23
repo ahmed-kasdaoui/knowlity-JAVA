@@ -81,6 +81,9 @@ public class ListeCoursControllerEtudiant {
     @FXML
     private Button guideCloseButton;
 
+    @FXML
+    private Button reopenGuideButton;
+
     private ServiceCours serviceCours = new ServiceCours();
     private int visibleCourses = 0;
     private final int COURSES_PER_LOAD = 6;
@@ -125,6 +128,15 @@ public class ListeCoursControllerEtudiant {
         // Sélectionner les valeurs par défaut
         filterChoiceBox.getSelectionModel().select("Toutes les matières");
         sortChoiceBox.getSelectionModel().select("Trier par");
+
+        // Créer et configurer le bouton de réouverture du guide
+        reopenGuideButton = new Button("Réouvrir le Guide");
+        reopenGuideButton.getStyleClass().add("guide-reopen-button");
+        reopenGuideButton.setOnAction(e -> restartGuide());
+        
+        // Ajouter le bouton en haut à droite du mainBox
+        HBox headerBox = (HBox) mainBox.getChildren().get(0);
+        headerBox.getChildren().add(reopenGuideButton);
 
         // Charger les cours initiaux
         refreshCoursesGrid();
@@ -612,5 +624,15 @@ public class ListeCoursControllerEtudiant {
     private void setPreference(String key, String value) {
         Preferences prefs = Preferences.userNodeForPackage(ListeCoursControllerEtudiant.class);
         prefs.put(key, value);
+    }
+
+    @FXML
+    private void restartGuide() {
+        // Réinitialiser la préférence du guide
+        setPreference("courseGuideCompleted", "false");
+        
+        // Réinitialiser et redémarrer le guide
+        currentStep.set(0);
+        showCurrentStep();
     }
 }
