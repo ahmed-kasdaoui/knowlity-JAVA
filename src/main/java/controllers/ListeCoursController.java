@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -21,6 +22,11 @@ import tn.esprit.models.Cours;
 import tn.esprit.services.ServiceCours;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ListeCoursController {
 
@@ -53,12 +59,16 @@ public class ListeCoursController {
     @FXML
     private ChoiceBox<String> sortChoiceBox;
 
-
+    @FXML
+    private TextField searchField;
 
     private ServiceCours serviceCours = new ServiceCours();
     private int visibleCourses = 0;
     private final int COURSES_PER_LOAD = 6;
     private SequentialTransition cardsEntryAnimation;
+
+    private List<Cours> allCourses = new ArrayList<>();
+    private List<Cours> filteredCourses = new ArrayList<>();
 
     @FXML
     public void initialize() {
@@ -72,10 +82,24 @@ public class ListeCoursController {
         // Animation d'entrée pour le titre et le bouton de création
         animateHeader();
 
-        // Chargement des cours avec animation
-        loadCourses();
-        filterChoiceBox.getSelectionModel().select("Sélectionnez une catégorie");
+        // Initialiser les listes de cours
+        allCourses = serviceCours.getAll();
+        filteredCourses.addAll(allCourses);
+
+        // Initialiser les matières dans le filterChoiceBox
+        initializeFilterChoices();
+
+        // Configurer les listeners pour la recherche, le filtrage et le tri
+        setupSearchListener();
+        setupFilterListener();
+        setupSortListener();
+
+        // Sélectionner les valeurs par défaut
+        filterChoiceBox.getSelectionModel().select("Toutes les matières");
         sortChoiceBox.getSelectionModel().select("Trier par");
+
+        // Charger les cours initiaux
+        refreshCoursesGrid();
     }
 
     private void prepareMainContentAnimation() {
@@ -141,55 +165,164 @@ public class ListeCoursController {
         btnAnim.play();
     }
 
-    private void loadCourses() {
-        var coursList = serviceCours.getAll();
-        int totalCourses = coursList.size();
+    private void initializeFilterChoices() {
+        // Créer un Set pour stocker les matières uniques
+        Set<String> matieres = new HashSet<>();
+        matieres.add("Toutes les matières"); // Option par défaut
+        
+        // Ajouter toutes les matières des cours
+        for (Cours cours : allCourses) {
+            if (cours.getMatiere() != null && cours.getMatiere().getTitre() != null) {
+                matieres.add(cours.getMatiere().getTitre());
+            }
+        }
+        
+        // Convertir le Set en List et trier alphabétiquement
+        List<String> matieresList = new ArrayList<>(matieres);
+        Collections.sort(matieresList.subList(1, matieresList.size())); // Trier tout sauf "Toutes les matières"
+        
+        // Mettre à jour le ChoiceBox
+        filterChoiceBox.getItems().setAll(matieresList);
+    }
 
+    private void setupSearchListener() {
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filterAndSortCourses();
+        });
+    }
+
+    private void setupFilterListener() {
+        filterChoiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            filterAndSortCourses();
+        });
+    }
+
+    private void setupSortListener() {
+        sortChoiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            filterAndSortCourses();
+        });
+    }
+
+    private void filterAndSortCourses() {
+        // Réinitialiser la liste filtrée
+        filteredCourses.clear();
+        
+        // Appliquer la recherche et le filtre
+        String searchText = searchField.getText().toLowerCase();
+        String selectedCategory = filterChoiceBox.getValue();
+        
+        for (Cours cours : allCourses) {
+            boolean matchesSearch = searchText.isEmpty() || 
+                                  cours.getTitle().toLowerCase().contains(searchText) ||
+                                  cours.getDescription().toLowerCase().contains(searchText);
+            
+            boolean matchesFilter = selectedCategory == null || 
+                                  selectedCategory.equals("Toutes les matières") ||
+                                  (cours.getMatiere() != null && 
+                                   cours.getMatiere().getTitre() != null && 
+                                   cours.getMatiere().getTitre().equals(selectedCategory));
+            
+            if (matchesSearch && matchesFilter) {
+                filteredCourses.add(cours);
+            }
+        }
+        
+        // Appliquer le tri
+        String sortOption = sortChoiceBox.getValue();
+        if (sortOption != null) {
+            switch (sortOption) {
+                case "Nom (A-Z)":
+                    filteredCourses.sort((c1, c2) -> c1.getTitle().compareToIgnoreCase(c2.getTitle()));
+                    break;
+                case "Nom (Z-A)":
+                    filteredCourses.sort((c1, c2) -> c2.getTitle().compareToIgnoreCase(c1.getTitle()));
+                    break;
+                case "Date (Plus récent)":
+                    filteredCourses.sort((c1, c2) -> Integer.compare(c2.getId(), c1.getId()));
+                    break;
+                case "Date (Plus ancien)":
+                    filteredCourses.sort((c1, c2) -> Integer.compare(c1.getId(), c2.getId()));
+                    break;
+                case "Popularité":
+                    filteredCourses.sort((c1, c2) -> Integer.compare(c2.getPrix(), c1.getPrix()));
+                    break;
+            }
+        }
+        
+        // Rafraîchir l'affichage
+        refreshCoursesGrid();
+    }
+
+    private void refreshCoursesGrid() {
+        // Effacer la grille existante
+        coursesGrid.getChildren().clear();
+        visibleCourses = 0;
+        
+        // Réinitialiser les rangées
+        coursesGrid.getRowConstraints().clear();
+        
+        // Afficher le message "Aucun cours" si nécessaire
+        if (filteredCourses.isEmpty()) {
+            noCoursesBox.setManaged(true);
+            noCoursesBox.setVisible(true);
+            loadMoreButton.setVisible(false);
+            loadMoreButton.setManaged(false);
+        } else {
+            noCoursesBox.setManaged(false);
+            noCoursesBox.setVisible(false);
+            loadCourses();
+        }
+    }
+
+    private void loadCourses() {
+        int totalCourses = filteredCourses.size();
+        
         // Déterminer l'index de départ et le nouveau nombre de cours visibles
         int startIndex = visibleCourses;
         visibleCourses = Math.min(visibleCourses + COURSES_PER_LOAD, totalCourses);
-
+        
         // Créer une animation séquentielle pour les nouvelles cartes
         cardsEntryAnimation = new SequentialTransition();
-
+        
         for (int i = startIndex; i < visibleCourses; i++) {
-            var cours = coursList.get(i);
+            var cours = filteredCourses.get(i);
             var card = createCourseCard(cours);
-
+            
             // Configuration initiale pour l'animation
             card.setOpacity(0);
             card.setScaleX(0.3);
             card.setScaleY(0.3);
             card.setTranslateY(50);
-
+            
             // Calcul de la position dans la grille
             int column = i % 3;
             int row = i / 3;
             coursesGrid.add(card, column, row);
-
+            
             // Animation d'entrée
             ParallelTransition cardEntry = createCardEntryAnimation(card, i - startIndex);
             cardsEntryAnimation.getChildren().add(cardEntry);
         }
-
+        
         // Gestion du bouton "Afficher plus"
         loadMoreButton.setVisible(visibleCourses < totalCourses);
         loadMoreButton.setManaged(visibleCourses < totalCourses);
-
+        
         // Défilement automatique après ajout
         if (startIndex > 0) {
             cardsEntryAnimation.setOnFinished(e -> {
                 Timeline scrollAnim = new Timeline(
-                        new KeyFrame(Duration.millis(800),
-                                new KeyValue(scrollPane.vvalueProperty(), 1.0)
-                        )
+                    new KeyFrame(Duration.millis(800),
+                        new KeyValue(scrollPane.vvalueProperty(), 1.0)
+                    )
                 );
                 scrollAnim.play();
             });
         }
-
+        
         cardsEntryAnimation.play();
     }
+
     private ParallelTransition createCardEntryAnimation(VBox card, int index) {
         // Animation de fondu
         FadeTransition fadeIn = new FadeTransition(Duration.millis(400), card);
