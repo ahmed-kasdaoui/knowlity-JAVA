@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -46,6 +47,13 @@ public class ListeCoursController {
 
     @FXML
     private VBox noCoursesBox;
+    @FXML
+    private ChoiceBox<String> filterChoiceBox;
+
+    @FXML
+    private ChoiceBox<String> sortChoiceBox;
+
+
 
     private ServiceCours serviceCours = new ServiceCours();
     private int visibleCourses = 0;
@@ -66,6 +74,8 @@ public class ListeCoursController {
 
         // Chargement des cours avec animation
         loadCourses();
+        filterChoiceBox.getSelectionModel().select("Sélectionnez une catégorie");
+        sortChoiceBox.getSelectionModel().select("Trier par");
     }
 
     private void prepareMainContentAnimation() {
