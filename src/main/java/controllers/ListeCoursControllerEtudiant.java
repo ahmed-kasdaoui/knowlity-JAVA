@@ -130,7 +130,7 @@ public class ListeCoursControllerEtudiant {
         sortChoiceBox.getSelectionModel().select("Trier par");
 
         // Créer et configurer le bouton de réouverture du guide
-        reopenGuideButton = new Button("Réouvrir le Guide");
+        reopenGuideButton = new Button("Ouvrir le Guide");
         reopenGuideButton.getStyleClass().add("guide-reopen-button");
         reopenGuideButton.setOnAction(e -> restartGuide());
         

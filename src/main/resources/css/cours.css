@@ -596,23 +596,46 @@
 
 /* Guide Reopen Button */
 .guide-reopen-button {
-    -fx-background-color: #007bff;
+    -fx-background-color: linear-gradient(to right, #2196F3, #1976D2);
     -fx-text-fill: white;
     -fx-font-size: 14px;
-    -fx-padding: 8px 16px;
-    -fx-background-radius: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 12px 24px;
+    -fx-background-radius: 25px;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 0);
-    -fx-graphic-text-gap: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(33,150,243,0.3), 10, 0, 0, 0);
+    -fx-graphic-text-gap: 10px;
+    -fx-border-color: rgba(255,255,255,0.2);
+    -fx-border-width: 1px;
+    -fx-border-radius: 25px;
+    -fx-alignment: center;
+    -fx-content-display: left;
 }
 
 .guide-reopen-button:hover {
-    -fx-background-color: #0056b3;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 8, 0, 0, 0);
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
+    -fx-background-color: linear-gradient(to right, #1E88E5, #1565C0);
+    -fx-effect: dropshadow(three-pass-box, rgba(33,150,243,0.5), 15, 0, 0, 0);
+    -fx-translate-y: -1px;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+    -fx-border-color: rgba(255,255,255,0.3);
+}
+
+.guide-reopen-button:pressed {
+    -fx-background-color: linear-gradient(to right, #1976D2, #0D47A1);
+    -fx-effect: dropshadow(three-pass-box, rgba(33,150,243,0.2), 5, 0, 0, 0);
+    -fx-translate-y: 1px;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
 }
 
 .guide-reopen-button .icon {
     -fx-fill: white;
+    -fx-font-size: 16px;
+    -fx-text-alignment: center;
+}
+
+/* Animation for the guide button */
+.guide-reopen-button {
+    -fx-transition: -fx-background-color 0.3s, -fx-effect 0.3s, -fx-translate-y 0.2s, -fx-scale-x 0.2s, -fx-scale-y 0.2s;
 }
