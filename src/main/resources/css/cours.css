@@ -709,31 +709,50 @@
     -fx-line-spacing: 1.5;
 }
 
+/* Section des chapitres */
 .chapters-section {
     -fx-padding: 20px;
-    -fx-spacing: 15px;
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
 }
 
+.section-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a237e;
+    -fx-padding: 0 0 10px 0;
+}
+
+/* Carte de chapitre */
 .chapter-card {
-    -fx-background-color: white;
-    -fx-background-radius: 12px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 0);
+    -fx-background-color: #f8f9fa;
     -fx-padding: 15px;
+    -fx-background-radius: 8px;
     -fx-border-color: #e0e0e0;
-    -fx-border-radius: 12px;
+    -fx-border-radius: 8px;
     -fx-cursor: hand;
+    -fx-transition: all 0.3s ease;
 }
 
 .chapter-card:hover {
-    -fx-background-color: #f5f9ff;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12, 0, 0, 0);
+    -fx-background-color: #e3f2fd;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 0);
     -fx-translate-y: -2px;
+}
+
+.chapter-number {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1565c0;
+    -fx-min-width: 40px;
+    -fx-alignment: center;
 }
 
 .chapter-title {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-text-fill: #1a237e;
+    -fx-text-fill: #263238;
 }
 
 .chapter-description {
@@ -742,10 +761,25 @@
     -fx-wrap-text: true;
 }
 
-.chapter-duration {
+.chapter-duration, .chapter-views {
     -fx-font-size: 13px;
     -fx-text-fill: #78909c;
-    -fx-graphic-text-gap: 5px;
+}
+
+.chapter-icon {
+    -fx-fill: #78909c;
+    -fx-font-size: 14px;
+}
+
+.lock-icon {
+    -fx-fill: #f44336;
+    -fx-font-size: 16px;
+}
+
+/* Animation de survol */
+.chapter-card-hover {
+    -fx-background-color: #e3f2fd;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 0);
 }
 
 .teacher-section {

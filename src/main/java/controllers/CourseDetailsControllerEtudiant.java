@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import tn.esprit.models.Chapitre;
@@ -43,7 +44,7 @@ public class CourseDetailsControllerEtudiant {
     @FXML private Label teacherEmail;
     @FXML private Label favoritesLabel;
     @FXML private Button statsButton;
-    @FXML private GridPane chaptersGrid;
+    @FXML private VBox chaptersContainer;
 
     private Cours course;
     private final ServiceCours serviceCours;
@@ -116,26 +117,33 @@ public class CourseDetailsControllerEtudiant {
     }
 
     private void loadChapters() {
-        chaptersGrid.getChildren().clear();
+        chaptersContainer.getChildren().clear();
         List<Chapitre> chapters = course.getChapitres();
         
-        int row = 0;
         for (Chapitre chapitre : chapters) {
-            VBox card = createChapterCard(chapitre);
-            // Définir la largeur maximale pour occuper toute la largeur disponible
-            card.setMaxWidth(Double.MAX_VALUE);
-            chaptersGrid.add(card, 0, row);
-            row++;
+            VBox chapterCard = createChapterCard(chapitre);
+            chaptersContainer.getChildren().add(chapterCard);
         }
     }
 
     private VBox createChapterCard(Chapitre chapitre) {
         VBox card = new VBox(10);
-        card.getStyleClass().add("chapter-card");
-        card.setMaxWidth(Double.MAX_VALUE); // Pour que la carte prenne toute la largeur
+        card.getStyleClass().addAll("chapter-card");
+        card.setMaxWidth(Double.MAX_VALUE);
         
-        // Title with number
-        Label title = new Label("Chapitre " + chapitre.getChapOrder() + ": " + chapitre.getTitle());
+        // En-tête du chapitre
+        HBox header = new HBox(10);
+        header.setAlignment(Pos.CENTER_LEFT);
+        
+        // Numéro du chapitre avec style
+        Label chapterNumber = new Label(String.format("%02d", chapitre.getChapOrder()));
+        chapterNumber.getStyleClass().add("chapter-number");
+        
+        VBox titleBox = new VBox(5);
+        HBox.setHgrow(titleBox, Priority.ALWAYS);
+        
+        // Titre du chapitre
+        Label title = new Label(chapitre.getTitle());
         title.getStyleClass().add("chapter-title");
         title.setWrapText(true);
         
@@ -144,9 +152,15 @@ public class CourseDetailsControllerEtudiant {
         description.getStyleClass().add("chapter-description");
         description.setWrapText(true);
         
-        // Duration box with icon
+        titleBox.getChildren().addAll(title, description);
+        
+        // Informations du chapitre (durée et vues)
+        VBox infoBox = new VBox(5);
+        infoBox.setAlignment(Pos.CENTER_RIGHT);
+        
+        // Durée
         HBox durationBox = new HBox(5);
-        durationBox.setAlignment(Pos.CENTER_LEFT);
+        durationBox.setAlignment(Pos.CENTER_RIGHT);
         
         FontAwesomeIconView clockIcon = new FontAwesomeIconView(FontAwesomeIcon.CLOCK_ALT);
         clockIcon.getStyleClass().add("chapter-icon");
@@ -156,13 +170,40 @@ public class CourseDetailsControllerEtudiant {
         
         durationBox.getChildren().addAll(clockIcon, duration);
         
-        // Add lock icon if chapter is not accessible
-        FontAwesomeIconView lockIcon = new FontAwesomeIconView(FontAwesomeIcon.LOCK);
-        lockIcon.getStyleClass().add("chapter-icon");
-        durationBox.getChildren().add(lockIcon);
+        // Nombre de vues
+        HBox viewsBox = new HBox(5);
+        viewsBox.setAlignment(Pos.CENTER_RIGHT);
         
-        // Ajouter les éléments à la carte
-        card.getChildren().addAll(title, description, durationBox);
+        FontAwesomeIconView eyeIcon = new FontAwesomeIconView(FontAwesomeIcon.EYE);
+        eyeIcon.getStyleClass().add("chapter-icon");
+        
+        Label views = new Label(chapitre.getNbrVues() + " vues");
+        views.getStyleClass().add("chapter-views");
+        
+        viewsBox.getChildren().addAll(eyeIcon, views);
+        
+        infoBox.getChildren().addAll(durationBox, viewsBox);
+        
+        // Assemblage de l'en-tête
+        header.getChildren().addAll(chapterNumber, titleBox);
+        HBox.setHgrow(titleBox, Priority.ALWAYS);
+        
+        // Statut du chapitre (verrouillé/déverrouillé)
+        FontAwesomeIconView lockIcon = new FontAwesomeIconView(FontAwesomeIcon.LOCK);
+        lockIcon.getStyleClass().addAll("chapter-icon", "lock-icon");
+        header.getChildren().add(lockIcon);
+        
+        // Assemblage final de la carte
+        card.getChildren().addAll(header, infoBox);
+        
+        // Ajouter l'effet de survol
+        card.setOnMouseEntered(e -> {
+            card.getStyleClass().add("chapter-card-hover");
+        });
+        
+        card.setOnMouseExited(e -> {
+            card.getStyleClass().remove("chapter-card-hover");
+        });
         
         // Ajouter l'action de clic
         card.setOnMouseClicked(event -> viewChapter(chapitre));
