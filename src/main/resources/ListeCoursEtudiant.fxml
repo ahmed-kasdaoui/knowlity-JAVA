@@ -18,6 +18,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="root" prefHeight="700.0" prefWidth="1000.0" styleClass="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ListeCoursControllerEtudiant">
@@ -147,6 +148,19 @@
             </ScrollPane>
         </children>
     </VBox>
+
+    <!-- Guide Tooltip -->
+    <StackPane fx:id="guideTooltip" styleClass="guide-tooltip" visible="false" managed="false">
+        <VBox spacing="10">
+            <Label fx:id="guideContent" styleClass="guide-tooltip-content" wrapText="true" />
+            <HBox spacing="10" styleClass="guide-tooltip-buttons">
+                <Button fx:id="guidePrevButton" styleClass="guide-button,guide-button-secondary" text="Précédent" onAction="#previousGuideStep" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="guideNextButton" styleClass="guide-button,guide-button-primary" text="Suivant" onAction="#nextGuideStep" />
+                <Button fx:id="guideCloseButton" styleClass="guide-button,guide-button-secondary" text="Fermer" onAction="#closeGuide" />
+            </HBox>
+        </VBox>
+    </StackPane>
 
     <stylesheets>
         <URL value="@/css/cours.css" />
