@@ -522,85 +522,97 @@
 
 /* Guide Styles */
 .guide-tooltip {
-    position: fixed;
-    z-index: 1000;
-    background: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    max-width: 300px;
-    transition: all 0.3s ease;
-}
-
-.guide-tooltip::before {
-    content: '';
-    position: absolute;
-    top: var(--arrow-top, -6px);
-    bottom: var(--arrow-bottom, auto);
-    left: 50%;
-    transform: translateX(-50%) rotate(45deg);
-    width: 12px;
-    height: 12px;
-    background: white;
-    box-shadow: var(--arrow-shadow, -2px -2px 6px rgba(0, 0, 0, 0.1));
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);
+    -fx-max-width: 400px;
+    -fx-min-width: 250px;
+    -fx-opacity: 1.0;
 }
 
 .guide-tooltip-content {
-    margin-bottom: 15px;
-    color: #333;
-    font-size: 14px;
-    line-height: 1.5;
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-wrap-text: true;
+    -fx-padding: 0 0 15px 0;
 }
 
 .guide-tooltip-buttons {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    -fx-spacing: 10px;
+    -fx-alignment: center;
 }
 
 .guide-button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 14px;
+    -fx-padding: 8px 16px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
 }
 
 .guide-button-primary {
-    background: #007bff;
-    color: white;
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
 }
 
 .guide-button-primary:hover {
-    background: #0056b3;
+    -fx-background-color: #0056b3;
 }
 
 .guide-button-secondary {
-    background: #e9ecef;
-    color: #495057;
+    -fx-background-color: #e9ecef;
+    -fx-text-fill: #495057;
 }
 
 .guide-button-secondary:hover {
-    background: #dee2e6;
+    -fx-background-color: #dee2e6;
 }
 
 .guide-highlight {
-    position: relative;
-    z-index: 1;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
-    border-radius: 4px;
-    animation: pulse 1.5s infinite;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,123,255,0.5), 10, 0, 0, 0);
+    -fx-background-radius: 4px;
+    -fx-border-width: 2px;
+    -fx-border-color: #007bff;
+    -fx-border-radius: 4px;
 }
 
-@keyframes pulse {
+/* Animation de pulsation pour les éléments mis en évidence */
+.guide-highlight {
+    -fx-animation: guide-pulse 2s infinite;
+}
+
+@keyframes guide-pulse {
     0% {
-        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4);
+        -fx-effect: dropshadow(three-pass-box, rgba(0,123,255,0.5), 0, 0, 0, 0);
     }
-    70% {
-        box-shadow: 0 0 0 6px rgba(0, 123, 255, 0);
+    50% {
+        -fx-effect: dropshadow(three-pass-box, rgba(0,123,255,0.5), 15, 0, 0, 0);
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+        -fx-effect: dropshadow(three-pass-box, rgba(0,123,255,0.5), 0, 0, 0, 0);
     }
+}
+
+/* Guide Reopen Button */
+.guide-reopen-button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 16px;
+    -fx-background-radius: 20px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 0);
+    -fx-graphic-text-gap: 8px;
+}
+
+.guide-reopen-button:hover {
+    -fx-background-color: #0056b3;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 8, 0, 0, 0);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.guide-reopen-button .icon {
+    -fx-fill: white;
 }
