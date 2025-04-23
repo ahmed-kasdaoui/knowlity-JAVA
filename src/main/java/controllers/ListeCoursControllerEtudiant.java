@@ -4,6 +4,7 @@ import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -20,6 +21,12 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import tn.esprit.models.Cours;
 import tn.esprit.services.ServiceCours;
+import javafx.scene.layout.StackPane;
+import javafx.scene.Node;
+import javafx.animation.PauseTransition;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.control.Labeled;
+import java.util.prefs.Preferences;
 
 import java.io.IOException;
 import java.util.*;
@@ -59,6 +66,21 @@ public class ListeCoursControllerEtudiant {
     @FXML
     private ChoiceBox<String> sortChoiceBox;
 
+    @FXML
+    private StackPane guideTooltip;
+
+    @FXML
+    private Label guideContent;
+
+    @FXML
+    private Button guidePrevButton;
+
+    @FXML
+    private Button guideNextButton;
+
+    @FXML
+    private Button guideCloseButton;
+
     private ServiceCours serviceCours = new ServiceCours();
     private int visibleCourses = 0;
     private final int COURSES_PER_LOAD = 6;
@@ -66,6 +88,21 @@ public class ListeCoursControllerEtudiant {
 
     private List<Cours> allCourses = new ArrayList<>();
     private List<Cours> filteredCourses = new ArrayList<>();
+
+    private SimpleIntegerProperty currentStep = new SimpleIntegerProperty(0);
+    private List<GuideStep> guideSteps;
+
+    private static class GuideStep {
+        final String message;
+        final String targetId;
+        final boolean showPrevious;
+
+        GuideStep(String message, String targetId, boolean showPrevious) {
+            this.message = message;
+            this.targetId = targetId;
+            this.showPrevious = showPrevious;
+        }
+    }
 
     @FXML
     public void initialize() {
@@ -91,6 +128,18 @@ public class ListeCoursControllerEtudiant {
 
         // Charger les cours initiaux
         refreshCoursesGrid();
+
+        // Initialiser les étapes du guide
+        initializeGuideSteps();
+
+        // Démarrer le guide après un court délai
+        PauseTransition delay = new PauseTransition(Duration.seconds(1));
+        delay.setOnFinished(e -> {
+            if (!Boolean.parseBoolean(getPreference("courseGuideCompleted", "false"))) {
+                startGuide();
+            }
+        });
+        delay.play();
     }
 
     private void initializeFilterChoices() {
@@ -438,5 +487,130 @@ public class ListeCoursControllerEtudiant {
             System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private void initializeGuideSteps() {
+        guideSteps = Arrays.asList(
+            new GuideStep("Bienvenue dans la liste des cours ! Je vais vous guider à travers les fonctionnalités principales.", null, false),
+            new GuideStep("Utilisez la barre de recherche pour trouver rapidement un cours par son titre ou sa description.", "searchField", true),
+            new GuideStep("Filtrez les cours par matière pour afficher uniquement ceux qui vous intéressent.", "filterChoiceBox", true),
+            new GuideStep("Triez les cours selon différents critères pour les organiser comme vous le souhaitez.", "sortChoiceBox", true),
+            new GuideStep("Les cours sont affichés ici sous forme de cartes. Cliquez sur 'Voir le cours' pour plus de détails.", "coursesGrid", true),
+            new GuideStep("Si vous ne trouvez pas ce que vous cherchez, utilisez le bouton 'Afficher plus' pour voir plus de cours.", "loadMoreButton", true),
+            new GuideStep("Vous pouvez maintenant explorer les cours ! N'hésitez pas à utiliser ces fonctionnalités pour trouver les cours qui vous intéressent.", null, true)
+        );
+    }
+
+    private void startGuide() {
+        currentStep.set(0);
+        showCurrentStep();
+    }
+
+    @FXML
+    private void nextGuideStep() {
+        if (currentStep.get() < guideSteps.size() - 1) {
+            currentStep.set(currentStep.get() + 1);
+            showCurrentStep();
+        }
+    }
+
+    @FXML
+    private void previousGuideStep() {
+        if (currentStep.get() > 0) {
+            currentStep.set(currentStep.get() - 1);
+            showCurrentStep();
+        }
+    }
+
+    @FXML
+    private void closeGuide() {
+        guideTooltip.setVisible(false);
+        guideTooltip.setManaged(false);
+        removeAllHighlights();
+        setPreference("courseGuideCompleted", "true");
+    }
+
+    private void showCurrentStep() {
+        GuideStep step = guideSteps.get(currentStep.get());
+        
+        // Mettre à jour le contenu
+        guideContent.setText(step.message);
+        
+        // Gérer les boutons
+        guidePrevButton.setVisible(step.showPrevious);
+        guidePrevButton.setManaged(step.showPrevious);
+        guideNextButton.setText(currentStep.get() == guideSteps.size() - 1 ? "Terminer" : "Suivant");
+        
+        // Supprimer les surlignages précédents
+        removeAllHighlights();
+        
+        // Positionner le tooltip et surligner l'élément cible
+        if (step.targetId != null) {
+            Node targetNode = root.lookup("#" + step.targetId);
+            if (targetNode != null) {
+                highlightNode(targetNode);
+                positionTooltipNearNode(targetNode);
+            }
+        } else {
+            // Centrer le tooltip pour les étapes sans cible
+            centerTooltip();
+        }
+        
+        // Afficher le tooltip
+        guideTooltip.setVisible(true);
+        guideTooltip.setManaged(true);
+    }
+
+    private void removeAllHighlights() {
+        root.lookupAll(".guide-highlight").forEach(node -> 
+            node.getStyleClass().remove("guide-highlight")
+        );
+    }
+
+    private void highlightNode(Node node) {
+        node.getStyleClass().add("guide-highlight");
+    }
+
+    private void positionTooltipNearNode(Node targetNode) {
+        // Obtenir les coordonnées de l'élément cible
+        Bounds bounds = targetNode.localToScene(targetNode.getBoundsInLocal());
+        
+        // Calculer la position du tooltip
+        double tooltipX = bounds.getMinX() + bounds.getWidth() / 2 - guideTooltip.getWidth() / 2;
+        double tooltipY = bounds.getMaxY() + 10;
+        
+        // Ajuster si le tooltip dépasse les bords
+        if (tooltipX < 0) tooltipX = 10;
+        if (tooltipX + guideTooltip.getWidth() > root.getWidth()) {
+            tooltipX = root.getWidth() - guideTooltip.getWidth() - 10;
+        }
+        
+        // Positionner au-dessus si pas assez d'espace en dessous
+        if (tooltipY + guideTooltip.getHeight() > root.getHeight()) {
+            tooltipY = bounds.getMinY() - guideTooltip.getHeight() - 10;
+            guideTooltip.setStyle("--arrow-top: auto; --arrow-bottom: -6px;");
+        } else {
+            guideTooltip.setStyle("--arrow-top: -6px; --arrow-bottom: auto;");
+        }
+        
+        // Appliquer la position
+        guideTooltip.setTranslateX(tooltipX);
+        guideTooltip.setTranslateY(tooltipY);
+    }
+
+    private void centerTooltip() {
+        guideTooltip.setTranslateX((root.getWidth() - guideTooltip.getWidth()) / 2);
+        guideTooltip.setTranslateY((root.getHeight() - guideTooltip.getHeight()) / 2);
+        guideTooltip.setStyle("--arrow-top: auto; --arrow-bottom: auto;");
+    }
+
+    private String getPreference(String key, String defaultValue) {
+        Preferences prefs = Preferences.userNodeForPackage(ListeCoursControllerEtudiant.class);
+        return prefs.get(key, defaultValue);
+    }
+
+    private void setPreference(String key, String value) {
+        Preferences prefs = Preferences.userNodeForPackage(ListeCoursControllerEtudiant.class);
+        prefs.put(key, value);
     }
 }
