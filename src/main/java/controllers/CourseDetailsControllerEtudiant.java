@@ -66,6 +66,14 @@ public class CourseDetailsControllerEtudiant {
         courseTitle.setText(course.getTitle());
         descriptionLabel.setText(course.getDescription());
         
+        // Set category and subject badges
+        if (course.getMatiere() != null) {
+            matiereBadge.setText(course.getMatiere().getTitre());
+            if (course.getMatiere().getCategorie() != null) {
+                categorieBadge.setText(course.getMatiere().getCategorie().getName());
+            }
+        }
+        
         // Calculate total duration from chapters
         int totalDuration = course.getChapitres().stream()
                            .mapToInt(Chapitre::getDureeEstimee)
@@ -100,6 +108,9 @@ public class CourseDetailsControllerEtudiant {
             System.err.println("Error loading teacher avatar: " + e.getMessage());
         }
 
+        // Set teacher email (temporarily disabled as we don't have access to teacher info)
+        teacherEmail.setText("Enseignant");
+
         // Load chapters
         loadChapters();
     }
@@ -111,6 +122,8 @@ public class CourseDetailsControllerEtudiant {
         int row = 0;
         for (Chapitre chapitre : chapters) {
             VBox card = createChapterCard(chapitre);
+            // Définir la largeur maximale pour occuper toute la largeur disponible
+            card.setMaxWidth(Double.MAX_VALUE);
             chaptersGrid.add(card, 0, row);
             row++;
         }
@@ -119,14 +132,17 @@ public class CourseDetailsControllerEtudiant {
     private VBox createChapterCard(Chapitre chapitre) {
         VBox card = new VBox(10);
         card.getStyleClass().add("chapter-card");
+        card.setMaxWidth(Double.MAX_VALUE); // Pour que la carte prenne toute la largeur
         
-        // Title
-        Label title = new Label(chapitre.getTitle());
+        // Title with number
+        Label title = new Label("Chapitre " + chapitre.getChapOrder() + ": " + chapitre.getTitle());
         title.getStyleClass().add("chapter-title");
+        title.setWrapText(true);
         
         // Description
         Label description = new Label(chapitre.getContenu());
         description.getStyleClass().add("chapter-description");
+        description.setWrapText(true);
         
         // Duration box with icon
         HBox durationBox = new HBox(5);
@@ -139,6 +155,11 @@ public class CourseDetailsControllerEtudiant {
         duration.getStyleClass().add("chapter-duration");
         
         durationBox.getChildren().addAll(clockIcon, duration);
+        
+        // Add lock icon if chapter is not accessible
+        FontAwesomeIconView lockIcon = new FontAwesomeIconView(FontAwesomeIcon.LOCK);
+        lockIcon.getStyleClass().add("chapter-icon");
+        durationBox.getChildren().add(lockIcon);
         
         // Ajouter les éléments à la carte
         card.getChildren().addAll(title, description, durationBox);
@@ -267,5 +288,11 @@ public class CourseDetailsControllerEtudiant {
             System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleEnrollAction() {
+        // Cette méthode sera implémentée plus tard pour gérer l'inscription
+        System.out.println("Tentative d'inscription au cours: " + course.getTitle());
     }
 }
