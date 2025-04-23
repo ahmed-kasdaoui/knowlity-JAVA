@@ -52,7 +52,7 @@
     -fx-background-radius: 16;
     -fx-border-radius: 16;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 5);
-    -fx-transition: -fx-translate-y 0.3s ease, -fx-effect 0.3s ease;
+    -fx-transition: -fx-translate-y 0.1s ease, -fx-effect 0.3s ease;
     -fx-max-width: 30vw; /* Limits card width */
     -fx-min-width: 200px; /* Ensures readability */
 }
@@ -336,4 +336,186 @@
     .object-fit-cover {
         -fx-max-height: 15vh;
     }
+    /* cours.css - Ajouts pour les animations */
+
+    /* Animations globales */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideInUp {
+        from {
+            transform: translateY(30px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes rotateIn {
+        from {
+            transform: rotate(-10deg);
+            opacity: 0;
+        }
+        to {
+            transform: rotate(0);
+            opacity: 1;
+        }
+    }
+
+    /* Application des animations */
+    .animate-fade-in {
+        animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    .animate-slide-in {
+        animation: slideInUp 0.6s ease-out forwards;
+    }
+
+    .animate-pulse {
+        animation: pulse 1.5s infinite;
+    }
+
+    .animate-rotate-in {
+        animation: rotateIn 0.6s ease-out forwards;
+    }
+
+    /* Délais d'animation */
+    .delay-100 { animation-delay: 100ms; }
+    .delay-200 { animation-delay: 200ms; }
+    .delay-300 { animation-delay: 300ms; }
+    .delay-400 { animation-delay: 400ms; }
+    .delay-500 { animation-delay: 500ms; }
+
+    /* Card hover animation */
+    .course-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .course-card:hover {
+        transform: translateY(-5px) scale(1.02);
+        -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 20, 0, 0, 10);
+    }
+
+    /* Button hover effects */
+    .btn-hover {
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-primary:hover {
+        -fx-background-color: #007bff;
+        -fx-text-fill: #fff;
+        transform: scale(1.05);
+    }
+
+    /* Badge animation */
+    .badge {
+        transition: transform 0.3s ease;
+    }
+
+    .course-card:hover .badge {
+        transform: scale(1.1);
+    }
+
+    /* Create button animation */
+    #createButton {
+        transition: transform 0.3s ease, -fx-background-color 0.3s ease;
+    }
+
+    #createButton:hover {
+        transform: scale(1.05);
+    }
+
+    /* Load more button animation */
+    #loadMoreButton:hover {
+    }
+
+    #loadMoreButton:pressed {
+    }
+
+
+
+    .btn-animated:hover {
+
+    }
+
+    /* Header animation */
+    .display-5 {
+        transition: transform 0.01s ease;
+    }
+
+    .display-5:hover {
+        transform: translateX(5px);
+    }
+
+    /* Stats animation */
+    .stat-count {
+        transition: transform 0.3s ease, -fx-text-fill 0.3s ease;
+    }
+
+    .course-card:hover .stat-count {
+        -fx-text-fill: #0056b3;
+        transform: scale(1.1);
+    }
+    /* Ajout pour les animations de frappe/rebond */
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+        40% {transform: translateY(-20px);}
+        60% {transform: translateY(-10px);}
+    }
+
+    @keyframes shake {
+        0%, 100% {transform: translateX(0);}
+        10%, 30%, 50%, 70%, 90% {transform: translateX(-5px);}
+        20%, 40%, 60%, 80% {transform: translateX(5px);}
+    }
+
+    .animate-bounce {
+        animation: bounce 1s;
+    }
+
+    .animate-shake {
+        animation: shake 0.5s;
+    }
+
+    /* Style pour les cartes pendant l'animation */
+    .card-entering {
+        box-shadow: 0 0 20px rgba(0, 123, 255, 0.4);
+        transition: all 0.3s ease;
+    }
+
+    /* Améliorations pour les effets de survol */
+    .course-card:hover {
+        box-shadow: 0 10px 25px rgba(0, 123, 255, 0.25);
+        transform: translateY(-10px) scale(1.03);
+    }
+
+    /* Animation du badge avec rebond */
+    .badge {
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .course-card:hover .badge {
+        transform: scale(1.2);
+    }
+
+    /* Effets de bouton améliorés */
+    .btn-hover:hover {
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+    }
+
+    /* Effets de transition entre pages */
+    .page-transition {
+        transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+    }
+
 }

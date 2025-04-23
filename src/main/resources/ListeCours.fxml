@@ -97,12 +97,21 @@
 
                                 <!-- Load More Button -->
                                 <HBox alignment="CENTER">
-                                    <Button fx:id="loadMoreButton" onAction="#loadMoreAction" styleClass="btn,btn-link" text="Afficher plus">
-                                        <graphic>
-                                            <Label styleClass="icon" text="↓" />
-                                        </graphic>
-                                    </Button>
-                                </HBox>
+                                    <!-- Load More Button -->
+                                    <HBox alignment="CENTER">
+                                        <Button fx:id="loadMoreButton" onAction="#loadMoreAction" styleClass="btn,btn-primary,btn-lg,btn-animated,btn-hover" text="Afficher plus de cours">
+                                            <graphic>
+                                                <Label style="-fx-text-fill: white; -fx-font-size: 1.2em;" text="⬇">
+                                                    <padding>
+                                                        <Insets left="5.0" />
+                                                    </padding>
+                                                </Label>
+                                            </graphic>
+                                            <effect>
+                                                <DropShadow color="rgba(0,123,255,0.4)" radius="8" spread="0.3" />
+                                            </effect>
+                                        </Button>
+                                    </HBox>                                </HBox>
                             </children>
                         </VBox>
                     </content>

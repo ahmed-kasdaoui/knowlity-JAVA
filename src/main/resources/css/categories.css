@@ -1,179 +1,391 @@
-/* Root */
+/* ======= Base Styles ======= */
 .root {
-    -fx-background-color: #f4f7fa;
+    -fx-font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    -fx-background-color: #f8f9fa;
+}
+
+/* ======= Color Variables ======= */
+* {
+    /* Couleurs principales */
+    -primary-color: #3f51b5;
+    -primary-dark: #303f9f;
+    -primary-light: #7986cb;
+
+    /* Nouvelle couleur verte pour le bouton d'ajout */
+    -success-color: #4caf50;
+    -success-dark: #388e3c;
+    -success-light: #a5d6a7;
+
+    /* Couleurs pour les boutons d'action */
+    -edit-color: #2196f3;
+    -delete-color: #f44336;
+    -view-color: #9c27b0;
+    -warning-color: #ff9800;
+
+    /* Couleurs de fond et de texte */
+    -text-primary: #212121;
+    -text-secondary: #757575;
+    -border-color: #e0e0e0;
+    -background-light: #ffffff;
+    -background-alternate: #f5f7fa;
+    -card-shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* ======= Layout Structure ======= */
+.content-box {
+    -fx-background-color: -background-light;
+}
+
+/* ======= Header Section Styles ======= */
+.header-section {
+    -fx-background-color: linear-gradient(to right, -primary-color, -primary-dark);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 3);
+}
+
+.main-title {
+    -fx-text-fill: white;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.subtitle {
+    -fx-text-fill: rgba(255, 255, 255, 0.9);
+    -fx-font-size: 14px;
+}
+
+/* ======= Main Content Area ======= */
+.main-content {
+    -fx-background-color: -background-light;
+}
+
+.section-title {
+    -fx-text-fill: -text-primary;
+    -fx-font-weight: bold;
+}
+
+/* ======= Button Styles ======= */
+/* Bouton d'ajout en VERT comme demandé */
+.add-button {
+    -fx-background-color: -success-color;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 15 10 10;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1);
+}
+
+.add-button:hover {
+    -fx-background-color: derive(-success-color, -10%);
+}
+
+.add-button:pressed {
+    -fx-background-color: -success-dark;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 1);
+}
+
+.button-icon-container {
+    -fx-min-width: 24px;
+    -fx-min-height: 24px;
+    -fx-max-width: 24px;
+    -fx-max-height: 24px;
+}
+
+.button-icon {
+    -fx-fill: white;
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+/* ======= Table Container ======= */
+.table-container {
+    -fx-background-color: -background-light;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(three-pass-box, -card-shadow, 8, 0, 0, 2);
+    -fx-padding: 0;
+}
+
+/* ======= Modern Scrollpane ======= */
+.modern-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+.modern-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.modern-scroll-pane .scroll-bar:vertical,
+.modern-scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.modern-scroll-pane .increment-button,
+.modern-scroll-pane .decrement-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.modern-scroll-pane .scroll-bar:vertical .thumb,
+.modern-scroll-pane .scroll-bar:horizontal .thumb {
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+    -fx-background-radius: 5em;
+}
+
+.modern-scroll-pane .scroll-bar:vertical .thumb:hover,
+.modern-scroll-pane .scroll-bar:horizontal .thumb:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* ======= Modern Table ======= */
+.modern-table {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.modern-table .column-header-background {
+    -fx-background-color: -background-light;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 1);
+}
+
+.modern-table .column-header,
+.modern-table .filler {
+    -fx-background-color: -background-light;
+    -fx-size: 45px;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: -border-color;
+}
+
+.modern-table .column-header .label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text-primary;
+    -fx-alignment: center-left;
+    -fx-padding: 12 5;
+}
+
+.modern-table .table-row-cell {
+    -fx-background-color: -background-light;
+    -fx-border-color: transparent transparent -border-color transparent;
+    -fx-table-cell-border-color: transparent;
+    -fx-padding: 5;
+    -fx-min-height: 60px;
+    -fx-pref-height: 60px;
+}
+
+.modern-table .table-row-cell:odd {
+    -fx-background-color: -background-alternate;
+}
+
+.modern-table .table-row-cell:hover {
+    -fx-background-color: derive(-primary-light, 75%);
+}
+
+.modern-table .table-row-cell:selected {
+    -fx-background-color: derive(-primary-light, 55%);
+    -fx-text-background-color: -text-primary;
+}
+
+.modern-table .table-cell {
+    -fx-alignment: center-left;
+    -fx-padding: 10 15;
+    -fx-text-fill: -text-primary;
+    -fx-font-size: 14px;
+    -fx-border-color: transparent;
+}
+
+/* ======= Image Column Styles - Pour images 200x200 ======= */
+.image-column {
+    -fx-alignment: center;
+}
+
+.modern-table .image-column .table-cell {
+    -fx-alignment: center;
+    -fx-padding: 5;
+}
+
+/* Style pour les conteneurs d'images de 200x200 */
+.category-image-container {
+    -fx-min-width: 80px;
+    -fx-min-height: 80px;
+    -fx-max-width: 80px;
+    -fx-max-height: 80px;
+    -fx-background-color: -background-alternate;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: -border-color;
+    -fx-border-width: 1;
+    -fx-padding: 2;
+}
+
+.category-image {
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+}
+
+/* ======= Actions Column Styles ======= */
+.actions-column {
+    -fx-alignment: center;
+}
+
+.modern-table .actions-column .table-cell {
+    -fx-alignment: center;
+    -fx-padding: 0 5;
+}
+
+/* Style pour les boutons d'action avec couleurs sémantiques */
+.action-button {
+    -fx-background-radius: 50%;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
+    -fx-padding: 10;
+    -fx-content-display: graphic-only;
+    -fx-cursor: hand;
+}
+
+.action-button .button-icon {
+    -fx-fill: white;
+    -fx-scale-x: 0.9;
+    -fx-scale-y: 0.9;
+}
+
+.edit-button {
+    -fx-background-color: -edit-color;
+}
+
+.edit-button:hover {
+    -fx-background-color: derive(-edit-color, -10%);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}
+
+.delete-button {
+    -fx-background-color: -delete-color;
+}
+
+.delete-button:hover {
+    -fx-background-color: derive(-delete-color, -10%);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}
+
+.view-button {
+    -fx-background-color: -view-color;
+}
+
+.view-button:hover {
+    -fx-background-color: derive(-view-color, -10%);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}
+
+/* ======= Empty State ======= */
+.empty-placeholder {
+    -fx-padding: 40;
+    -fx-spacing: 20;
+}
+
+.empty-icon {
+    -fx-fill: -text-secondary;
+    -fx-scale-x: 4;
+    -fx-scale-y: 4;
+    -fx-opacity: 0.7;
+}
+
+.empty-text {
+    -fx-font-size: 18px;
+    -fx-text-fill: -text-secondary;
+    -fx-font-weight: bold;
+}
+
+.empty-action-button {
+    -fx-background-color: -success-color;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 12 20;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.empty-action-button:hover {
+    -fx-background-color: derive(-success-color, -10%);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}
+
+/* ======= Status Bar ======= */
+.status-bar {
+    -fx-padding: 5 0 0 0;
+}
+
+.status-text {
+    -fx-text-fill: -text-secondary;
+    -fx-font-size: 13px;
+}
+
+/* ======= Responsive Adjustments ======= */
+/* Ces règles s'appliqueront automatiquement lors du redimensionnement de la fenêtre */
+.modern-table .table-column {
+    -fx-pref-width: -1;
+}
+
+/* Assurer que les colonnes se redimensionnent correctement avec la fenêtre */
+.table-view {
+    -fx-table-cell-border-color: transparent;
+    -fx-column-resize-policy: constrained-resize;
+}
+.btn {
+    -fx-font-size: 14px;
+    -fx-padding: 8 16;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.btn-primary {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: #ffffff;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #2563eb;
+}
+
+.btn-danger {
+    -fx-background-color: #ef4444;
+    -fx-text-fill: #ffffff;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #dc2626;
+}
+
+/* Create button */
+#createButton {
+    -fx-background-color: #10b981;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+    -fx-padding: 10 20;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+#createButton:hover {
+    -fx-background-color: #059669;
+}
+
+/* No icon label */
+.no-icon-label {
+    -fx-text-fill: #6b7280;
+    -fx-font-style: italic;
 }
 
 /* ScrollPane */
 .scroll-pane {
-    -fx-background: transparent;
     -fx-background-color: transparent;
-    -fx-padding: 0;
 }
 
 .scroll-pane .viewport {
     -fx-background-color: transparent;
-}
-
-.scroll-pane .scroll-bar:vertical {
-    -fx-pref-width: 12;
-    -fx-background-color: transparent;
-}
-
-.scroll-pane .scroll-bar:vertical .thumb {
-    -fx-background-color: #6c757d;
-    -fx-background-radius: 5;
-}
-
-.scroll-pane .scroll-bar:vertical .thumb:hover {
-    -fx-background-color: #007bff;
-}
-
-/* Table */
-.table {
-    -fx-background-color: #fff;
-    -fx-border-color: #dee2e6;
-    -fx-border-width: 1;
-    -fx-font-size: 14px;
-}
-
-.table .table-row-cell {
-    -fx-background-color: #fff;
-    -fx-border-color: #dee2e6;
-    -fx-border-width: 0 0 1 0;
-    -fx-padding: 8;
-}
-
-.table .table-row-cell:hover {
-    -fx-background-color: #f8f9fa;
-}
-
-.table .column-header {
-    -fx-background-color: #f8f9fa;
-    -fx-border-color: #dee2e6;
-    -fx-border-width: 0 0 1 0;
-    -fx-padding: 10;
-    -fx-font-weight: bold;
-}
-
-.table .column-header .label {
-    -fx-text-fill: #333;
-}
-
-/* Placeholder */
-.table .placeholder .label {
-    -fx-font-size: 16px;
-    -fx-text-fill: #6c757d;
-}
-
-/* Buttons */
-.btn {
-    -fx-background-radius: 4;
-    -fx-border-radius: 4;
-    -fx-padding: 6 12;
-    -fx-font-size: 12px;
-    -fx-cursor: hand;
-}
-
-.btn-sm {
-    -fx-padding: 4 8;
-    -fx-font-size: 11px;
-}
-
-.btn-success {
-    -fx-background-color: #28a745;
-    -fx-text-fill: #fff;
-}
-
-.btn-success:hover {
-    -fx-background-color: #218838;
-}
-
-.btn-info {
-    -fx-background-color: #17a2b8;
-    -fx-text-fill: #fff;
-}
-
-.btn-info:hover {
-    -fx-background-color: #138496;
-}
-
-.btn-primary {
-    -fx-background-color: #007bff;
-    -fx-text-fill: #fff;
-}
-
-.btn-primary:hover {
-    -fx-background-color: #0056b3;
-}
-
-.btn-danger {
-    -fx-background-color: #dc3545;
-    -fx-text-fill: #fff;
-}
-
-.btn-danger:hover {
-    -fx-background-color: #c82333;
-}
-
-/* Header */
-.card-title {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #333;
-}
-
-/* Text Muted */
-.text-muted {
-    -fx-font-size: 14px;
-    -fx-text-fill: #6c757d;
-}
-/* /css/matieres.css */
-.root {
-    -fx-background-color: #f4f4f4;
-}
-
-.card-title {
-    -fx-text-fill: #333;
-}
-
-.scroll-pane {
-    -fx-background-color: transparent;
-}
-
-.table-view {
-    -fx-background-color: white;
-    -fx-border-color: #ddd;
-}
-
-.table-view .column-header {
-    -fx-background-color: #f8f8f8;
-    -fx-border-color: #ddd;
-}
-
-.btn {
-    -fx-cursor: hand;
-}
-
-.btn-success {
-    -fx-background-color: #28a745;
-    -fx-text-fill: white;
-}
-
-.btn-primary {
-    -fx-background-color: #007bff;
-    -fx-text-fill: white;
-}
-
-.btn-danger {
-    -fx-background-color: #dc3545;
-    -fx-text-fill: white;
-}
-
-.btn-sm {
-    -fx-padding: 2 8;
-    -fx-font-size: 12px;
-}
-
-.text-muted {
-    -fx-text-fill: #6c757d;
 }

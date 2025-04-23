@@ -7,51 +7,58 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="root" prefHeight="700.0" prefWidth="1000.0" styleClass="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ListeMatieresController">
+<AnchorPane fx:id="root" styleClass="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MatiereListController">
     <children>
-        <VBox fx:id="mainBox" alignment="TOP_CENTER" prefHeight="700.0" prefWidth="1142.0" spacing="20.0">
+        <VBox fx:id="mainBox" alignment="TOP_CENTER" prefHeight="594.0" prefWidth="696.0" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
             </padding>
             <children>
                 <!-- Header -->
-                <HBox alignment="CENTER_LEFT">
+                <HBox alignment="CENTER_LEFT" spacing="20.0">
                     <children>
-                        <Label styleClass="card-title" text="Liste des Matières">
+                        <Label styleClass="page-title" text="Liste des Matières">
                             <font>
-                                <Font name="System Bold" size="24.0" />
+                                <Font name="System Bold" size="32.0" />
                             </font>
                         </Label>
+                        <TextField fx:id="searchField" promptText="Rechercher une matière..." styleClass="search-field" HBox.hgrow="ALWAYS" />
                     </children>
                 </HBox>
 
-                <!-- Table -->
-                <ScrollPane fx:id="scrollPane" fitToWidth="true" prefHeight="472.0" prefWidth="960.0" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
-                    <content>
-                        <TableView fx:id="matieresTable" prefHeight="745.0" prefWidth="1204.0" styleClass="table">
-                            <columns>
-                                <TableColumn fx:id="titreColumn" prefWidth="168.0" text="Titre" />
-                                <TableColumn fx:id="categorieColumn" prefWidth="178.0" text="Catégorie" />
-                                <TableColumn fx:id="descriptionColumn" prefWidth="177.0" text="Description" /> <!-- Increased width -->
-                                <TableColumn fx:id="prerequisColumn" prefWidth="185.0" text="Prérequis" /> <!-- Increased width -->
-                                <TableColumn fx:id="couleurThemeColumn" prefWidth="129.0" text="Couleur Thème" />
-                                <TableColumn fx:id="actionsColumn" prefWidth="249.0" text="Actions" /> <!-- Adjusted to fit -->   </columns>
-                            <placeholder>
-                                <Label styleClass="text-muted" text="No records found" />
-                            </placeholder>
-                        </TableView>
-                    </content>
-                </ScrollPane>
-
-                <!-- Create Button -->
-                <HBox>
+                <!-- Table Card -->
+                <VBox spacing="10.0" styleClass="table-card" VBox.vgrow="ALWAYS">
                     <children>
-                        <Button fx:id="createButton" onAction="#createAction" styleClass="btn,btn-success" text="Create new" />
+                        <ScrollPane fx:id="scrollPane" fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
+                            <content>
+                                <TableView fx:id="matieresTable" styleClass="modern-table">
+                                    <columns>
+                                        <TableColumn fx:id="titreColumn" prefWidth="10.0" text="Titre" />
+                                        <TableColumn fx:id="categorieColumn" prefWidth="10.0" text="Catégorie" />
+                                        <TableColumn fx:id="descriptionColumn" prefWidth="10.0" text="Description" />
+                                        <TableColumn fx:id="prerequisColumn" prefWidth="10.0" text="Prérequis" />
+                                        <TableColumn fx:id="couleurThemeColumn" prefWidth="20.0" text="Couleur" />
+                                        <TableColumn fx:id="actionsColumn" prefWidth="400.0" text="Actions" />
+                                    </columns>
+                                    <placeholder>
+                                        <Label styleClass="placeholder-text" text="Aucune matière trouvée" />
+                                    </placeholder>
+                                </TableView>
+                            </content>
+                        </ScrollPane>
+                    </children>
+                </VBox>
+
+                <!-- Action Buttons -->
+                <HBox alignment="CENTER_RIGHT" spacing="15.0">
+                    <children>
+                        <Button fx:id="createButton" onAction="#createAction" styleClass="btn,btn-primary" text="Ajouter une matière" />
                     </children>
                 </HBox>
             </children>

@@ -9,51 +9,92 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="root" prefHeight="700.0" prefWidth="1000.0" styleClass="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ListeCategoriesController">
     <children>
-        <VBox fx:id="mainBox" alignment="TOP_CENTER" prefHeight="700.0" prefWidth="1000.0" spacing="20.0">
-            <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-            </padding>
-            <children>
-                <!-- Header -->
-                <HBox alignment="CENTER_LEFT">
-                    <children>
-                        <Label styleClass="card-title" text="Liste des Catégories">
-                            <font>
-                                <Font name="System Bold" size="24.0" />
-                            </font>
-                        </Label>
-                    </children>
+        <VBox fx:id="mainBox" alignment="TOP_CENTER" styleClass="content-box" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <!-- Header Section -->
+            <StackPane styleClass="header-section">
+                <children>
+                    <HBox alignment="CENTER_LEFT" spacing="20.0">
+                        <padding>
+                            <Insets bottom="25.0" left="30.0" right="30.0" top="25.0" />
+                        </padding>
+                        <children>
+                            <VBox spacing="5.0">
+                                <Label styleClass="main-title" text="Liste des Catégories">
+                                    <font>
+                                        <Font name="System Bold" size="28.0" />
+                                    </font>
+                                </Label>
+                                <Label styleClass="subtitle" text="Gérez vos catégories de produits efficacement">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                            </VBox>
+                        </children>
+                    </HBox>
+                </children>
+            </StackPane>
+
+            <!-- Main Content Area -->
+            <VBox spacing="20.0" styleClass="main-content" VBox.vgrow="ALWAYS">
+                <padding>
+                    <Insets bottom="30.0" left="30.0" right="30.0" top="20.0" />
+                </padding>
+
+                <!-- Action Bar -->
+                <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="action-bar">
+                    <Label styleClass="section-title" text="Toutes les catégories">
+                        <font>
+                            <Font name="System Bold" size="18.0" />
+                        </font>
+                    </Label>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Button fx:id="createButton" onAction="#createAction" styleClass="add-button" text="Ajouter une catégorie">
+                        <graphic>
+                            <StackPane styleClass="button-icon-container">
+                                <SVGPath content="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M13,11H16V13H13V16H11V13H8V11H11V8H13V11Z" styleClass="button-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
                 </HBox>
 
-                <!-- Table -->
-                <ScrollPane fx:id="scrollPane" fitToWidth="true" prefHeight="472.0" prefWidth="960.0" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
-                    <content>
-                        <TableView fx:id="categoriesTable" prefHeight="550.0" prefWidth="958.0" styleClass="table">
+                <!-- Table Container -->
+                <StackPane styleClass="table-container" VBox.vgrow="ALWAYS">
+                    <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" styleClass="modern-scroll-pane" StackPane.alignment="CENTER" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="categoriesTable" styleClass="modern-table" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn fx:id="nameColumn" prefWidth="200.0" text="Name" />
-                                <TableColumn fx:id="descriptionColumn" prefWidth="389.0" text="Description" />
-                                <TableColumn fx:id="iconeColumn" prefWidth="173.0" text="Icone" />
-                                <TableColumn fx:id="actionsColumn" prefWidth="195.0" text="Actions" />
+                                <TableColumn fx:id="nameColumn" prefWidth="200.0" text="Nom" />
+                                <TableColumn fx:id="descriptionColumn" prefWidth="341.0" text="Description" />
+                                <TableColumn fx:id="iconeColumn" prefWidth="159.0" styleClass="image-column" text="Icône" />
+                                <TableColumn fx:id="actionsColumn" prefWidth="237.0" styleClass="actions-column" text="Actions" />
                             </columns>
                             <placeholder>
-                                <Label styleClass="text-muted" text="No records found" />
+                                <VBox alignment="CENTER" spacing="15.0" styleClass="empty-placeholder">
+                                    <SVGPath content="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" styleClass="empty-icon" />
+                                    <Label styleClass="empty-text" text="Aucune catégorie disponible" />
+                                    <Button onAction="#createAction" styleClass="empty-action-button" text="Créer une nouvelle catégorie" />
+                                    <padding>
+                                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                    </padding>
+                                </VBox>
                             </placeholder>
                         </TableView>
-                    </content>
-                </ScrollPane>
+                    </ScrollPane>
+                </StackPane>
 
-                <!-- Create Button -->
-                <HBox>
-                    <children>
-                        <Button fx:id="createButton" onAction="#createAction" styleClass="btn,btn-success" text="Create new" />
-                    </children>
+                <!-- Status Bar (Optional) -->
+                <HBox alignment="CENTER_LEFT" styleClass="status-bar">
+                    <Label fx:id="statusLabel" styleClass="status-text" text="Prêt" />
                 </HBox>
-            </children>
+            </VBox>
         </VBox>
     </children>
     <stylesheets>

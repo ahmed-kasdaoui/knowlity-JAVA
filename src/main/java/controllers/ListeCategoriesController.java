@@ -116,7 +116,7 @@ public class ListeCategoriesController {
     @FXML
     void createAction(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EditCategorie.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterCategorie.fxml"));
             Scene scene = new Scene(loader.load(), 1000, 700);
             Stage stage = (Stage) createButton.getScene().getWindow();
             stage.setScene(scene);
