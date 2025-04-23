@@ -150,7 +150,7 @@
             <HBox alignment="CENTER_LEFT" spacing="20">
                 <Label styleClass="display-5" text="Tous les cours" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Button fx:id="reopenGuideButton" text="Réouvrir le Guide" styleClass="guide-reopen-button" onAction="#restartGuide" />
+                <Button fx:id="reopenGuideButton" text="Ouvrir le Guide" styleClass="guide-reopen-button" onAction="#restartGuide" />
             </HBox>
         </children>
     </VBox>
