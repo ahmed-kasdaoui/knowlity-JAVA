@@ -2,6 +2,7 @@ package tn.esprit.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import tn.esprit.services.ServiceCours;
 
 public class Cours {
     private int id;
@@ -74,6 +75,11 @@ public class Cours {
     }
 
     public List<Chapitre> getChapitres() {
+        if (chapitres == null || chapitres.isEmpty()) {
+            // Utiliser ServiceCours pour récupérer les chapitres
+            ServiceCours serviceCours = new ServiceCours();
+            chapitres = serviceCours.getChapitres(this);
+        }
         return chapitres;
     }
 
