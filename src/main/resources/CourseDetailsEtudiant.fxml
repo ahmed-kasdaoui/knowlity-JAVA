@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import java.net.URL?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 
 <AnchorPane fx:id="root" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CourseDetailsControllerEtudiant">
     <ScrollPane fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -25,7 +26,14 @@
                     
                     <!-- Informations principales -->
                     <VBox spacing="15">
-                        <Label fx:id="courseTitle" styleClass="course-title-large" wrapText="true" />
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label fx:id="courseTitle" styleClass="course-title-large" wrapText="true" />
+                            <Button fx:id="favoriteButton" onAction="#handleFavoriteAction" styleClass="favorite-button">
+                                <graphic>
+                                    <FontAwesomeIconView fx:id="favoriteIcon" glyphName="STAR" size="20" />
+                                </graphic>
+                            </Button>
+                        </HBox>
                         <HBox spacing="10">
                             <Label fx:id="matiereBadge" styleClass="info-badge" />
                             <Label fx:id="categorieBadge" styleClass="info-badge" />

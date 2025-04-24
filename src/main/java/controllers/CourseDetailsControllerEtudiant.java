@@ -3,6 +3,7 @@ package controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -18,10 +19,17 @@ import javafx.stage.Stage;
 import tn.esprit.models.Chapitre;
 import tn.esprit.models.Cours;
 import tn.esprit.services.ServiceCours;
+import tn.esprit.services.ServiceInscription;
+import tn.esprit.services.ServiceFavoris;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
+import javax.mail.*;
+import javax.mail.internet.*;
+import java.awt.Desktop;
+import java.net.URI;
+import java.util.Properties;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,17 +55,29 @@ public class CourseDetailsControllerEtudiant {
     @FXML private Label favoritesLabel;
     @FXML private Button statsButton;
     @FXML private VBox chaptersContainer;
+    @FXML private Button enrollButton;
+    @FXML private Button favoriteButton;
+    @FXML private FontAwesomeIconView favoriteIcon;
 
     private Cours course;
     private final ServiceCours serviceCours;
+    private final ServiceInscription serviceInscription;
+    private final ServiceFavoris serviceFavoris;
+    private static final int DEFAULT_USER_ID = 1;
+    private static final String GMAIL_USERNAME = "amennahali8@gmail.com";
+    private static final String GMAIL_PASSWORD = "vifntmdgfjgnqzen";
 
     public CourseDetailsControllerEtudiant() {
         this.serviceCours = new ServiceCours();
+        this.serviceInscription = new ServiceInscription();
+        this.serviceFavoris = new ServiceFavoris();
     }
 
     public void setCourse(Cours course) {
         this.course = course;
         initializeUI();
+        updateEnrollButtonState();
+        updateFavoriteButtonState();
     }
 
     private void initializeUI() {
@@ -352,9 +372,191 @@ public class CourseDetailsControllerEtudiant {
         }
     }
 
+    private void updateEnrollButtonState() {
+        if (course == null) return;
+        
+        try {
+            if (serviceInscription.estInscrit(DEFAULT_USER_ID, course.getId())) {
+                enrollButton.setText("Déjà inscrit");
+                enrollButton.setDisable(true);
+            } else {
+                if (course.getPrix() > 0) {
+                    enrollButton.setText("Payer et s'inscrire (" + course.getPrix() + " DT)");
+                } else {
+                    enrollButton.setText("S'inscrire gratuitement");
+                }
+                enrollButton.setDisable(false);
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la vérification de l'inscription : " + e.getMessage());
+            enrollButton.setDisable(true);
+        }
+    }
+
     @FXML
     private void handleEnrollAction() {
-        // Cette méthode sera implémentée plus tard pour gérer l'inscription
-        System.out.println("Tentative d'inscription au cours: " + course.getTitle());
+        if (course == null) {
+            showAlert("Erreur", "Impossible de s'inscrire au cours.", Alert.AlertType.ERROR);
+            return;
+        }
+
+        try {
+            // Vérifier si l'étudiant est déjà inscrit
+            if (serviceInscription.estInscrit(DEFAULT_USER_ID, course.getId())) {
+                showAlert("Information", "Vous êtes déjà inscrit à ce cours.", Alert.AlertType.INFORMATION);
+                return;
+            }
+
+            // Si le cours est payant
+            if (course.getPrix() > 0) {
+                if (course.getLienDePaiment() != null && !course.getLienDePaiment().isEmpty()) {
+                    // Demander confirmation avant de rediriger vers le paiement
+                    boolean confirmPaiement = showConfirmationDialog(
+                        "Confirmation de paiement",
+                        "Vous allez être redirigé vers la page de paiement.\nMontant à payer : " + course.getPrix() + " DT\n\nVoulez-vous continuer ?"
+                    );
+
+                    if (confirmPaiement) {
+                        try {
+                            // Ouvrir le lien de paiement dans le navigateur par défaut
+                            Desktop.getDesktop().browse(new URI(course.getLienDePaiment()));
+                            
+                            // Créer une nouvelle fenêtre de confirmation
+                            Stage confirmStage = new Stage();
+                            confirmStage.setTitle("Confirmation de paiement");
+                            
+                            VBox confirmBox = new VBox(10);
+                            confirmBox.setPadding(new Insets(20));
+                            confirmBox.setAlignment(Pos.CENTER);
+                            
+                            Label messageLabel = new Label("Veuillez compléter votre paiement dans le navigateur.\nUne fois le paiement effectué, cliquez sur 'Confirmer'.");
+                            messageLabel.setWrapText(true);
+                            
+                            Button confirmButton = new Button("J'ai effectué le paiement");
+                            Button cancelButton = new Button("Annuler");
+                            
+                            HBox buttonBox = new HBox(10);
+                            buttonBox.setAlignment(Pos.CENTER);
+                            buttonBox.getChildren().addAll(confirmButton, cancelButton);
+                            
+                            confirmBox.getChildren().addAll(messageLabel, buttonBox);
+                            
+                            Scene confirmScene = new Scene(confirmBox);
+                            confirmStage.setScene(confirmScene);
+                            
+                            // Gérer les actions des boutons
+                            confirmButton.setOnAction(e -> {
+                                confirmStage.close();
+                                procederInscription();
+                            });
+                            
+                            cancelButton.setOnAction(e -> {
+                                confirmStage.close();
+                                showAlert("Information", "L'inscription a été annulée. Vous pouvez réessayer plus tard.", Alert.AlertType.INFORMATION);
+                            });
+                            
+                            // Afficher la fenêtre de confirmation
+                            confirmStage.show();
+                        } catch (Exception e) {
+                            showAlert("Erreur", "Impossible d'ouvrir le lien de paiement : " + e.getMessage(), Alert.AlertType.ERROR);
+                        }
+                    }
+                } else {
+                    showAlert("Erreur", "Le lien de paiement n'est pas disponible.", Alert.AlertType.ERROR);
+                }
+            } else {
+                // Si le cours est gratuit, procéder directement à l'inscription
+                procederInscription();
+            }
+
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'inscription : " + e.getMessage());
+            showAlert("Erreur", "Une erreur est survenue lors de l'inscription.", Alert.AlertType.ERROR);
+        }
+    }
+
+    private void procederInscription() {
+        try {
+            // Inscrire l'étudiant
+            serviceInscription.inscrireEtudiant(DEFAULT_USER_ID, course.getId());
+
+            // Envoyer l'email de confirmation
+            sendConfirmationEmail("chamseddinedoula7@gmail.com", course.getTitle());
+
+            // Mettre à jour l'interface
+            updateEnrollButtonState();
+
+            // Afficher un message de succès
+            showAlert("Succès", "Inscription réussie ! Un email de confirmation vous a été envoyé.", Alert.AlertType.INFORMATION);
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'inscription : " + e.getMessage());
+            showAlert("Erreur", "Une erreur est survenue lors de l'inscription.", Alert.AlertType.ERROR);
+        }
+    }
+
+    private void sendConfirmationEmail(String to, String courseTitle) {
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+
+        Session session = Session.getInstance(props, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(GMAIL_USERNAME, GMAIL_PASSWORD);
+            }
+        });
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(GMAIL_USERNAME));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            message.setSubject("Confirmation d'inscription au cours");
+            
+            String htmlContent = String.format(
+                "<html><body>" +
+                "<h2>Confirmation d'inscription</h2>" +
+                "<p>Vous êtes maintenant inscrit au cours : <strong>%s</strong></p>" +
+                "<p>Merci de nous avoir rejoint !</p>" +
+                "</body></html>",
+                courseTitle
+            );
+            
+            message.setContent(htmlContent, "text/html; charset=utf-8");
+            Transport.send(message);
+
+        } catch (MessagingException e) {
+            System.err.println("Erreur lors de l'envoi de l'email : " + e.getMessage());
+        }
+    }
+
+    private void updateFavoriteButtonState() {
+        try {
+            if (serviceFavoris.estDansFavoris(DEFAULT_USER_ID, course.getId())) {
+                favoriteButton.getStyleClass().add("active");
+                favoriteIcon.setGlyphName("STAR");
+            } else {
+                favoriteButton.getStyleClass().remove("active");
+                favoriteIcon.setGlyphName("STAR_O");
+            }
+        } catch (Exception e) {
+            System.err.println("Error updating favorite button state: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleFavoriteAction() {
+        try {
+            if (serviceFavoris.estDansFavoris(DEFAULT_USER_ID, course.getId())) {
+                serviceFavoris.retirerDesFavoris(DEFAULT_USER_ID, course.getId());
+            } else {
+                serviceFavoris.ajouterAuxFavoris(DEFAULT_USER_ID, course.getId());
+            }
+            updateFavoriteButtonState();
+        } catch (Exception e) {
+            System.err.println("Error handling favorite action: " + e.getMessage());
+            showAlert("Erreur", "Une erreur est survenue lors de la gestion des favoris.", Alert.AlertType.ERROR);
+        }
     }
 }

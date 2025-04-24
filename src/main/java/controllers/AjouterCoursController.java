@@ -32,6 +32,14 @@ import java.nio.file.Paths;
 import java.text.Normalizer;
 import java.util.Arrays;
 import java.util.UUID;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.scene.web.WebView;
+import javafx.scene.web.WebEngine;
+import javafx.concurrent.Worker;
+import netscape.javascript.JSObject;
+import javafx.scene.layout.AnchorPane;
+import java.net.URL;
 
 public class AjouterCoursController {
 
@@ -62,6 +70,16 @@ public class AjouterCoursController {
     @FXML
     private Button submitButton;
 
+    @FXML
+    private ImageView imagePreview;
+
+    @FXML
+    private VBox mainBox;
+
+    @FXML
+    private AnchorPane root;
+
+    private WebView webView;
     private static final String UPLOAD_DIR = "Uploads/";
     private static final String WATERMARK_PATH = "src/main/resources/watermark.png";
     private static final String[] VALID_LANGUAGES = {"fr", "en", "es", "de", "ar"};
@@ -69,6 +87,7 @@ public class AjouterCoursController {
     private static final String COURSE_URL_BASE = "http://localhost:8080/cours/";
     private static final String FACEBOOK_PAGE_ID = "535397399664579";
     private static final String FACEBOOK_ACCESS_TOKEN = "EAAq1jUXunxQBOxr3qXCxWKLKVarrhK90Je7GnHrKGY4QF2jghFYTgAzJZAuYFDRISY2rkMJduXxVWNeUZCNnWBw88VScGzySVY4GrlrJODmACZCFfMimoxNS7uHZBLPtZApUJhUMckALChavZBe8NWT8HizJU9yXjPmelMf3mFjsoanmQHTrgAzzGFWXCHKnuZB";
+    private static final String VOICE_RECOGNITION_HTML = "/web/voiceRecognition.html";
 
     @FXML
     public void initialize() {
@@ -115,6 +134,30 @@ public class AjouterCoursController {
             @Override
             public Matiere fromString(String string) {
                 return null;
+            }
+        });
+
+        // Ajouter le bouton de reconnaissance vocale
+        Button voiceButton = new Button("🎤 Dictée vocale");
+        voiceButton.getStyleClass().addAll("btn", "btn-primary");
+        voiceButton.setOnAction(e -> showVoiceRecognition());
+        mainBox.getChildren().add(1, voiceButton); // Ajouter après le titre
+
+        // Initialiser WebView
+        webView = new WebView();
+        webView.setVisible(false);
+        webView.setPrefSize(400, 300);
+        WebEngine engine = webView.getEngine();
+
+        // Charger la page HTML
+        URL url = getClass().getResource(VOICE_RECOGNITION_HTML);
+        engine.load(url.toExternalForm());
+
+        // Configurer le pont JavaScript
+        engine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
+            if (newState == Worker.State.SUCCEEDED) {
+                JSObject window = (JSObject) engine.executeScript("window");
+                window.setMember("javaCallback", new JavaScriptCallback());
             }
         });
     }
@@ -402,5 +445,53 @@ public class AjouterCoursController {
             e.printStackTrace();
         }
 
+    }
+
+    private void showVoiceRecognition() {
+        if (!webView.isVisible()) {
+            mainBox.getChildren().add(2, webView);
+            webView.setVisible(true);
+        } else {
+            mainBox.getChildren().remove(webView);
+            webView.setVisible(false);
+        }
+    }
+
+    public class JavaScriptCallback {
+        public void processVoiceInput(String text) {
+            javafx.application.Platform.runLater(() -> {
+                // Analyse simple du texte pour déterminer le champ à remplir
+                text = text.toLowerCase();
+                
+                if (text.contains("titre")) {
+                    String title = text.replace("titre", "").trim();
+                    titleField.setText(title);
+                }
+                else if (text.contains("description")) {
+                    String description = text.replace("description", "").trim();
+                    descriptionField.setText(description);
+                }
+                else if (text.contains("prix")) {
+                    String price = text.replaceAll("[^0-9]", "");
+                    prixField.setText(price);
+                }
+                else if (text.contains("lien")) {
+                    String link = text.replace("lien", "").trim();
+                    lienDePaimentField.setText(link);
+                }
+                else {
+                    // Si aucun mot clé n'est détecté, mettre le texte dans le champ actif
+                    if (titleField.isFocused()) {
+                        titleField.setText(text);
+                    } else if (descriptionField.isFocused()) {
+                        descriptionField.setText(text);
+                    } else if (prixField.isFocused()) {
+                        prixField.setText(text);
+                    } else if (lienDePaimentField.isFocused()) {
+                        lienDePaimentField.setText(text);
+                    }
+                }
+            });
+        }
     }
 }
