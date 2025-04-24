@@ -143,35 +143,66 @@ public class CourseDetailsController {
         VBox card = new VBox(10);
         card.getStyleClass().addAll("card", "chapter-card");
 
-        // Header: Badge and ID
+        // Header with chapter number badge
         HBox header = new HBox();
         header.getStyleClass().add("header-row");
-        Label order = new Label("#" + chapitre.getChapOrder());
-        order.getStyleClass().addAll("badge", "bg-primary");
-        HBox spacer = new HBox();
-        HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
-        Label idLabel = new Label("ID: " + chapitre.getId());
-        idLabel.getStyleClass().add("text-muted");
-        header.getChildren().addAll(order, spacer, idLabel);
+        header.setAlignment(Pos.CENTER_LEFT);
+        
+        Label order = new Label("Chapitre " + chapitre.getChapOrder());
+        order.getStyleClass().add("chapter-badge");
+        header.getChildren().add(order);
 
-        // Title
+        // Title with icon
+        HBox titleBox = new HBox(10);
+        titleBox.setAlignment(Pos.CENTER_LEFT);
+        Label titleIcon = new Label("📚");
         Label title = new Label(chapitre.getTitle() != null ? chapitre.getTitle() : "Untitled");
         title.getStyleClass().add("card-title");
+        titleBox.getChildren().addAll(titleIcon, title);
+
+        // Chapter info
+        VBox infoBox = new VBox(5);
+        infoBox.getStyleClass().add("chapter-info");
+        
+        // Duration info
+        HBox durationBox = new HBox(5);
+        durationBox.setAlignment(Pos.CENTER_LEFT);
+        Label clockIcon = new Label("⏱️");
+        clockIcon.getStyleClass().add("chapter-icon");
+        Label duration = new Label(chapitre.getDureeEstimee() + " minutes");
+        duration.getStyleClass().add("chapter-duration");
+        durationBox.getChildren().addAll(clockIcon, duration);
+
+        // Views info
+        HBox viewsBox = new HBox(5);
+        viewsBox.setAlignment(Pos.CENTER_LEFT);
+        Label eyeIcon = new Label("👁️");
+        eyeIcon.getStyleClass().add("chapter-icon");
+        Label views = new Label(chapitre.getNbrVues() + " vues");
+        views.getStyleClass().add("chapter-duration");
+        viewsBox.getChildren().addAll(eyeIcon, views);
+
+        infoBox.getChildren().addAll(durationBox, viewsBox);
 
         // Buttons
         HBox buttons = new HBox(10);
+        buttons.getStyleClass().add("button-container");
         buttons.setAlignment(Pos.CENTER_RIGHT);
-        Button viewBtn = new Button("Voir");
+
+        Button viewBtn = new Button("Voir le contenu");
         viewBtn.getStyleClass().addAll("btn", "btn-outline-primary", "btn-sm");
         viewBtn.setGraphic(new Label("👁️"));
         viewBtn.setOnAction(e -> handleChapitreView(chapitre));
+
         Button editBtn = new Button("Modifier");
         editBtn.getStyleClass().addAll("btn", "btn-outline-warning", "btn-sm");
         editBtn.setGraphic(new Label("✏️"));
         editBtn.setOnAction(e -> handleChapitreEdit(chapitre));
+
         buttons.getChildren().addAll(viewBtn, editBtn);
 
-        card.getChildren().addAll(header, title, buttons);
+        // Add all components to the card
+        card.getChildren().addAll(header, titleBox, infoBox, buttons);
         return card;
     }
 
