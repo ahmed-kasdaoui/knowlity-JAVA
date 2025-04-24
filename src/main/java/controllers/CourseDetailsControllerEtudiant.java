@@ -105,10 +105,21 @@ public class CourseDetailsControllerEtudiant {
 
         // Load teacher image
         try {
-            Image teacherImageFile = new Image(getClass().getResourceAsStream("/images/teacher-avatar.png"));
-            teacherImage.setImage(teacherImageFile);
+            // Essayer de charger l'image depuis le dossier Uploads si disponible
+            File teacherAvatarFile = new File("Uploads/teacher-avatar.png");
+            if (teacherAvatarFile.exists()) {
+                Image teacherImg = new Image(teacherAvatarFile.toURI().toString());
+                teacherImage.setImage(teacherImg);
+            } else {
+                // Si pas d'image, masquer l'ImageView
+                teacherImage.setVisible(false);
+                teacherImage.setManaged(false);
+            }
         } catch (Exception e) {
             System.err.println("Error loading teacher avatar: " + e.getMessage());
+            // En cas d'erreur, masquer l'ImageView
+            teacherImage.setVisible(false);
+            teacherImage.setManaged(false);
         }
 
         // Set teacher email (temporarily disabled as we don't have access to teacher info)

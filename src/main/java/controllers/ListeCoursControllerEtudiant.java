@@ -452,14 +452,18 @@ public class ListeCoursControllerEtudiant {
     private void viewCourse(Cours cours) {
         System.out.println(serviceCours.getChapitres(cours));
 
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CourseDetailsEtudiant.fxml"));
-            Scene scene = new Scene(loader.load(), 1000, 900); // Match CourseDetails.fxml dimensions
+            Parent root = loader.load();
             CourseDetailsControllerEtudiant controller = loader.getController();
             controller.setCourse(cours); // Pass the Cours object
-            Stage stage = (Stage) mainBox.getScene().getWindow(); // Adjust to your @FXML node
-            stage.setScene(scene);
+            Stage stage = (Stage) mainBox.getScene().getWindow();
+            
+            // Garder les dimensions actuelles de la fenêtre
+            Scene currentScene = stage.getScene();
+            Scene newScene = new Scene(root, currentScene.getWidth(), currentScene.getHeight());
+            
+            stage.setScene(newScene);
             stage.setTitle("Détails du Cours - " + cours.getTitle());
             stage.show();
         } catch (IOException e) {
