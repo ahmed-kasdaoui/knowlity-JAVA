@@ -21,20 +21,22 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
 
 public class ChapitreDetailsControllerEtudiant {
 
     @FXML private Label titleLabel;
-    @FXML private Label orderLabel;
-    @FXML private Label titleDetailLabel;
-    @FXML private Label orderDetailLabel;
-    @FXML private Label contentLabel;
+    @FXML private Label chapterNumberLabel;
+    @FXML private Label descriptionLabel;
+    @FXML private Label creationDateLabel;
+    @FXML private Label pdfStatusLabel;
     @FXML private Button openPdfButton;
     @FXML private Button downloadPdfButton;
     @FXML private Button backButton;
     @FXML private Button editButton;
     @FXML private Button deleteButton;
-    @FXML private VBox mainBox;
+    @FXML private VBox mainContainer;
+    @FXML private VBox pdfSection;
 
     private Chapitre chapitre;
     private Cours cours;
@@ -63,18 +65,24 @@ public class ChapitreDetailsControllerEtudiant {
             return;
         }
 
-        String title = chapitre.getTitle() != null ? chapitre.getTitle() : "Sans titre";
-        String order = String.valueOf(chapitre.getChapOrder());
-        String content = chapitre.getContenu() != null && !chapitre.getContenu().isEmpty() ? chapitre.getContenu() : "Aucun PDF";
+        // Set chapter title and number
+        titleLabel.setText(chapitre.getTitle() != null ? chapitre.getTitle() : "Sans titre");
+        chapterNumberLabel.setText("Chapitre " + chapitre.getChapOrder());
 
-        titleLabel.setText(title);
-        titleDetailLabel.setText(title);
-        orderLabel.setText(order);
-        orderDetailLabel.setText(order);
-        contentLabel.setText(content);
+        // Set description
+        String description = chapitre.getDescription() != null ? chapitre.getDescription() : "Aucune description disponible";
+        descriptionLabel.setText(description);
 
-        // Disable PDF buttons if no content
+        // Set creation date
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String creationDate = chapitre.getCreationDate() != null ? 
+            dateFormat.format(chapitre.getCreationDate()) : "Date inconnue";
+        creationDateLabel.setText("Créé le " + creationDate);
+
+        // Handle PDF section
         boolean hasPdf = chapitre.getContenu() != null && !chapitre.getContenu().isEmpty();
+        pdfStatusLabel.setText(hasPdf ? "PDF disponible" : "Aucun PDF disponible");
+        pdfSection.setVisible(hasPdf);
         openPdfButton.setDisable(!hasPdf);
         downloadPdfButton.setDisable(!hasPdf);
     }
@@ -120,7 +128,7 @@ public class ChapitreDetailsControllerEtudiant {
             fileChooser.setTitle("Enregistrer le PDF");
             fileChooser.setInitialFileName(chapitre.getContenu());
             fileChooser.getExtensionFilters().add(new javafx.stage.FileChooser.ExtensionFilter("PDF", "*.pdf"));
-            File targetFile = fileChooser.showSaveDialog(mainBox.getScene().getWindow());
+            File targetFile = fileChooser.showSaveDialog(mainContainer.getScene().getWindow());
 
             if (targetFile != null) {
                 Files.copy(pdfFile.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -144,7 +152,7 @@ public class ChapitreDetailsControllerEtudiant {
             Parent root = loader.load();
             EditChapitreController controller = loader.getController();
             controller.setChapitre(chapitre);
-            mainBox.getScene().setRoot(root);
+            mainContainer.getScene().setRoot(root);
         } catch (IOException e) {
             System.err.println("Failed to load EditChapitre.fxml: " + e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger le formulaire de modification.");
@@ -180,7 +188,7 @@ public class ChapitreDetailsControllerEtudiant {
             Parent root = loader.load();
             CourseDetailsControllerEtudiant controller = loader.getController();
             controller.setCourse(cours);
-            mainBox.getScene().setRoot(root);
+            mainContainer.getScene().setRoot(root);
         } catch (IOException e) {
             System.err.println("Failed to load CourseDetails.fxml: " + e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de retourner aux détails du cours.");
@@ -194,17 +202,19 @@ public class ChapitreDetailsControllerEtudiant {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
     @FXML
     void handleListes(ActionEvent event) {
         System.out.println("handleListes clicked");
         loadScene("/ListeCoursEtudiant.fxml");
     }
+
     private void loadScene(String fxmlPath) {
         try {
             // Load the new FXML
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             // Get the current stage from a known node
-            Stage stage = (Stage) mainBox.getScene().getWindow();
+            Stage stage = (Stage) mainContainer.getScene().getWindow();
             // Create a new scene with the loaded root
             Scene scene = new Scene(root, 1000, 700); // Match FXML dimensions
             stage.setScene(scene);
@@ -213,6 +223,5 @@ public class ChapitreDetailsControllerEtudiant {
             System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
             e.printStackTrace();
         }
-
     }
 }

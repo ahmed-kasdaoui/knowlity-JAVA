@@ -29,8 +29,7 @@ public class Main {
         sco.add(cours);
 
         // Ajouter un chapitre
-        Chapitre chap = new Chapitre("Introduction à Java", 1, cours, "Contenu introductif", 30, 0);
-        sch.add(chap);
+
 
         // Afficher les données
         System.out.println("Catégories : " + sc.getAll());
