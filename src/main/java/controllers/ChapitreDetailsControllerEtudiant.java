@@ -42,7 +42,7 @@ public class ChapitreDetailsControllerEtudiant {
     private Cours cours;
     private final ServiceChapitre serviceChapitre = new ServiceChapitre();
     private final ServiceCours serviceCours = new ServiceCours();
-    private static final String UPLOAD_DIR = "Uploads/";
+    private static final String UPLOAD_DIR = "uploads/";
 
     public void setChapitre(Chapitre chapitre, Cours cours) {
         this.chapitre = chapitre;

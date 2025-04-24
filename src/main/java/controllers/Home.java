@@ -18,22 +18,28 @@ public class Home extends Application {
     public void start(Stage stage) {
         try {
             // Load the FXML file
-            Parent root = FXMLLoader.load(getClass().getResource("/ListeCoursEtudiant.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/ListeCours.fxml"));
 
             // Set the scene
             Scene scene = new Scene(root);
             stage.setScene(scene);
 
             // Set the application icon
-            stage.getIcons().add(new Image(getClass().getResourceAsStream("/watermark.png"))); // Replace "/icon.png" with the path to your image file
+            try {
+                stage.getIcons().add(new Image(getClass().getResourceAsStream("/watermark.png")));
+            } catch (Exception e) {
+                System.err.println("Failed to load application icon: " + e.getMessage());
+            }
 
-            // Set the title of the application window
+            // Configure the stage
             stage.setTitle("Knowlity App");
+            stage.setMaximized(true); // Ouvre la fenêtre en mode maximisé
 
             // Show the stage
             stage.show();
         } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
+            System.err.println("Error loading application: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

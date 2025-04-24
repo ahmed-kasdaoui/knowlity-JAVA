@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 public class AjouterChapitreController {
@@ -57,14 +58,16 @@ public class AjouterChapitreController {
     private Label dureeEstimeeError;
 
 
+
     @FXML
     private Label brochureError;
 
     private Cours cours;
     private ServiceChapitre serviceChapitre = new ServiceChapitre();
     private ServiceCours serviceCours = new ServiceCours();
-    private static final String UPLOAD_DIR = "Uploads";
+    private static final String UPLOAD_DIR = "Uploads/";
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    private Chapitre chapitre = new Chapitre();
 
     public void setCourse(Cours course) {
         this.cours = course;
@@ -106,17 +109,7 @@ public class AjouterChapitreController {
                 throw new IllegalArgumentException("Seuls les fichiers PDF sont acceptés.");
             }
 
-            // Generate unique filename
-            String newFilename = "chapter-" + UUID.randomUUID() + ".pdf";
-            Path destination = Paths.get(UPLOAD_DIR, newFilename);
-
-            // Copy file
-            Files.copy(selectedFile.toPath(), destination);
-
-            // Update fileLabel
-            fileLabel.setText(newFilename);
-            fileLabel.getStyleClass().removeAll("text-muted", "text-danger");
-            fileLabel.getStyleClass().add("text-success");
+            uploadPDF(selectedFile);
 
         } catch (Exception e) {
             fileLabel.setText("Erreur: " + e.getMessage());
@@ -244,7 +237,6 @@ public class AjouterChapitreController {
             }
 
             // Create and save chapitre
-            Chapitre chapitre = new Chapitre();
             chapitre.setTitle(title);
             chapitre.setChapOrder(chapOrder);
             chapitre.setCours(cours);
@@ -331,5 +323,61 @@ public class AjouterChapitreController {
             e.printStackTrace();
         }
 
+    }
+
+    private void uploadPDF(File file) {
+        try {
+            String uniqueFileName = generateUniqueFileName(file.getName());
+            Path destination = Paths.get(UPLOAD_DIR + uniqueFileName);
+            
+            // Créer le dossier Uploads s'il n'existe pas
+            Files.createDirectories(Paths.get(UPLOAD_DIR));
+            
+            // Copier le fichier
+            Files.copy(file.toPath(), destination, StandardCopyOption.REPLACE_EXISTING);
+            chapitre.setBrochure(uniqueFileName);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de l'upload du fichier PDF");
+        }
+    }
+
+    private String generateUniqueFileName(String originalFileName) {
+        // Implement your logic to generate a unique file name based on the original file name
+        // For example, you can use UUID to generate a unique name
+        return UUID.randomUUID().toString() + "_" + originalFileName;
+    }
+
+    @FXML
+    private void handleFileUpload() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter("PDF Files", "*.pdf")
+        );
+
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            try {
+                // Check file size
+                if (selectedFile.length() > MAX_FILE_SIZE) {
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Le fichier est trop volumineux (max 10MB)");
+                    return;
+                }
+
+                uploadPDF(selectedFile);
+                
+                // Update fileLabel
+                fileLabel.setText(selectedFile.getName());
+                fileLabel.getStyleClass().removeAll("text-muted", "text-danger");
+                fileLabel.getStyleClass().add("text-success");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                fileLabel.setText("Erreur lors du chargement du fichier");
+                fileLabel.getStyleClass().removeAll("text-muted", "text-success");
+                fileLabel.getStyleClass().add("text-danger");
+            }
+        }
     }
 }
