@@ -13,6 +13,7 @@ import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
 import tn.esprit.models.Events;
 import tn.esprit.services.ServiceEvents;
+import tn.esprit.services.ServiceUserEventPreference;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -40,6 +41,7 @@ public class EventListingController {
     private ObservableList<Events> events = FXCollections.observableArrayList();
     private ObservableList<Events> recommendedEvents = FXCollections.observableArrayList();
     private ObservableList<Events> currentDisplayList = FXCollections.observableArrayList();
+    private ServiceUserEventPreference userEventPreferenceService = new ServiceUserEventPreference();
     private ServiceEvents serviceEvents = new ServiceEvents();
     private int displayedCount = 0;
     private final int BATCH_SIZE = 4;
@@ -64,8 +66,20 @@ public class EventListingController {
         }
 
         // For demonstration, assume recommended events are those with a specific category
-        recommendedEvents.addAll(events.filtered(e -> e.getCategory() != null && e.getCategory().equalsIgnoreCase("Hackathon")));
-        System.out.println("Found " + recommendedEvents.size() + " recommended events (Hackathons).");
+        try {
+            recommendedEvents.addAll(userEventPreferenceService.getRecommendedEvents(1, 20));
+            System.out.println("Found " + recommendedEvents.size() + " recommended events for user ID: " + 1);
+            // Fallback: If no recommended events, use all events
+            if (recommendedEvents.isEmpty()) {
+                recommendedEvents.addAll(events);
+                System.out.println("No recommended events found, falling back to all events.");
+            }
+        } catch (Exception e) {
+            System.err.println("Error fetching recommended events: " + e.getMessage());
+            e.printStackTrace();
+            // Fallback to all events on error
+            recommendedEvents.addAll(events);
+        }
 
         // Initialize with normal events
         currentDisplayList = events;

@@ -35,8 +35,6 @@ public class Main {
             ser.add(registration);
 
             // Ajouter une préférence
-            UserEventPreference preference = new UserEventPreference(event, "Technologie", 5);
-            suep.add(preference);
         } else if (choice == 3) {
             Events event1 = new Events("test test", "Une conférence sur la tech",
                     LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2),
@@ -52,9 +50,6 @@ public class Main {
             ser.update(registration);
 
             // Ajouter une préférence
-            UserEventPreference preference = new UserEventPreference(event1, "Technologie", 20);
-            preference.setId(2);
-            suep.update(preference);
         } else if (choice==4) {
             UserEventPreference preference = new UserEventPreference();
             preference.setId(11);

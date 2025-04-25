@@ -10,8 +10,12 @@ import tn.esprit.models.EventRegistration;
 import tn.esprit.models.Events;
 import tn.esprit.services.ServiceEventRegistration;
 import tn.esprit.services.ServiceEvents;
+import tn.esprit.models.UserEventPreference;
+import tn.esprit.services.ServiceUserEventPreference;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class NewEventRegistrationFormController {
@@ -45,10 +49,13 @@ public class NewEventRegistrationFormController {
 
     private final ServiceEventRegistration serviceEventRegistration;
     private Events event;
+    private UserEventPreference userEventPreference;
+    private final ServiceUserEventPreference serviceUserEventPreference;
     private static final Pattern NAME_CITY_PATTERN = Pattern.compile("^[a-zA-Z\\s]*$");
 
     public NewEventRegistrationFormController() {
         this.serviceEventRegistration = new ServiceEventRegistration();
+        this.serviceUserEventPreference = new ServiceUserEventPreference();
     }
 
 
@@ -242,10 +249,8 @@ public class NewEventRegistrationFormController {
 
     private void submitForm() {
         try {
-            // Parse places reserved
             int placesReserved = Integer.parseInt(placesReservedField.getText());
 
-            // Check if enough seats are available
             if (placesReserved > event.getSeatsAvailable()) {
                 Alert errorAlert = new Alert(Alert.AlertType.ERROR);
                 errorAlert.setTitle("Submission Error");
@@ -255,27 +260,23 @@ public class NewEventRegistrationFormController {
                 return;
             }
 
-            // Create registration
             EventRegistration registration = new EventRegistration();
             registration.setEvent(event);
-            registration.setUserId(1); // Replace with actual user context
+            registration.setUserId(1);
             registration.setName(nameField.getText());
             registration.setComingFrom(comingFromField.getText());
             registration.setPlacesReserved(placesReserved);
             registration.setDisabledParking(disabledParkingCheckBox.isSelected());
 
-            // Add registration
             serviceEventRegistration.add(registration);
+            userpreference(event);
 
-
-            // Show success alert
             Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
             successAlert.setTitle("Success");
             successAlert.setHeaderText(null);
             successAlert.setContentText("Registration submitted successfully!");
             successAlert.showAndWait();
 
-            // Navigate back after user acknowledges the success alert
             navigateBack();
 
         } catch (NumberFormatException e) {
@@ -291,6 +292,21 @@ public class NewEventRegistrationFormController {
             errorAlert.setContentText("Error saving registration: " + e.getMessage());
             errorAlert.showAndWait();
             e.printStackTrace();
+        }
+    }
+
+    private void userpreference(Events e){
+        UserEventPreference preference = new UserEventPreference();
+        String type = e.getType();
+        String category = e.getCategory();
+        preference=serviceUserEventPreference.getByUserIdCategoryAndTpe(1, category, type);
+        if (preference==null){
+            preference=new UserEventPreference(1,category,type,1);
+            serviceUserEventPreference.add(preference);
+        }else {
+            int score= preference.getPreferenceScore()+1;
+            preference.setPreferenceScore(score);
+            serviceUserEventPreference.update(preference);
         }
     }
 
