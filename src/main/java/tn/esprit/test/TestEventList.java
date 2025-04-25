@@ -31,7 +31,7 @@ public class TestEventList extends Application {
 
 
         // Load FXML
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EventList.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EventRegistrationList.fxml"));
         Scene scene = new Scene(loader.load());
         stage.setScene(scene);
         stage.setTitle("Event List");

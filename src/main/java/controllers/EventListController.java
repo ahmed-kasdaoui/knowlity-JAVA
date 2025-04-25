@@ -40,7 +40,7 @@ public class EventListController {
     @FXML
     private TextField searchField;
     @FXML
-    private Button btnSearch;
+    private Button Registrationsbtn;
     @FXML
     private Button addButton;
     @FXML
@@ -70,10 +70,11 @@ public class EventListController {
         searchField.textProperty().addListener((obs, oldValue, newValue) -> filterEvents(newValue));
 
         // Set up buttons
-        btnSearch.setOnAction(event -> showAlert(Alert.AlertType.INFORMATION, "Info", "Advanced Search functionality not implemented."));
+        Registrationsbtn.setOnAction(event -> navigateToRegistration());
         addButton.setOnAction(event -> navigateToAdd());
         exportPdfButton.setOnAction(event -> exportToPdf());
     }
+
 
     private void loadEvents() {
         List<Events> events = serviceEvents.getAll();
@@ -106,7 +107,7 @@ public class EventListController {
             // Create event card
             VBox card = new VBox(10);
             card.getStyleClass().add("card");
-            card.setStyle("-fx-background-color: #d4dada; -fx-border-radius: 50; -fx-padding: 15;");
+            card.setStyle("-fx-background-color: #e1e1e1; -fx-border-radius: 50; -fx-padding: 15;");
 
             // Title
             Label titleLabel = new Label(event.getTitle() != null ? event.getTitle() : "N/A");
@@ -129,7 +130,7 @@ public class EventListController {
             Button deleteButton = new Button();
 
             // Edit button
-            editButton.getStyleClass().addAll("action-btn", "edit-btn");
+            editButton.getStyleClass().addAll("action-btn", "submit-btn");
             SVGPath editIcon = new SVGPath();
             editIcon.setContent("M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z");
             editIcon.getStyleClass().add("btn-warning");
@@ -138,7 +139,7 @@ public class EventListController {
             editButton.setOnAction(e -> navigateToEdit(event));
 
             // Delete button
-            deleteButton.getStyleClass().addAll("action-btn", "delete-btn");
+            deleteButton.getStyleClass().addAll("action-btn", "submit-btn");
             SVGPath deleteIcon = new SVGPath();
             deleteIcon.setContent("M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z");
             deleteIcon.getStyleClass().add("icon");
@@ -157,6 +158,15 @@ public class EventListController {
                 column = 0;
                 row++;
             }
+        }
+    }
+
+    private void navigateToRegistration() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EventRegistrationList.fxml"));
+            addButton.getScene().setRoot(loader.load());
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Navigation Error", "Failed to load add event form: " + e.getMessage());
         }
     }
 

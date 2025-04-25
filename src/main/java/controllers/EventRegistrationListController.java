@@ -15,15 +15,15 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import com.itextpdf.layout.properties.VerticalAlignment;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import tn.esprit.models.EventRegistration;
 import tn.esprit.services.ServiceEventRegistration;
@@ -39,23 +39,12 @@ public class EventRegistrationListController {
     @FXML
     private Button backToEventsButton;
     @FXML
-    private Button deleteButton;
-    @FXML
     private Button exportPdfButton;
     @FXML
     private TextField searchField;
     @FXML
-    private TableView<EventRegistration> registrationsTable;
-    @FXML
-    private TableColumn<EventRegistration, String> eventIdColumn;
-    @FXML
-    private TableColumn<EventRegistration, String> userIdColumn;
-    @FXML
-    private TableColumn<EventRegistration, String> statusColumn;
-    @FXML
-    private TableColumn<EventRegistration, Void> actionsColumn;
-    @FXML
-    private TableColumn<EventRegistration, String> registrationDateColumn;
+    private GridPane registrationsGrid;
+    private EventRegistration selectedRegistration;
 
     private final ServiceEventRegistration serviceEventRegistration;
     private ObservableList<EventRegistration> registrationsList;
@@ -71,66 +60,12 @@ public class EventRegistrationListController {
         // Initialize registrations lists
         registrationsList = FXCollections.observableArrayList();
         filteredRegistrationsList = FXCollections.observableArrayList();
-        registrationsTable.setItems(filteredRegistrationsList);
-
-        // Set up table columns
-        eventIdColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEvent().getTitle() != null ? cellData.getValue().getEvent().getTitle() : "N/A"));
-        userIdColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName() != null ? cellData.getValue().getName() : "N/A"));
-        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-        registrationDateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(
-                cellData.getValue().getRegistrationDate() != null ?
-                        cellData.getValue().getRegistrationDate().format(dateFormatter) : "N/A"
-        ));
-
-        // Actions column
-        actionsColumn.setCellFactory(column -> new TableCell<>() {
-            private final Button showButton = new Button();
-            private final Button deleteRowButton = new Button();
-            private final HBox actionsHBox = new HBox(10, showButton, deleteRowButton);
-
-            {
-                // Style and configure Show button
-                showButton.getStyleClass().addAll("action-btn", "submit-btn");
-                SVGPath showIcon = new SVGPath();
-                showIcon.setContent("M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z");
-                showIcon.getStyleClass().add("icon");
-                showButton.setGraphic(showIcon);
-                showButton.setTooltip(new Tooltip("Show Registration"));
-
-                // Style and configure Delete button
-                deleteRowButton.getStyleClass().addAll("action-btn", "round");
-                SVGPath deleteIcon = new SVGPath();
-                deleteIcon.setContent("M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z");
-                deleteIcon.setStyle("-fx-fill: white;");
-                deleteIcon.getStyleClass().add("icon");
-                deleteRowButton.setGraphic(deleteIcon);
-                deleteRowButton.setTooltip(new Tooltip("Delete Registration"));
-
-                // Set button actions
-                showButton.setOnAction(event -> {
-                    EventRegistration registration = getTableView().getItems().get(getIndex());
-                    navigateToShow(registration);
-                });
-                deleteRowButton.setOnAction(event -> {
-                    EventRegistration registration = getTableView().getItems().get(getIndex());
-                    registrationsTable.getSelectionModel().select(registration);
-                    deleteSelectedRegistration();
-                });
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                setGraphic(empty ? null : actionsHBox);
-            }
-        });
 
         // Load registrations
         loadRegistrations();
 
         // Set up buttons
         backToEventsButton.setOnAction(event -> navigateToEvents());
-        deleteButton.setOnAction(event -> deleteSelectedRegistration());
         exportPdfButton.setOnAction(event -> exportToPdf());
 
         // Set up search
@@ -141,6 +76,7 @@ public class EventRegistrationListController {
         List<EventRegistration> registrations = serviceEventRegistration.getAll();
         registrationsList.setAll(registrations);
         filteredRegistrationsList.setAll(registrations);
+        updateGrid();
     }
 
     private void filterRegistrations(String searchText) {
@@ -162,35 +98,74 @@ public class EventRegistrationListController {
                 }
             }
         }
+        updateGrid();
     }
 
-    private void deleteSelectedRegistration() {
-        EventRegistration selectedRegistration = registrationsTable.getSelectionModel().getSelectedItem();
-        if (selectedRegistration == null) {
-            showAlert(Alert.AlertType.WARNING, "No Selection", "Please select a registration to delete.");
-            return;
-        }
+    private void updateGrid() {
+        registrationsGrid.getChildren().clear();
+        int column = 0;
+        int row = 0;
 
-        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmAlert.setTitle("Delete Confirmation");
-        confirmAlert.setHeaderText("Are you sure you want to delete this registration?");
-        confirmAlert.setContentText("Event: " + (selectedRegistration.getEvent().getTitle() != null ? selectedRegistration.getEvent().getTitle() : "N/A") +
-                "\nUser: " + (selectedRegistration.getName() != null ? selectedRegistration.getName() : "N/A"));
-        confirmAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        for (EventRegistration registration : filteredRegistrationsList) {
+            // Create registration card
+            VBox card = new VBox(10);
+            card.getStyleClass().add("card");
+            card.setStyle("-fx-background-color: #e1e1e1; -fx-border-color: -light-gray-2; -fx-border-radius: 5; -fx-padding: 15;");
 
-        confirmAlert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                try {
-                    serviceEventRegistration.delete(selectedRegistration);
-                    registrationsList.remove(selectedRegistration);
-                    filterRegistrations(searchField.getText());
-                    showAlert(Alert.AlertType.INFORMATION, "Success", "Registration deleted successfully.");
-                } catch (Exception e) {
-                    showAlert(Alert.AlertType.ERROR, "Error", "Failed to delete registration: " + e.getMessage());
-                }
+            // Event Title
+            Label statusLabel = new Label(registration.getStatus() != null ? registration.getStatus() : "N/A");
+            statusLabel.getStyleClass().add("text-bold");
+            statusLabel.setStyle("-fx-font-size: 16;");
+
+            // Registration Date
+            Label registrationDateLabel = new Label("Date: " + (registration.getRegistrationDate() != null ? registration.getRegistrationDate().format(dateFormatter) : "N/A"));
+            registrationDateLabel.getStyleClass().add("text-muted");
+            registrationDateLabel.setStyle("-fx-font-size: 14;");
+
+            // Status
+            Label eventTitleLabel = new Label((registration.getEvent().getTitle() != null ? registration.getEvent().getTitle() : "N/A"));
+            eventTitleLabel.getStyleClass().add("text-muted");
+            eventTitleLabel.setStyle("-fx-font-size: 14;");
+
+            // Action buttons
+            HBox actionBox = new HBox(10);
+            Button showButton = new Button();
+            Button deleteRowButton = new Button();
+
+            // Show button
+            showButton.getStyleClass().addAll("action-btn", "submit-btn");
+            SVGPath showIcon = new SVGPath();
+            showIcon.setContent("M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z");
+            showIcon.getStyleClass().add("icon");
+            showButton.setGraphic(showIcon);
+            showButton.setTooltip(new Tooltip("Show Registration"));
+            showButton.setOnAction(e -> navigateToShow(registration));
+
+            // Delete button
+            deleteRowButton.getStyleClass().addAll("action-btn", "round");
+            SVGPath deleteIcon = new SVGPath();
+            deleteIcon.setContent("M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z");
+            deleteIcon.getStyleClass().add("icon");
+            deleteRowButton.setGraphic(deleteIcon);
+            deleteRowButton.setTooltip(new Tooltip("Delete Registration"));
+            deleteRowButton.setOnAction(e -> {
+                selectedRegistration = registration;
+            });
+
+            actionBox.getChildren().addAll(showButton, deleteRowButton);
+
+            card.getChildren().addAll( statusLabel, registrationDateLabel, eventTitleLabel, actionBox);
+
+            // Add to grid
+            registrationsGrid.add(card, column, row);
+            column++;
+            if (column == 3) {
+                column = 0;
+                row++;
             }
-        });
+        }
     }
+
 
     private void navigateToShow(EventRegistration registration) {
         try {
@@ -252,13 +227,13 @@ public class EventRegistrationListController {
             pdf.addNewPage();
 
             // Create table
-            float[] columnWidths = {150, 150, 100, 150};
+            float[] columnWidths = {150, 150, 100};
             Table table = new Table(UnitValue.createPointArray(columnWidths))
                     .setWidth(UnitValue.createPercentValue(100))
                     .setMarginTop(20);
 
             // Header cells
-            String[] headers = {"Event Title", "User Name", "Status", "Registration Date"};
+            String[] headers = {"Event Title", "Registration Date", "Status"};
             for (String header : headers) {
                 table.addHeaderCell(new Cell()
                         .add(new Paragraph(header)
@@ -284,7 +259,7 @@ public class EventRegistrationListController {
                         .setPadding(6));
 
                 table.addCell(new Cell()
-                        .add(new Paragraph(registration.getName() != null ? registration.getName() : "N/A")
+                        .add(new Paragraph(registration.getRegistrationDate() != null ? registration.getRegistrationDate().format(dateFormatter) : "N/A")
                                 .setFont(font)
                                 .setFontSize(9))
                         .setBackgroundColor(alternate ? ColorConstants.WHITE : LIGHT_BLUE)
@@ -293,14 +268,6 @@ public class EventRegistrationListController {
 
                 table.addCell(new Cell()
                         .add(new Paragraph(registration.getStatus() != null ? registration.getStatus() : "N/A")
-                                .setFont(font)
-                                .setFontSize(9))
-                        .setBackgroundColor(alternate ? ColorConstants.WHITE : LIGHT_BLUE)
-                        .setBorder(new SolidBorder(ColorConstants.LIGHT_GRAY, 0.5f))
-                        .setPadding(6));
-
-                table.addCell(new Cell()
-                        .add(new Paragraph(registration.getRegistrationDate() != null ? registration.getRegistrationDate().format(dateFormatter) : "N/A")
                                 .setFont(font)
                                 .setFontSize(9))
                         .setBackgroundColor(alternate ? ColorConstants.WHITE : LIGHT_BLUE)

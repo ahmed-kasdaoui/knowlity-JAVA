@@ -8,7 +8,6 @@ tn\esprit\test\TestEventRegistrationList.class
 controllers\ActionCellController.class
 controllers\UserEventRegistrationFormController.class
 controllers\AddEvent.class
-controllers\EventRegistrationListController$1.class
 controllers\EventList.class
 tn\esprit\models\User.class
 controllers\EditEventController.class

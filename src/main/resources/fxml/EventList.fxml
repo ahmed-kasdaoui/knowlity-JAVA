@@ -4,16 +4,14 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
-<?import javafx.scene.control.ScrollPane?>
 
 <StackPane fx:id="root" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: white; -fx-border-color: -light-gray-2; -fx-border-width: 0 1 0 0;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EventListController">
     <stylesheets>
@@ -32,13 +30,13 @@
                 <!-- Header with buttons and search -->
                 <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                     <children>
-                        <Button fx:id="btnSearch" contentDisplay="GRAPHIC_ONLY" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Advanced Search" textOverrun="CLIP">
+                        <Button fx:id="Registrationsbtn" contentDisplay="GRAPHIC_ONLY" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Advanced Search" textOverrun="CLIP">
                             <styleClass>
                                 <String fx:value="round" />
                                 <String fx:value="btn-warning" />
                             </styleClass>
                             <graphic>
-                                <SVGPath content="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="WHITE" mouseTransparent="true" style="-fx-fill: white;" />
+                                <SVGPath content="M12,5.5A3.5,3.5 0 0,1 15.5,9A3.5,3.5 0 0,1 12,12.5A3.5,3.5 0 0,1 8.5,9A3.5,3.5 0 0,1 12,5.5M5,8C5.56,8 6.08,8.15 6.53,8.42C6.38,9.85 6.8,11.27 7.66,12.38C7.16,13.34 6.16,14 5,14A3,3 0 0,1 2,11A3,3 0 0,1 5,8M19,8A3,3 0 0,1 22,11A3,3 0 0,1 19,14C17.84,14 16.84,13.34 16.34,12.38C17.2,11.27 17.62,9.85 17.47,8.42C17.92,8.15 18.44,8 19,8M5.5,18.25C5.5,16.18 8.41,14.5 12,14.5C15.59,14.5 18.5,16.18 18.5,18.25V20H5.5V18.25M0,20V18.5C0,17.11 1.89,15.94 4.45,15.6C3.86,16.28 3.5,17.22 3.5,18.25V20H0M24,20H20.5V18.25C20.5,17.22 20.14,16.28 19.55,15.6C22.11,15.94 24,17.11 24,18.5V20Z" fill="WHITE" mouseTransparent="true" style="-fx-fill: white;" />
                             </graphic>
                             <tooltip>
                                 <Tooltip text="Advanced Search" />
@@ -79,9 +77,9 @@
                 </HBox>
 
                 <!-- ScrollPane wrapping GridPane for events -->
-                <ScrollPane fx:id="scrollPane" layoutX="30.0" layoutY="70.0" fitToWidth="true" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="70.0">
+                <ScrollPane fx:id="scrollPane" fitToWidth="true" layoutX="30.0" layoutY="70.0" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="70.0">
                     <content>
-                        <GridPane fx:id="eventsGrid" hgap="20.0" vgap="20.0" style="-fx-padding: 10;">
+                        <GridPane fx:id="eventsGrid" hgap="20.0" style="-fx-padding: 10;" vgap="20.0">
                             <styleClass>
                                 <String fx:value="grid-pane" />
                             </styleClass>

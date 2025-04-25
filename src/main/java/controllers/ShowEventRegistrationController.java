@@ -31,6 +31,8 @@ import java.util.UUID;
 public class ShowEventRegistrationController {
 
     @FXML
+    public Button backToEventsRegistrationButton;
+    @FXML
     private Label idLabel;
     @FXML
     private Label eventTitleLabel;
@@ -70,6 +72,7 @@ public class ShowEventRegistrationController {
         eventTitleLabel.setOnMouseClicked(event -> navigateToEventDetails());
 
         updateStatusButton.setOnAction(event -> updateStatus());
+        backToEventsRegistrationButton.setOnAction(event -> navigateToEventsRegistartion());
     }
 
     public void setRegistration(EventRegistration registration) {
@@ -251,6 +254,14 @@ public class ShowEventRegistrationController {
         }
     }
 
+    private void navigateToEventsRegistartion() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EventRegistrationList.fxml"));
+            backToEventsRegistrationButton.getScene().setRoot(loader.load());
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Navigation Error", "Failed to load events list: " + e.getMessage());
+        }
+    }
 
     private void showAlert(Alert.AlertType type, String title, String content) {
         Alert alert = new Alert(type);
