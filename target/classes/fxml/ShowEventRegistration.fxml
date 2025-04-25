@@ -47,8 +47,6 @@
                         <ColumnConstraints percentWidth="40" />
                         <ColumnConstraints percentWidth="60" />
                     </columnConstraints>
-                    <Label styleClass="h4" text="ID" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                    <Label fx:id="idLabel" styleClass="h4" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                     <Label styleClass="h4" text="Event Title" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                     <Label fx:id="eventTitleLabel" styleClass="h4" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     <Label styleClass="h4" text="Seats Available" GridPane.columnIndex="0" GridPane.rowIndex="2" />

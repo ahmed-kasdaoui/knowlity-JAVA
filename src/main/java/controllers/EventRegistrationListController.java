@@ -1,5 +1,20 @@
 package controllers;
 
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.SolidBorder;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
+import com.itextpdf.layout.properties.VerticalAlignment;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,7 +28,9 @@ import javafx.scene.shape.SVGPath;
 import tn.esprit.models.EventRegistration;
 import tn.esprit.services.ServiceEventRegistration;
 
+import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -23,6 +40,8 @@ public class EventRegistrationListController {
     private Button backToEventsButton;
     @FXML
     private Button deleteButton;
+    @FXML
+    private Button exportPdfButton;
     @FXML
     private TextField searchField;
     @FXML
@@ -34,9 +53,9 @@ public class EventRegistrationListController {
     @FXML
     private TableColumn<EventRegistration, String> statusColumn;
     @FXML
-    private TableColumn<EventRegistration, String> registrationDateColumn;
-    @FXML
     private TableColumn<EventRegistration, Void> actionsColumn;
+    @FXML
+    private TableColumn<EventRegistration, String> registrationDateColumn;
 
     private final ServiceEventRegistration serviceEventRegistration;
     private ObservableList<EventRegistration> registrationsList;
@@ -112,6 +131,7 @@ public class EventRegistrationListController {
         // Set up buttons
         backToEventsButton.setOnAction(event -> navigateToEvents());
         deleteButton.setOnAction(event -> deleteSelectedRegistration());
+        exportPdfButton.setOnAction(event -> exportToPdf());
 
         // Set up search
         searchField.textProperty().addListener((obs, oldValue, newValue) -> filterRegistrations(newValue));
@@ -189,6 +209,121 @@ public class EventRegistrationListController {
             backToEventsButton.getScene().setRoot(loader.load());
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Navigation Error", "Failed to load events list: " + e.getMessage());
+        }
+    }
+
+    private void exportToPdf() {
+        try {
+            File file = new File("registrations_report.pdf");
+            PdfWriter writer = new PdfWriter(file);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf, PageSize.A4);
+
+            // Colors
+            DeviceRgb LIGHT_BLUE = new DeviceRgb(173, 216, 230);
+            DeviceRgb DARK_BLUE = new DeviceRgb(70, 130, 180);
+
+            // Font
+            PdfFont font = PdfFontFactory.createFont("Helvetica");
+            PdfFont boldFont = PdfFontFactory.createFont("Helvetica-Bold");
+
+            // Title page
+            document.add(new Paragraph("Event Registrations Report")
+                    .setFont(boldFont)
+                    .setFontSize(24)
+                    .setFontColor(DARK_BLUE)
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setMarginTop(100));
+
+            document.add(new Paragraph("Generated on: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                    .setFont(font)
+                    .setFontSize(12)
+                    .setFontColor(ColorConstants.GRAY)
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setMarginBottom(20));
+
+            document.add(new Paragraph("Event Management System")
+                    .setFont(font)
+                    .setFontSize(14)
+                    .setFontColor(DARK_BLUE)
+                    .setTextAlignment(TextAlignment.CENTER));
+
+            // Add new page for table
+            pdf.addNewPage();
+
+            // Create table
+            float[] columnWidths = {150, 150, 100, 150};
+            Table table = new Table(UnitValue.createPointArray(columnWidths))
+                    .setWidth(UnitValue.createPercentValue(100))
+                    .setMarginTop(20);
+
+            // Header cells
+            String[] headers = {"Event Title", "User Name", "Status", "Registration Date"};
+            for (String header : headers) {
+                table.addHeaderCell(new Cell()
+                        .add(new Paragraph(header)
+                                .setFont(boldFont)
+                                .setFontSize(10)
+                                .setFontColor(ColorConstants.WHITE))
+                        .setBackgroundColor(DARK_BLUE)
+                        .setBorder(new SolidBorder(ColorConstants.WHITE, 1))
+                        .setPadding(8)
+                        .setTextAlignment(TextAlignment.CENTER)
+                        .setVerticalAlignment(VerticalAlignment.MIDDLE));
+            }
+
+            // Data rows
+            boolean alternate = false;
+            for (EventRegistration registration : registrationsList) {
+                table.addCell(new Cell()
+                        .add(new Paragraph(registration.getEvent().getTitle() != null ? registration.getEvent().getTitle() : "N/A")
+                                .setFont(font)
+                                .setFontSize(9))
+                        .setBackgroundColor(alternate ? ColorConstants.WHITE : LIGHT_BLUE)
+                        .setBorder(new SolidBorder(ColorConstants.LIGHT_GRAY, 0.5f))
+                        .setPadding(6));
+
+                table.addCell(new Cell()
+                        .add(new Paragraph(registration.getName() != null ? registration.getName() : "N/A")
+                                .setFont(font)
+                                .setFontSize(9))
+                        .setBackgroundColor(alternate ? ColorConstants.WHITE : LIGHT_BLUE)
+                        .setBorder(new SolidBorder(ColorConstants.LIGHT_GRAY, 0.5f))
+                        .setPadding(6));
+
+                table.addCell(new Cell()
+                        .add(new Paragraph(registration.getStatus() != null ? registration.getStatus() : "N/A")
+                                .setFont(font)
+                                .setFontSize(9))
+                        .setBackgroundColor(alternate ? ColorConstants.WHITE : LIGHT_BLUE)
+                        .setBorder(new SolidBorder(ColorConstants.LIGHT_GRAY, 0.5f))
+                        .setPadding(6));
+
+                table.addCell(new Cell()
+                        .add(new Paragraph(registration.getRegistrationDate() != null ? registration.getRegistrationDate().format(dateFormatter) : "N/A")
+                                .setFont(font)
+                                .setFontSize(9))
+                        .setBackgroundColor(alternate ? ColorConstants.WHITE : LIGHT_BLUE)
+                        .setBorder(new SolidBorder(ColorConstants.LIGHT_GRAY, 0.5f))
+                        .setPadding(6));
+
+                alternate = !alternate;
+            }
+
+            document.add(table);
+
+            // Footer
+            document.add(new Paragraph("Page " + pdf.getNumberOfPages())
+                    .setFont(font)
+                    .setFontSize(8)
+                    .setFontColor(ColorConstants.GRAY)
+                    .setTextAlignment(TextAlignment.RIGHT)
+                    .setMarginTop(20));
+
+            document.close();
+            showAlert(Alert.AlertType.INFORMATION, "Success", "PDF exported successfully to registrations_report.pdf");
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Export Error", "Failed to export PDF: " + e.getMessage());
         }
     }
 

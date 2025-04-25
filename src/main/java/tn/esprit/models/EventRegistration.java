@@ -12,6 +12,7 @@ public class EventRegistration {
     private String name;
     private Integer placesReserved;
     private int user_id ;
+    private String check_in_code;
 
     public EventRegistration() {
         this.registrationDate = LocalDateTime.now();
@@ -108,6 +109,13 @@ public class EventRegistration {
 
     public void setPlacesReserved(Integer placesReserved) {
         this.placesReserved = placesReserved;
+    }
+
+    public String getCheck_in_code() {
+        return check_in_code;
+    }
+    public void setCheck_in_code(String check_in_code) {
+        this.check_in_code = check_in_code;
     }
 
     @Override

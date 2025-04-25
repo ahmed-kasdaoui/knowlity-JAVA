@@ -6,20 +6,32 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.UnitValue;
-import javafx.beans.property.SimpleStringProperty;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.borders.SolidBorder;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.VerticalAlignment;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
 import tn.esprit.models.Events;
 import tn.esprit.services.ServiceEvents;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -34,37 +46,12 @@ public class EventListController {
     @FXML
     private Button exportPdfButton;
     @FXML
-    private TableView<Events> eventsTableView;
-    @FXML
-    private TableColumn<Events, String> colName;
-    @FXML
-    private TableColumn<Events, String> colCode;
-    @FXML
-    private TableColumn<Events, String> colAbv;
-    @FXML
-    private TableColumn<Events, String> colAbv3;
-    @FXML
-    private TableColumn<Events, String> colAbv3Alt;
-    @FXML
-    private TableColumn<Events, String> colSlug;
-    @FXML
-    private TableColumn<Events, Void> colActions;
-    @FXML
-    private ComboBox<Integer> cmbEntries;
-    @FXML
-    private Label lblLegend;
-    @FXML
-    private Pagination pagination;
-    @FXML
-    private Hyperlink hlFirst;
-    @FXML
-    private Hyperlink hlLast;
+    private GridPane eventsGrid;
 
     private final ServiceEvents serviceEvents;
     private ObservableList<Events> eventsList;
     private ObservableList<Events> filteredEventsList;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    private static final int DEFAULT_ENTRIES_PER_PAGE = 10;
 
     public EventListController() {
         this.serviceEvents = new ServiceEvents();
@@ -75,65 +62,8 @@ public class EventListController {
         // Initialize events lists
         eventsList = FXCollections.observableArrayList();
         filteredEventsList = FXCollections.observableArrayList();
-        eventsTableView.setItems(filteredEventsList);
 
-
-        // Set up table columns (mapping Events fields to screenshot columns)
-        colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle() != null ? cellData.getValue().getTitle() : "N/A"));
-        colCode.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getType() != null ? cellData.getValue().getType() : "N/A"));
-        colAbv.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategory() != null ? cellData.getValue().getCategory() : "N/A"));
-        colAbv3.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStartDate() != null ? cellData.getValue().getStartDate().format(dateFormatter) : "N/A"));
-        colAbv3Alt.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEndDate() != null ? cellData.getValue().getEndDate().format(dateFormatter) : "N/A"));
-        colSlug.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLocation() != null ? cellData.getValue().getLocation() : "N/A"));
-
-        // Set up actions column
-        colActions.setCellFactory(col -> new TableCell<Events, Void>() {
-            private final Button editButton = new Button();
-            private final Button deleteButton = new Button();
-            private final Button registrationsButton = new Button();
-            private final HBox hbox = new HBox(10, editButton, deleteButton, registrationsButton); // Increased spacing to 10
-
-            {
-                // Set button styles
-                editButton.getStyleClass().addAll("action-btn", "edit-btn");
-                deleteButton.getStyleClass().addAll("action-btn", "delete-btn");
-                registrationsButton.getStyleClass().addAll("action-btn", "registrations-btn");
-
-                // Set SVG icons (simplified paths for better rendering at small sizes)
-                SVGPath editIcon = new SVGPath();
-                editIcon.setContent("M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z");
-                editIcon.getStyleClass().add("icon"); // Use CSS for styling
-                editButton.setGraphic(editIcon);
-                editButton.setTooltip(new Tooltip("Edit Event"));
-
-                SVGPath deleteIcon = new SVGPath();
-                deleteIcon.setContent("M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z");
-                deleteIcon.getStyleClass().add("icon");
-                deleteButton.setGraphic(deleteIcon);
-                deleteButton.setTooltip(new Tooltip("Delete Event"));
-
-                SVGPath registrationsIcon = new SVGPath();
-                registrationsIcon.setContent("M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z");
-                registrationsIcon.getStyleClass().add("icon");
-                registrationsButton.setGraphic(registrationsIcon);
-                registrationsButton.setTooltip(new Tooltip("View Registrations"));
-
-                // Set button actions
-                editButton.setOnAction(event -> navigateToEdit(getTableView().getItems().get(getIndex())));
-                deleteButton.setOnAction(event -> deleteEvent(getTableView().getItems().get(getIndex())));
-                registrationsButton.setOnAction(event -> navigateToRegistrations(getTableView().getItems().get(getIndex())));
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(hbox);
-                }
-            }
-        });        // Load events
+        // Load events
         loadEvents();
 
         // Set up search
@@ -143,20 +73,14 @@ public class EventListController {
         btnSearch.setOnAction(event -> showAlert(Alert.AlertType.INFORMATION, "Info", "Advanced Search functionality not implemented."));
         addButton.setOnAction(event -> navigateToAdd());
         exportPdfButton.setOnAction(event -> exportToPdf());
-
-        // Set up pagination
-        //pagination.setPageFactory(this::createPage);
-        //hlFirst.setOnAction(event -> pagination.setCurrentPageIndex(0));
-        //hlLast.setOnAction(event -> pagination.setCurrentPageIndex(pagination.getPageCount() - 1));
-        //cmbEntries.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> updatePagination());
     }
 
     private void loadEvents() {
         List<Events> events = serviceEvents.getAll();
-        System.out.println("Loaded events: " + events.size()); // Debug log to check if events are loaded
+        System.out.println("Loaded events: " + events.size());
         eventsList.setAll(events);
         filteredEventsList.setAll(events);
-        //updatePagination();
+        updateGrid();
     }
 
     private void filterEvents(String searchText) {
@@ -170,7 +94,70 @@ public class EventListController {
                 }
             }
         }
-        /*updatePagination();*/
+        updateGrid();
+    }
+
+    private void updateGrid() {
+        eventsGrid.getChildren().clear();
+        int column = 0;
+        int row = 0;
+
+        for (Events event : filteredEventsList) {
+            // Create event card
+            VBox card = new VBox(10);
+            card.getStyleClass().add("card");
+            card.setStyle("-fx-background-color: #d4dada; -fx-border-radius: 50; -fx-padding: 15;");
+
+            // Title
+            Label titleLabel = new Label(event.getTitle() != null ? event.getTitle() : "N/A");
+            titleLabel.getStyleClass().add("text-bold");
+            titleLabel.setStyle("-fx-font-size: 16;");
+
+            // Start Date
+            Label startDateLabel = new Label("Start: " + (event.getStartDate() != null ? event.getStartDate().format(dateFormatter) : "N/A"));
+            startDateLabel.getStyleClass().add("text-muted");
+            startDateLabel.setStyle("-fx-font-size: 14;");
+
+            // Category
+            Label categoryLabel = new Label("Category: " + (event.getCategory() != null ? event.getCategory() : "N/A"));
+            categoryLabel.getStyleClass().add("text-muted");
+            categoryLabel.setStyle("-fx-font-size: 14;");
+
+            // Action buttons
+            HBox actionBox = new HBox(10);
+            Button editButton = new Button();
+            Button deleteButton = new Button();
+
+            // Edit button
+            editButton.getStyleClass().addAll("action-btn", "edit-btn");
+            SVGPath editIcon = new SVGPath();
+            editIcon.setContent("M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z");
+            editIcon.getStyleClass().add("btn-warning");
+            editButton.setGraphic(editIcon);
+            editButton.setTooltip(new Tooltip("Edit Event"));
+            editButton.setOnAction(e -> navigateToEdit(event));
+
+            // Delete button
+            deleteButton.getStyleClass().addAll("action-btn", "delete-btn");
+            SVGPath deleteIcon = new SVGPath();
+            deleteIcon.setContent("M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z");
+            deleteIcon.getStyleClass().add("icon");
+            deleteButton.setGraphic(deleteIcon);
+            deleteButton.setTooltip(new Tooltip("Delete Event"));
+            deleteButton.setOnAction(e -> deleteEvent(event));
+
+            actionBox.getChildren().addAll(editButton, deleteButton);
+
+            card.getChildren().addAll(titleLabel, startDateLabel, categoryLabel, actionBox);
+
+            // Add to grid
+            eventsGrid.add(card, column, row);
+            column++;
+            if (column == 3) {
+                column = 0;
+                row++;
+            }
+        }
     }
 
     private void navigateToAdd() {
@@ -214,51 +201,106 @@ public class EventListController {
         });
     }
 
-    private void navigateToRegistrations(Events event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EventRegistrationList.fxml"));
-            eventsTableView.getScene().setRoot(loader.load());
-        } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Navigation Error", "Failed to load registrations list: " + e.getMessage());
-        }
-    }
-
     private void exportToPdf() {
         try {
             File file = new File("events_report.pdf");
             PdfWriter writer = new PdfWriter(file);
             PdfDocument pdf = new PdfDocument(writer);
-            Document document = new Document(pdf);
+            Document document = new Document(pdf, PageSize.A4);
 
-            document.add(new Paragraph("Events Report").setFontSize(20).setBold());
+            // Colors
+            DeviceRgb LIGHT_BLUE = new DeviceRgb(173, 216, 230);
+            DeviceRgb DARK_BLUE = new DeviceRgb(70, 130, 180);
 
-            float[] columnWidths = {150, 200, 120, 120, 100, 120, 120, 150, 120, 100};
-            Table table = new Table(UnitValue.createPointArray(columnWidths));
-            table.addHeaderCell("Title");
-            table.addHeaderCell("Description");
-            table.addHeaderCell("Start Date");
-            table.addHeaderCell("End Date");
-            table.addHeaderCell("Type");
-            table.addHeaderCell("Max Participants");
-            table.addHeaderCell("Seats Available");
-            table.addHeaderCell("Location");
-            table.addHeaderCell("Created At");
-            table.addHeaderCell("Category");
+            // Font
+            PdfFont font = PdfFontFactory.createFont("Helvetica");
+            PdfFont boldFont = PdfFontFactory.createFont("Helvetica-Bold");
 
+            // Title page
+            document.add(new Paragraph("Events Report")
+                    .setFont(boldFont)
+                    .setFontSize(24)
+                    .setFontColor(DARK_BLUE)
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setMarginTop(100));
+
+            document.add(new Paragraph("Generated on: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                    .setFont(font)
+                    .setFontSize(12)
+                    .setFontColor(ColorConstants.GRAY)
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setMarginBottom(20));
+
+            document.add(new Paragraph("Event Management System")
+                    .setFont(font)
+                    .setFontSize(14)
+                    .setFontColor(DARK_BLUE)
+                    .setTextAlignment(TextAlignment.CENTER));
+
+            // Add new page for table
+            pdf.addNewPage();
+
+            // Create table
+            float[] columnWidths = {150, 100, 80};
+            Table table = new Table(UnitValue.createPointArray(columnWidths))
+                    .setWidth(UnitValue.createPercentValue(100))
+                    .setMarginTop(20);
+
+            // Header cells
+            String[] headers = {"Title", "Start Date", "Category"};
+            for (String header : headers) {
+                table.addHeaderCell(new Cell()
+                        .add(new Paragraph(header)
+                                .setFont(boldFont)
+                                .setFontSize(10)
+                                .setFontColor(ColorConstants.WHITE))
+                        .setBackgroundColor(DARK_BLUE)
+                        .setBorder(new SolidBorder(ColorConstants.WHITE, 1))
+                        .setPadding(8)
+                        .setTextAlignment(TextAlignment.CENTER)
+                        .setVerticalAlignment(VerticalAlignment.MIDDLE));
+            }
+
+            // Data rows
+            boolean alternate = false;
             for (Events event : eventsList) {
-                table.addCell(event.getTitle() != null ? event.getTitle() : "N/A");
-                table.addCell(event.getDescription() != null ? event.getDescription() : "N/A");
-                table.addCell(event.getStartDate() != null ? event.getStartDate().format(dateFormatter) : "N/A");
-                table.addCell(event.getEndDate() != null ? event.getEndDate().format(dateFormatter) : "N/A");
-                table.addCell(event.getType() != null ? event.getType() : "N/A");
-                table.addCell(String.valueOf(event.getMaxParticipants()));
-                table.addCell(String.valueOf(event.getSeatsAvailable()));
-                table.addCell(event.getLocation() != null ? event.getLocation() : "N/A");
-                table.addCell(event.getCreatedAt() != null ? event.getCreatedAt().format(dateFormatter) : "N/A");
-                table.addCell(event.getCategory() != null ? event.getCategory() : "N/A");
+                table.addCell(new Cell()
+                        .add(new Paragraph(event.getTitle() != null ? event.getTitle() : "N/A")
+                                .setFont(font)
+                                .setFontSize(9))
+                        .setBackgroundColor(alternate ? ColorConstants.WHITE : LIGHT_BLUE)
+                        .setBorder(new SolidBorder(ColorConstants.LIGHT_GRAY, 0.5f))
+                        .setPadding(6));
+
+                table.addCell(new Cell()
+                        .add(new Paragraph(event.getStartDate() != null ? event.getStartDate().format(dateFormatter) : "N/A")
+                                .setFont(font)
+                                .setFontSize(9))
+                        .setBackgroundColor(alternate ? ColorConstants.WHITE : LIGHT_BLUE)
+                        .setBorder(new SolidBorder(ColorConstants.LIGHT_GRAY, 0.5f))
+                        .setPadding(6));
+
+                table.addCell(new Cell()
+                        .add(new Paragraph(event.getCategory() != null ? event.getCategory() : "N/A")
+                                .setFont(font)
+                                .setFontSize(9))
+                        .setBackgroundColor(alternate ? ColorConstants.WHITE : LIGHT_BLUE)
+                        .setBorder(new SolidBorder(ColorConstants.LIGHT_GRAY, 0.5f))
+                        .setPadding(6));
+
+                alternate = !alternate;
             }
 
             document.add(table);
+
+            // Footer
+            document.add(new Paragraph("Page " + pdf.getNumberOfPages())
+                    .setFont(font)
+                    .setFontSize(8)
+                    .setFontColor(ColorConstants.GRAY)
+                    .setTextAlignment(TextAlignment.RIGHT)
+                    .setMarginTop(20));
+
             document.close();
             showAlert(Alert.AlertType.INFORMATION, "Success", "PDF exported successfully to events_report.pdf");
         } catch (Exception e) {
@@ -273,26 +315,5 @@ public class EventListController {
         alert.setContentText(content);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
-    }
-
-    private TableView<Events> createPage(int pageIndex) {
-        int entriesPerPage = 10;
-        int fromIndex = pageIndex * entriesPerPage;
-        int toIndex = Math.min(fromIndex + entriesPerPage, filteredEventsList.size());
-        eventsTableView.setItems(FXCollections.observableArrayList(filteredEventsList.subList(fromIndex, toIndex)));
-        updateLegend(fromIndex, toIndex);
-        return eventsTableView;
-    }
-
-    /*private void updatePagination() {
-        int entriesPerPage = cmbEntries.getValue();
-        int pageCount = (int) Math.ceil((double) filteredEventsList.size() / entriesPerPage);
-        pagination.setPageCount(pageCount > 0 ? pageCount : 1);
-        pagination.setCurrentPageIndex(0);
-        createPage(0);
-    }*/
-
-    private void updateLegend(int fromIndex, int toIndex) {
-        lblLegend.setText(String.format("Showing %d to %d of %d entries.", fromIndex + 1, toIndex, filteredEventsList.size()));
     }
 }

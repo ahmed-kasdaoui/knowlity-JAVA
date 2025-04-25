@@ -70,7 +70,7 @@ public class ServiceEventRegistration implements IService<EventRegistration> {
 
     @Override
     public void update(EventRegistration registration) {
-        String qry = "UPDATE `event_registration` SET `event_id`=?, `registration_date`=?, `status`=?, `disabled_parking`=?, `coming_from`=?, `name`=?, `places_reserved`=?,`user_id`=? WHERE `id`=?";
+        String qry = "UPDATE `event_registration` SET `event_id`=?, `registration_date`=?, `status`=?, `disabled_parking`=?, `coming_from`=?, `name`=?, `places_reserved`=?,`check_in_code`=?,`user_id`=? WHERE `id`=?";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setInt(1, registration.getEvent().getId());
@@ -80,8 +80,9 @@ public class ServiceEventRegistration implements IService<EventRegistration> {
             pstm.setString(5, registration.getComingFrom());
             pstm.setString(6, registration.getName());
             pstm.setObject(7, registration.getPlacesReserved(), Types.INTEGER);
-            pstm.setInt(8, registration.getUserId());
-            pstm.setInt(9, registration.getId());
+            pstm.setString(8, registration.getCheck_in_code());
+            pstm.setInt(9, registration.getUserId());
+            pstm.setInt(10, registration.getId());
             pstm.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

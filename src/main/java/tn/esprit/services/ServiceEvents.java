@@ -114,12 +114,11 @@ public class ServiceEvents implements IService<Events> {
         }
     }
 
-    public void updateSeatsAvailable(int eventId, int newSeatsAvailable, int placesReserved) {
-        String qry = "UPDATE `events` SET `seats_available`=? WHERE `id`=? AND `seats_available`>=?";
+    public void updateSeatsAvailable(int eventId, int newSeatsAvailable) {
+        String qry = "UPDATE `events` SET `seats_available`=? WHERE `id`=?";
         try (PreparedStatement pstm = cnx.prepareStatement(qry)) {
             pstm.setObject(1, newSeatsAvailable, Types.INTEGER);
             pstm.setInt(2, eventId);
-            pstm.setObject(3, newSeatsAvailable + placesReserved, Types.INTEGER);
             int rowsAffected = pstm.executeUpdate();
             if (rowsAffected == 0) {
                 throw new RuntimeException("Not enough seats available or event not found!");

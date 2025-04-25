@@ -13,8 +13,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.SVGPath?>
-
 <?import java.lang.String?>
+
 <StackPane fx:id="root" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: white; -fx-border-color: -light-gray-2; -fx-border-width: 0 1 0 0;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EventRegistrationListController">
     <stylesheets>
         <URL value="@/colors.css" />
@@ -29,7 +29,7 @@
     <children>
         <AnchorPane prefHeight="600.0" prefWidth="1000.0">
             <children>
-                <!-- Header with Back Button, Delete Button, Search Field, and Title -->
+                <!-- Header with Back Button, Delete Button, Export PDF Button, Search Field, and Title -->
                 <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                     <children>
                         <Button fx:id="backToEventsButton" contentDisplay="GRAPHIC_ONLY" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Back to Events">
@@ -54,6 +54,14 @@
                             </graphic>
                             <tooltip>
                                 <Tooltip text="Delete Registration" />
+                            </tooltip>
+                        </Button>
+                        <Button fx:id="exportPdfButton" cache="true" cacheHint="QUALITY" contentDisplay="GRAPHIC_ONLY" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="round" text="Export PDF">
+                            <graphic>
+                                <SVGPath content="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" mouseTransparent="true" style="-fx-fill: white;" />
+                            </graphic>
+                            <tooltip>
+                                <Tooltip text="Export PDF" />
                             </tooltip>
                         </Button>
                         <TextField fx:id="searchField" prefHeight="40.0" promptText="Search" HBox.hgrow="ALWAYS">

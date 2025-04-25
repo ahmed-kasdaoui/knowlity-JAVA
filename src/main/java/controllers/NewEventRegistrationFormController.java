@@ -267,9 +267,6 @@ public class NewEventRegistrationFormController {
             // Add registration
             serviceEventRegistration.add(registration);
 
-            // Update event's available seats
-            ServiceEvents serviceEvents = new ServiceEvents();
-            serviceEvents.updateSeatsAvailable(event.getId(), event.getSeatsAvailable() - placesReserved, placesReserved);
 
             // Show success alert
             Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
