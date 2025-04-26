@@ -2,6 +2,7 @@ package tn.knowlity.controller;
 
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -13,225 +14,147 @@ import javafx.util.Duration;
 import org.mindrot.jbcrypt.BCrypt;
 import tn.knowlity.entity.User;
 import tn.knowlity.service.userService;
+import tn.knowlity.tools.GoogleOAuthUtil;
 import tn.knowlity.tools.UserSessionManager;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.services.oauth2.model.Userinfo;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class inscriptionEtudiantController {
-    userService userService = new userService();
+    private static final Logger LOGGER = Logger.getLogger(inscriptionEtudiantController.class.getName());
+    private final userService userService = new userService();
 
-    @FXML
-    private Circle circle1;
-    @FXML
-    private Circle circle2;
-    @FXML
-    private Circle circle3;
-    @FXML
-    private Circle circle4;
-    @FXML
-    private Circle circle5;
-    @FXML
-    private Circle circle6;
-    @FXML
-    private Circle circle7;
-    @FXML
-    private Circle circle8;
-    @FXML
-    private Circle circle9;
-    @FXML
-    private Circle circle10;
-    @FXML
-    private Circle circle11;
-    @FXML
-    private Circle circle12;
-    @FXML
-    private ComboBox<String> localisation1;
-    @FXML
-    private TextField email;
-    @FXML
-    private PasswordField password;
-    @FXML
-    private PasswordField confirmPassword;
-    @FXML
-    private TextField nom;
-    @FXML
-    private TextField prenom;
-    @FXML
-    private TextField numTelephone;
-    @FXML
-    private TextField dateNaissance;
-    @FXML
-    private TextField localisation;
-    @FXML
-    private Label imagePathLabel;
-    @FXML
-    private Label errornom;
-    @FXML
-    private Label imageError;
-    @FXML
-    private Label prenomError;
-    @FXML
-    private Label numTelephoneError;
-    @FXML
-    private Label dateNaissanceError;
-    @FXML
-    private Label localisationError;
-    @FXML
-    private Label passwordError;
-    @FXML
-    private Label confirmPasswordError;
-    @FXML
-    private Label emailError;
+    @FXML private Circle circle1, circle2, circle3, circle4, circle5, circle6, circle7, circle8, circle9, circle10, circle11, circle12;
+    @FXML private ComboBox<String> localisation1;
+    @FXML private TextField email, nom, prenom, numTelephone, dateNaissance, localisation;
+    @FXML private PasswordField password, confirmPassword;
+    @FXML private Label imagePathLabel, errornom, imageError, prenomError, numTelephoneError, dateNaissanceError, localisationError, passwordError, confirmPasswordError, emailError;
+    @FXML private Button googleSignUpButton;
 
     @FXML
     public void initialize() {
         animateBackgroundCircles();
-        // Pre-fill fields if user comes from Google Sign-In
+        localisation1.getItems().addAll("Homme", "Femme", "Autre");
         User currentUser = UserSessionManager.getInstance().getCurrentUser();
         if (currentUser != null && currentUser.getGoogle_id() != null) {
-            email.setText(currentUser.getEmail());
-            email.setDisable(true);
-            nom.setText(currentUser.getNom());
-            prenom.setText(currentUser.getPrenom());
-            imagePathLabel.setText(currentUser.getImage() != null ? currentUser.getImage() : "Aucune image sélectionnée");
+            populateFormWithGoogleUser(currentUser);
         }
     }
 
     private void animateBackgroundCircles() {
-        TranslateTransition transition1 = new TranslateTransition(Duration.seconds(3), circle1);
-        transition1.setFromX(0);
-        transition1.setFromY(0);
-        transition1.setToX(100);
-        transition1.setToY(-50);
-        transition1.setAutoReverse(true);
-        transition1.setCycleCount(TranslateTransition.INDEFINITE);
-        transition1.play();
+        createCircleTransition(circle1, 0, 0, 100, -50, 3);
+        createCircleTransition(circle2, 0, 0, -100, 50, 4);
+        createCircleTransition(circle3, 200, 0, 300, 100, 3);
+        createCircleTransition(circle4, 300, 0, 400, -75, 4);
+        createCircleTransition(circle5, -100, 0, 0, 50, 3);
+        createCircleTransition(circle6, 150, 0, 200, -50, 4);
+        createCircleTransition(circle7, 600, 0, 700, -50, 3);
+        createCircleTransition(circle8, 700, 0, 800, 100, 4);
+        createCircleTransition(circle9, 800, 0, 900, -75, 3);
+        createCircleTransition(circle10, 900, 0, 950, 50, 4);
+        createCircleTransition(circle11, 1000, 0, 1100, -50, 3);
+        createCircleTransition(circle12, 950, 0, 1050, 75, 4);
+    }
 
-        TranslateTransition transition2 = new TranslateTransition(Duration.seconds(4), circle2);
-        transition2.setFromX(0);
-        transition2.setFromY(0);
-        transition2.setToX(-100);
-        transition2.setToY(50);
-        transition2.setAutoReverse(true);
-        transition2.setCycleCount(TranslateTransition.INDEFINITE);
-        transition2.play();
-
-        TranslateTransition transition3 = new TranslateTransition(Duration.seconds(3), circle3);
-        transition3.setFromX(200);
-        transition3.setFromY(0);
-        transition3.setToX(300);
-        transition3.setToY(100);
-        transition3.setAutoReverse(true);
-        transition3.setCycleCount(TranslateTransition.INDEFINITE);
-        transition3.play();
-
-        TranslateTransition transition4 = new TranslateTransition(Duration.seconds(4), circle4);
-        transition4.setFromX(300);
-        transition4.setFromY(0);
-        transition4.setToX(400);
-        transition4.setToY(-75);
-        transition4.setAutoReverse(true);
-        transition4.setCycleCount(TranslateTransition.INDEFINITE);
-        transition4.play();
-
-        TranslateTransition transition5 = new TranslateTransition(Duration.seconds(3), circle5);
-        transition5.setFromX(-100);
-        transition5.setFromY(0);
-        transition5.setToX(0);
-        transition5.setToY(50);
-        transition5.setAutoReverse(true);
-        transition5.setCycleCount(TranslateTransition.INDEFINITE);
-        transition5.play();
-
-        TranslateTransition transition6 = new TranslateTransition(Duration.seconds(4), circle6);
-        transition6.setFromX(150);
-        transition6.setFromY(0);
-        transition6.setToX(200);
-        transition6.setToY(-50);
-        transition6.setAutoReverse(true);
-        transition6.setCycleCount(TranslateTransition.INDEFINITE);
-        transition6.play();
-
-        TranslateTransition transition7 = new TranslateTransition(Duration.seconds(3), circle7);
-        transition7.setFromX(600);
-        transition7.setFromY(0);
-        transition7.setToX(700);
-        transition7.setToY(-50);
-        transition7.setAutoReverse(true);
-        transition7.setCycleCount(TranslateTransition.INDEFINITE);
-        transition7.play();
-
-        TranslateTransition transition8 = new TranslateTransition(Duration.seconds(4), circle8);
-        transition8.setFromX(700);
-        transition8.setFromY(0);
-        transition8.setToX(800);
-        transition8.setToY(100);
-        transition8.setAutoReverse(true);
-        transition8.setCycleCount(TranslateTransition.INDEFINITE);
-        transition8.play();
-
-        TranslateTransition transition9 = new TranslateTransition(Duration.seconds(3), circle9);
-        transition9.setFromX(800);
-        transition9.setFromY(0);
-        transition9.setToX(900);
-        transition9.setToY(-75);
-        transition9.setAutoReverse(true);
-        transition9.setCycleCount(TranslateTransition.INDEFINITE);
-        transition9.play();
-
-        TranslateTransition transition10 = new TranslateTransition(Duration.seconds(4), circle10);
-        transition10.setFromX(900);
-        transition10.setFromY(0);
-        transition10.setToX(950);
-        transition10.setToY(50);
-        transition10.setAutoReverse(true);
-        transition10.setCycleCount(TranslateTransition.INDEFINITE);
-        transition10.play();
-
-        TranslateTransition transition11 = new TranslateTransition(Duration.seconds(3), circle11);
-        transition11.setFromX(1000);
-        transition11.setFromY(0);
-        transition11.setToX(1100);
-        transition11.setToY(-50);
-        transition11.setAutoReverse(true);
-        transition11.setCycleCount(TranslateTransition.INDEFINITE);
-        transition11.play();
-
-        TranslateTransition transition12 = new TranslateTransition(Duration.seconds(4), circle12);
-        transition12.setFromX(950);
-        transition12.setFromY(0);
-        transition12.setToX(1050);
-        transition12.setToY(75);
-        transition12.setAutoReverse(true);
-        transition12.setCycleCount(TranslateTransition.INDEFINITE);
-        transition12.play();
+    private void createCircleTransition(Circle circle, double fromX, double fromY, double toX, double toY, double seconds) {
+        TranslateTransition transition = new TranslateTransition(Duration.seconds(seconds), circle);
+        transition.setFromX(fromX);
+        transition.setFromY(fromY);
+        transition.setToX(toX);
+        transition.setToY(toY);
+        transition.setAutoReverse(true);
+        transition.setCycleCount(TranslateTransition.INDEFINITE);
+        transition.play();
     }
 
     @FXML
     public void chooseImage() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Sélectionner une Image de Profil");
-
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg")
-        );
-
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg"));
         File selectedFile = fileChooser.showOpenDialog(null);
-
         if (selectedFile != null) {
             imagePathLabel.setText(selectedFile.getAbsolutePath());
+            LOGGER.info("Image selected: " + selectedFile.getAbsolutePath());
         }
     }
 
+    @FXML
+    public void signUpWithGoogle() {
+        googleSignUpButton.setDisable(true);
+        try {
+            String authUrl = GoogleOAuthUtil.getAuthorizationUrl();
+            Desktop.getDesktop().browse(new URI(authUrl));
+            LOGGER.info("Opened Google authorization URL");
+
+            new Thread(() -> {
+                try {
+                    Credential credential = GoogleOAuthUtil.authorize();
+                    Userinfo userInfo = GoogleOAuthUtil.getUserInfo(credential);
+
+                    User newUser = new User();
+                    newUser.setGoogle_id(userInfo.getId());
+                    newUser.setEmail(userInfo.getEmail());
+                    newUser.setNom(userInfo.getFamilyName() != null ? userInfo.getFamilyName() : "");
+                    newUser.setPrenom(userInfo.getGivenName() != null ? userInfo.getGivenName() : "");
+                    newUser.setImage(userInfo.getPicture() != null ? userInfo.getPicture() : "");
+                    newUser.setRoles(new String[]{"Etudiant"});
+
+                    UserSessionManager.getInstance().setCurrentUser(newUser);
+                    LOGGER.info("Google user authenticated: " + userInfo.getEmail());
+
+                    javafx.application.Platform.runLater(() -> {
+                        populateFormWithGoogleUser(newUser);
+                        showError("Veuillez compléter les champs restants pour finaliser l'inscription.", emailError);
+                    });
+                } catch (IOException e) {
+                    LOGGER.log(Level.SEVERE, "IO error during Google authentication", e);
+                    javafx.application.Platform.runLater(() -> showError("Erreur réseau lors de l'authentification Google. Veuillez réessayer.", emailError));
+                } catch (GeneralSecurityException e) {
+                    LOGGER.log(Level.SEVERE, "Security error during Google authentication", e);
+                    javafx.application.Platform.runLater(() -> showError("Erreur de sécurité lors de l'authentification Google.", emailError));
+                } finally {
+                    javafx.application.Platform.runLater(() -> googleSignUpButton.setDisable(false));
+                }
+            }).start();
+        } catch (IOException | GeneralSecurityException e) {
+            LOGGER.log(Level.SEVERE, "Error initiating Google authentication", e);
+            showError("Impossible de lancer l'authentification Google. Veuillez réessayer.", emailError);
+            googleSignUpButton.setDisable(false);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Unexpected error during Google authentication", e);
+            showError("Une erreur inattendue s'est produite. Veuillez réessayer.", emailError);
+            googleSignUpButton.setDisable(false);
+        }
+    }
+
+    private void populateFormWithGoogleUser(User user) {
+        email.setText(user.getEmail());
+        email.setDisable(true);
+        nom.setText(user.getNom());
+        prenom.setText(user.getPrenom());
+        imagePathLabel.setText(user.getImage() != null && !user.getImage().isEmpty() ? user.getImage() : "Aucune image sélectionnée");
+        password.setDisable(true);
+        confirmPassword.setDisable(true);
+        LOGGER.info("Form populated with Google user data: " + user.getEmail());
+    }
+
+    @FXML
     public void afficher() throws ParseException, SQLException, IOException {
         int compteur = 0;
         String genre = localisation1.getValue();
@@ -246,41 +169,41 @@ public class inscriptionEtudiantController {
 
         if (nomInput == null || nomInput.isEmpty() || nomInput.length() < 3) {
             compteur++;
-            showError("Nom invalide", errornom);
-            System.out.println("Nom invalide");
+            showError("Nom invalide (minimum 3 caractères)", errornom);
+            LOGGER.warning("Invalid nom: " + nomInput);
         } else {
             errornom.setOpacity(0);
         }
 
         if (prenomInput == null || prenomInput.isEmpty() || prenomInput.length() < 3) {
             compteur++;
-            showError("Prénom invalide", prenomError);
-            System.out.println("Prénom invalide");
+            showError("Prénom invalide (minimum 3 caractères)", prenomError);
+            LOGGER.warning("Invalid prenom: " + prenomInput);
         } else {
             prenomError.setOpacity(0);
         }
 
         if (genre == null) {
             compteur++;
-            showError("Genre requis", imageError);
-            System.out.println("Genre invalide");
+            showError("Veuillez sélectionner un genre", imageError);
+            LOGGER.warning("Genre not selected");
         } else {
             imageError.setOpacity(0);
         }
 
-        String phoneInput1 = numTelephone.getText();
-        if (!phoneInput1.matches("[0-9]{8}")) {
+        String phoneInput = numTelephone.getText();
+        if (!phoneInput.matches("[0-9]{8}")) {
             compteur++;
-            showError("Numéro invalide", numTelephoneError);
-            System.out.println("Numéro invalide");
+            showError("Numéro invalide (8 chiffres)", numTelephoneError);
+            LOGGER.warning("Invalid phone number: " + phoneInput);
         } else {
             numTelephoneError.setOpacity(0);
         }
 
         if (emailInput.isEmpty() || !emailInput.matches("^[\\w.-]+@(gmail\\.com|esprit\\.tn)$")) {
             compteur++;
-            showError("Email invalide", emailError);
-            System.out.println("Email invalide");
+            showError("Email invalide (doit être @gmail.com ou @esprit.tn)", emailError);
+            LOGGER.warning("Invalid email: " + emailInput);
         } else {
             emailError.setOpacity(0);
         }
@@ -291,16 +214,16 @@ public class inscriptionEtudiantController {
         if (!isGoogleSignIn) {
             if (passwordInput == null || passwordInput.isEmpty() || passwordInput.length() < 3) {
                 compteur++;
-                showError("Mot de passe invalide", passwordError);
-                System.out.println("Mot de passe invalide");
+                showError("Mot de passe invalide (minimum 3 caractères)", passwordError);
+                LOGGER.warning("Invalid password");
             } else {
                 passwordError.setOpacity(0);
             }
 
             if (confirmPasswordInput == null || confirmPasswordInput.isEmpty() || confirmPasswordInput.length() < 3) {
                 compteur++;
-                showError("Confirmation mot de passe invalide", confirmPasswordError);
-                System.out.println("Confirmation mot de passe invalide");
+                showError("Confirmation invalide", confirmPasswordError);
+                LOGGER.warning("Invalid confirm password");
             } else {
                 confirmPasswordError.setOpacity(0);
             }
@@ -309,6 +232,7 @@ public class inscriptionEtudiantController {
                 compteur++;
                 showError("Les mots de passe ne correspondent pas", confirmPasswordError);
                 showError("Les mots de passe ne correspondent pas", passwordError);
+                LOGGER.warning("Passwords do not match");
             } else {
                 passwordError.setOpacity(0);
                 confirmPasswordError.setOpacity(0);
@@ -317,8 +241,8 @@ public class inscriptionEtudiantController {
 
         if (localisationInput.length() < 3 || localisationInput.isEmpty()) {
             compteur++;
-            showError("Localisation invalide", localisationError);
-            System.out.println("Localisation invalide");
+            showError("Localisation invalide (minimum 3 caractères)", localisationError);
+            LOGGER.warning("Invalid localisation: " + localisationInput);
         } else {
             localisationError.setOpacity(0);
         }
@@ -329,29 +253,37 @@ public class inscriptionEtudiantController {
             dateNaissanceError.setOpacity(0);
         } catch (ParseException e) {
             compteur++;
-            showError("Date de naissance invalide", dateNaissanceError);
-            System.out.println("Format de date invalide. Utilisez YYYY-MM-DD.");
+            showError("Date invalide (format YYYY-MM-DD)", dateNaissanceError);
+            LOGGER.warning("Invalid date format: " + dateNaissance.getText());
         }
 
         Path sourcePath = Paths.get(imagePathInput);
-        Path destinationFolder = Paths.get("src/main/resources/images");
-        Files.createDirectories(destinationFolder);
-        String fileName = sourcePath.getFileName().toString();
-        Path destinationPath = destinationFolder.resolve(fileName);
-        int counter = 1;
-        while (Files.exists(destinationPath)) {
-            String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
-            String fileExtension = fileName.substring(fileName.lastIndexOf('.'));
-            destinationPath = destinationFolder.resolve(fileNameWithoutExtension + "_" + counter + fileExtension);
-            counter++;
+        if (!Files.exists(sourcePath) || imagePathInput.equals("Aucune image sélectionnée")) {
+            compteur++;
+            showError("Veuillez sélectionner une image valide", imageError);
+            LOGGER.warning("Invalid image path: " + imagePathInput);
+        } else {
+            imageError.setOpacity(0);
         }
-        Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
-        System.out.println("Image déplacée avec succès vers : " + destinationPath);
 
         if (compteur == 0) {
-            int numTelephoneInput = Integer.parseInt(numTelephone.getText());
+            Path destinationFolder = Paths.get("src/main/resources/images");
+            Files.createDirectories(destinationFolder);
+            String fileName = sourcePath.getFileName().toString();
+            Path destinationPath = destinationFolder.resolve(fileName);
+            int counter = 1;
+            while (Files.exists(destinationPath)) {
+                String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
+                String fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+                destinationPath = destinationFolder.resolve(fileNameWithoutExtension + "_" + counter + fileExtension);
+                counter++;
+            }
+            Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+            LOGGER.info("Image copied to: " + destinationPath);
+
+            int numTelephoneInput = Integer.parseInt(phoneInput);
             String hashedPassword = isGoogleSignIn ? "" : BCrypt.hashpw(passwordInput, BCrypt.gensalt());
-            String[] roles = new String[]{"Etudiant"};
+            String[] roles = isGoogleSignIn ? currentUser.getRoles() : new String[]{"Etudiant"};
             User user = new User(
                     prenomInput, emailInput, dateNaissanceInput, numTelephoneInput, hashedPassword,
                     destinationPath.toString(), genre, localisationInput, hashedPassword, 0, "0", roles, nomInput
@@ -361,7 +293,10 @@ public class inscriptionEtudiantController {
             }
             userService.ajouterEtudiant(user);
             UserSessionManager.getInstance().setCurrentUser(user);
-            this.pagelogin();
+            LOGGER.info("Student registered successfully: " + emailInput);
+            pagelogin();
+        } else {
+            LOGGER.warning("Registration failed due to " + compteur + " validation errors");
         }
     }
 
@@ -370,9 +305,9 @@ public class inscriptionEtudiantController {
         navbarController.changeScene("/user/inscriptionEtudiant.fxml", currentStage);
     }
 
-    private void showError(String message, Label nomlabel) {
-        nomlabel.setText(message);
-        nomlabel.setOpacity(1);
+    private void showError(String message, Label label) {
+        label.setText(message);
+        label.setOpacity(1);
     }
 
     public void pagelogin() throws IOException {

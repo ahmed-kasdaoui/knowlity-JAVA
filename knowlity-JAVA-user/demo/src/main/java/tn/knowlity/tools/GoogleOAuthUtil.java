@@ -1,6 +1,5 @@
 package tn.knowlity.tools;
 
-import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -22,8 +21,11 @@ import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class GoogleOAuthUtil {
+    private static final Logger LOGGER = Logger.getLogger(GoogleOAuthUtil.class.getName());
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final List<String> SCOPES = Arrays.asList(
             "https://www.googleapis.com/auth/userinfo.profile",
@@ -34,15 +36,14 @@ public class GoogleOAuthUtil {
     private static final String REDIRECT_URI = "http://localhost:8080/callback";
 
     public static Credential authorize() throws IOException, GeneralSecurityException {
-        // Load client secrets
         InputStream resourceStream = GoogleOAuthUtil.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         if (resourceStream == null) {
+            LOGGER.severe("Client secrets file not found: " + CREDENTIALS_FILE_PATH);
             throw new IOException("Resource not found: " + CREDENTIALS_FILE_PATH);
         }
         InputStreamReader in = new InputStreamReader(resourceStream);
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, in);
 
-        // Build flow and trigger user authorization request
         NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         File dataStoreDir = new File(TOKENS_DIRECTORY_PATH);
         FileDataStoreFactory dataStoreFactory = new FileDataStoreFactory(dataStoreDir);
@@ -55,21 +56,23 @@ public class GoogleOAuthUtil {
                 .build();
 
         LocalServerReceiver receiver = new LocalServerReceiver.Builder()
-                .setPort(80)
+                .setPort(8080)
                 .build();
 
         try {
-            System.out.println("Starting local server on port 80 for callback: " + REDIRECT_URI);
-            return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+            LOGGER.info("Starting local server on port 8080 for callback: " + REDIRECT_URI);
+            Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+            LOGGER.info("Authorization successful for user");
+            return credential;
         } catch (Exception e) {
-            System.err.println("Failed to start local server or authorize: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, "Failed to authorize with Google: " + e.getMessage(), e);
             throw e;
         } finally {
             try {
                 receiver.stop();
-                System.out.println("Local server stopped.");
+                LOGGER.info("Local server stopped");
             } catch (IOException e) {
-                System.err.println("Error stopping local server: " + e.getMessage());
+                LOGGER.log(Level.WARNING, "Error stopping local server: " + e.getMessage(), e);
             }
         }
     }
@@ -79,12 +82,15 @@ public class GoogleOAuthUtil {
         Oauth2 oauth2 = new Oauth2.Builder(httpTransport, JSON_FACTORY, credential)
                 .setApplicationName("KnowLity")
                 .build();
-        return oauth2.userinfo().get().execute();
+        Userinfo userInfo = oauth2.userinfo().get().execute();
+        LOGGER.info("Retrieved user info: " + userInfo.getEmail());
+        return userInfo;
     }
 
     public static String getAuthorizationUrl() throws IOException, GeneralSecurityException {
         InputStream resourceStream = GoogleOAuthUtil.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         if (resourceStream == null) {
+            LOGGER.severe("Client secrets file not found: " + CREDENTIALS_FILE_PATH);
             throw new IOException("Resource not found: " + CREDENTIALS_FILE_PATH);
         }
         InputStreamReader in = new InputStreamReader(resourceStream);
@@ -100,7 +106,7 @@ public class GoogleOAuthUtil {
         AuthorizationCodeRequestUrl authorizationUrl = flow.newAuthorizationUrl()
                 .setRedirectUri(REDIRECT_URI);
         String url = authorizationUrl.build();
-        System.out.println("Generated authorization URL: " + url);
+        LOGGER.info("Generated authorization URL: " + url);
         return url;
     }
 }
