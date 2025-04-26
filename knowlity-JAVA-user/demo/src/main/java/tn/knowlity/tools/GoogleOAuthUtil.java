@@ -31,7 +31,7 @@ public class GoogleOAuthUtil {
     );
     private static final String CREDENTIALS_FILE_PATH = "/client_secret.json";
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
-    private static final String REDIRECT_URI = "http://localhost";
+    private static final String REDIRECT_URI = "http://localhost:8080/callback";
 
     public static Credential authorize() throws IOException, GeneralSecurityException {
         // Load client secrets
