@@ -41,29 +41,25 @@ public class GoogleOAuthUtil {
             LOGGER.severe("Client secrets file not found: " + CREDENTIALS_FILE_PATH);
             throw new IOException("Resource not found: " + CREDENTIALS_FILE_PATH);
         }
-        InputStreamReader in = new InputStreamReader(resourceStream);
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, in);
+        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(resourceStream));
 
         NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        File dataStoreDir = new File(TOKENS_DIRECTORY_PATH);
-        FileDataStoreFactory dataStoreFactory = new FileDataStoreFactory(dataStoreDir);
+        FileDataStoreFactory dataStoreFactory = new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH));
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
                 .setDataStoreFactory(dataStoreFactory)
                 .setAccessType("offline")
-                .setApprovalPrompt("force")
                 .build();
 
         LocalServerReceiver receiver = new LocalServerReceiver.Builder()
                 .setPort(8080)
+                .setCallbackPath("/callback") // Ajout crucial
                 .build();
 
         try {
             LOGGER.info("Starting local server on port 8080 for callback: " + REDIRECT_URI);
-            Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
-            LOGGER.info("Authorization successful for user");
-            return credential;
+            return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Failed to authorize with Google: " + e.getMessage(), e);
             throw e;
@@ -82,31 +78,24 @@ public class GoogleOAuthUtil {
         Oauth2 oauth2 = new Oauth2.Builder(httpTransport, JSON_FACTORY, credential)
                 .setApplicationName("KnowLity")
                 .build();
-        Userinfo userInfo = oauth2.userinfo().get().execute();
-        LOGGER.info("Retrieved user info: " + userInfo.getEmail());
-        return userInfo;
+        return oauth2.userinfo().get().execute();
     }
 
     public static String getAuthorizationUrl() throws IOException, GeneralSecurityException {
         InputStream resourceStream = GoogleOAuthUtil.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         if (resourceStream == null) {
-            LOGGER.severe("Client secrets file not found: " + CREDENTIALS_FILE_PATH);
-            throw new IOException("Resource not found: " + CREDENTIALS_FILE_PATH);
+            throw new IOException("Client secrets file not found: " + CREDENTIALS_FILE_PATH);
         }
-        InputStreamReader in = new InputStreamReader(resourceStream);
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, in);
+        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(resourceStream));
 
         NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
                 .setAccessType("offline")
-                .setApprovalPrompt("force")
                 .build();
 
-        AuthorizationCodeRequestUrl authorizationUrl = flow.newAuthorizationUrl()
-                .setRedirectUri(REDIRECT_URI);
-        String url = authorizationUrl.build();
-        LOGGER.info("Generated authorization URL: " + url);
-        return url;
+        return flow.newAuthorizationUrl()
+                .setRedirectUri(REDIRECT_URI)
+                .build();
     }
 }
