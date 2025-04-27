@@ -1,11 +1,13 @@
 package tn.esprit.services;
 
 import tn.esprit.interfaces.IService;
+import tn.esprit.models.EventRegistration;
 import tn.esprit.models.Events;
 import tn.esprit.utils.MyDataBase;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +18,21 @@ public class ServiceEvents implements IService<Events> {
         cnx = MyDataBase.getInstance().getCnx();
     }
 
+    public void checkEvents(){
+        ServiceEventRegistration serviceEventRegistration = new ServiceEventRegistration();
+        List<Events> eventsList = new ArrayList<>();
+        eventsList.addAll(this.getAll());
+        for (Events event : eventsList) {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime createdAt = event.getCreatedAt();
+            long daysDifference = ChronoUnit.DAYS.between(createdAt, now);
+            List<EventRegistration> eventRegistrationsList = serviceEventRegistration.getByEvent(event.getId());
+            if(daysDifference>3 && eventRegistrationsList.isEmpty()){
+                this.delete(event);
+                System.out.println("Event " + event.getId() + " has been deleted");
+            }
+        }
+    }
     @Override
     public void add(Events event) {
         String qry = "INSERT INTO `events` (`title`, `description`, `start_date`, `end_date`, `type`, `max_participants`, `seats_available`, `location`, `created_at`, `image`, `category`, `longitude`, `latitude`,`organizer_id`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -130,11 +147,21 @@ public class ServiceEvents implements IService<Events> {
 
     @Override
     public void delete(Events event) {
+        String disableFK = "SET FOREIGN_KEY_CHECKS = 0";
         String qry = "DELETE FROM `events` WHERE `id`=?";
+        String enableFK = "SET FOREIGN_KEY_CHECKS = 1";
+
         try {
+            PreparedStatement disableStmt = cnx.prepareStatement(disableFK);
+            disableStmt.executeUpdate();
+
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setInt(1, event.getId());
             pstm.executeUpdate();
+
+            PreparedStatement enableStmt = cnx.prepareStatement(enableFK);
+            enableStmt.executeUpdate();
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

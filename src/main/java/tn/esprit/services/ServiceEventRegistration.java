@@ -126,4 +126,31 @@ public class ServiceEventRegistration implements IService<EventRegistration> {
         }
         return registration;
     }
+
+    public List<EventRegistration> getByEvent(int IdEvent) {
+        List<EventRegistration> registrations = new ArrayList<>();
+        String qry = "SELECT * FROM `event_registration` WHERE `event_id`=?";
+        try{
+            PreparedStatement pstm = cnx.prepareStatement(qry);
+            pstm.setInt(1, IdEvent);
+            ResultSet rs = pstm.executeQuery();
+            while (rs.next()) {
+                EventRegistration r = new EventRegistration();
+                r.setId(rs.getInt("id"));
+                Events event = serviceEvents.getById(rs.getInt("event_id"));
+                r.setEvent(event);
+                r.setUserId(rs.getInt("user_id"));
+                r.setRegistrationDate(rs.getTimestamp("registration_date").toLocalDateTime());
+                r.setStatus(rs.getString("status"));
+                r.setDisabledParking(rs.getBoolean("disabled_parking"));
+                r.setComingFrom(rs.getString("coming_from"));
+                r.setName(rs.getString("name"));
+                r.setPlacesReserved(rs.getObject("places_reserved") != null ? rs.getInt("places_reserved") : null);
+                registrations.add(r);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return registrations;
+    }
 }

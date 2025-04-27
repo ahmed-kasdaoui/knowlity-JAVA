@@ -62,6 +62,7 @@ public class EventListController {
         // Initialize events lists
         eventsList = FXCollections.observableArrayList();
         filteredEventsList = FXCollections.observableArrayList();
+        serviceEvents.checkEvents();
 
         // Load events
         loadEvents();

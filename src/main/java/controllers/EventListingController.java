@@ -50,13 +50,11 @@ public class EventListingController {
     private final List<String> cardThemes = Arrays.asList("blue", "red", "green", "yellow");
 
     public void initialize() {
-        // Set the container to light theme
+        serviceEvents.checkEvents();
         eventContainer.getStyleClass().add("light");
 
-        // Set the root to light theme
         root.getStyleClass().add("light-theme");
 
-        // Fetch all events from the database
         try {
             events.addAll(serviceEvents.getAll());
             System.out.println("Fetched " + events.size() + " events from the database.");
@@ -65,11 +63,9 @@ public class EventListingController {
             e.printStackTrace();
         }
 
-        // For demonstration, assume recommended events are those with a specific category
         try {
             recommendedEvents.addAll(userEventPreferenceService.getRecommendedEvents(1, 20));
             System.out.println("Found " + recommendedEvents.size() + " recommended events for user ID: " + 1);
-            // Fallback: If no recommended events, use all events
             if (recommendedEvents.isEmpty()) {
                 recommendedEvents.addAll(events);
                 System.out.println("No recommended events found, falling back to all events.");
@@ -77,16 +73,13 @@ public class EventListingController {
         } catch (Exception e) {
             System.err.println("Error fetching recommended events: " + e.getMessage());
             e.printStackTrace();
-            // Fallback to all events on error
             recommendedEvents.addAll(events);
         }
 
-        // Initialize with normal events
         currentDisplayList = events;
         System.out.println("Current display list size: " + currentDisplayList.size());
         displayEventsBatch(true);
 
-        // Set up event handlers
         searchQuery.textProperty().addListener((obs, oldV, newV) -> filterEvents());
         searchCategory.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> filterEvents());
         searchLocation.textProperty().addListener((obs, oldV, newV) -> filterEvents());
