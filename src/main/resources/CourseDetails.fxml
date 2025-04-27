@@ -211,7 +211,7 @@
                     </HBox>
                 </VBox>
 
-                <!-- Chapters List -->
+                <!-- chams -->
                 <VBox spacing="15.0">
                     <Label styleClass="section-title, h2, mb-4" text="Liste des Chapitres">
                         <graphic>
