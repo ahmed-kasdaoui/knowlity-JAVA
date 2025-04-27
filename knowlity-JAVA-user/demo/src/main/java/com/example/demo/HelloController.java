@@ -5,7 +5,7 @@ import javafx.scene.control.Label;
 
 public class HelloController {
     @FXML
-    private Label welcomeText;
+    private Label welcomeText1;
 
     @FXML
     protected void onHelloButtonClick() {
