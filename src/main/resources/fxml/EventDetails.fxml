@@ -1,16 +1,19 @@
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.control.ScrollPane?>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.HBox?>
-<?import java.lang.String?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 <?import javafx.scene.web.WebView?>
+
 <StackPane fx:id="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EventDetailsController">
     <stylesheets>
         <URL value="@/colors.css" />
@@ -69,17 +72,6 @@
                             </styleClass>
                         </Label>
                     </HBox>
-                    <Text fx:id="descriptionText" wrappingWidth="600" text="About The Event">
-                        <styleClass>
-                            <String fx:value="h4" />
-                            <String fx:value="text-bold" />
-                        </styleClass>
-                    </Text>
-                    <Label fx:id="LocationLabel" text="Location">
-                        <styleClass>
-                            <String fx:value="h4" />
-                        </styleClass>
-                    </Label>
                 </VBox>
                 <VBox alignment="CENTER" spacing="10.0" HBox.hgrow="ALWAYS">
                     <Label fx:id="maxParticipantsLabel" text="100+">
@@ -108,9 +100,9 @@
 
             <!-- Section 2: Event Image and Tabs -->
             <HBox>
-                <SplitPane dividerPositions="0.6" HBox.hgrow="ALWAYS">
+                <SplitPane HBox.hgrow="ALWAYS">
                     <items>
-                        <ImageView fx:id="eventImage" fitHeight="300.0" fitWidth="-1" preserveRatio="true" SplitPane.resizableWithParent="true" styleClass="responsive-image" />
+                        <ImageView fx:id="eventImage" fitHeight="300.0" fitWidth="-1" preserveRatio="true" styleClass="responsive-image" SplitPane.resizableWithParent="true" />
                     </items>
                 </SplitPane>
                 <VBox alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
@@ -127,6 +119,17 @@
                     </HBox>
                 </VBox>
             </HBox>
+              <Text fx:id="descriptionText" text="About The Event" wrappingWidth="600">
+                  <styleClass>
+                      <String fx:value="h4" />
+                      <String fx:value="text-bold" />
+                  </styleClass>
+              </Text>
+              <Label fx:id="LocationLabel" text="Location">
+                  <styleClass>
+                      <String fx:value="h4" />
+                  </styleClass>
+              </Label>
 
             <!-- Section 3: Organizer Profile and Map -->
             <VBox spacing="20.0" VBox.vgrow="ALWAYS">

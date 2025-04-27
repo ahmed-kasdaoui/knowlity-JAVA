@@ -213,7 +213,7 @@ public class EventListingController {
         dateBox.getStyleClass().add("postcard__subtitle");
         dateBox.setAlignment(Pos.CENTER_LEFT);
 
-        Label calendarIcon = new Label("\uf073"); // Font Awesome calendar icon
+        Label calendarIcon = new Label("\uf073");
         calendarIcon.getStyleClass().add("fas");
 
         Label dateText = new Label(event.getStartDate() != null ?
@@ -229,7 +229,7 @@ public class EventListingController {
 
         // Event Description
         Label description = new Label(event.getDescription() != null ?
-                event.getDescription() :
+                event.getDescription().substring(0, Math.min(100, event.getDescription().length()))+" ..." :
                 "We are proud to announce that we are organizing a 2-day hybrid workshop on Explainable AI (XAI), bringing together students, experts, researchers, and professionals to explore the latest advancements in making AI systems more transparent, interpretable, a");
         description.getStyleClass().add("postcard__preview-txt");
         description.setWrapText(true);
@@ -246,7 +246,8 @@ public class EventListingController {
         categoryTag.getStyleClass().add("tag__item");
 
         // Free tag
-        Label freeTag = new Label("FREE");
+        Label freeTag = new Label(event.getType() != null ?
+                event.getType() : "Type");
         freeTag.getStyleClass().add("tag__item");
 
         // Reserve button

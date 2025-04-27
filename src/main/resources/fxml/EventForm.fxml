@@ -35,22 +35,22 @@
                     <padding>
                         <Insets bottom="50" left="20" right="20" top="50" />
                     </padding>
-               <HBox prefHeight="516.0" prefWidth="719.0">
-                  <children>
-                     <Button fx:id="backToEventsButton" contentDisplay="GRAPHIC_ONLY" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Back to Events">
-                        <styleClass>
-                           <String fx:value="round" />
-                           <String fx:value="btn-warning" />
-                        </styleClass>
-                        <graphic>
-                           <SVGPath content="M19 11H7.83l4.88-4.88c.39-.39.39-1.02 0-1.41-.39-.39-1.02-.39-1.41 0l-6.59 6.59c-.39.39-.39 1.02 0 1.41l6.59 6.59c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" fill="WHITE" mouseTransparent="true" style="-fx-fill: white;" />
-                        </graphic>
-                        <tooltip>
-                           <Tooltip text="Back to Events" />
-                        </tooltip>
-                     </Button>
-                  </children>
-               </HBox>
+                    <HBox prefHeight="516.0" prefWidth="719.0">
+                        <children>
+                            <Button fx:id="backToEventsButton" contentDisplay="GRAPHIC_ONLY" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Back to Events">
+                                <styleClass>
+                                    <String fx:value="round" />
+                                    <String fx:value="btn-warning" />
+                                </styleClass>
+                                <graphic>
+                                    <SVGPath content="M19 11H7.83l4.88-4.88c.39-.39.39-1.02 0-1.41-.39-.39-1.02-.39-1.41 0l-6.59 6.59c-.39.39-.39 1.02 0 1.41l6.59 6.59c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" fill="WHITE" mouseTransparent="true" style="-fx-fill: white;" />
+                                </graphic>
+                                <tooltip>
+                                    <Tooltip text="Back to Events" />
+                                </tooltip>
+                            </Button>
+                        </children>
+                    </HBox>
                     <Label styleClass="h4" text="Create Event" />
                     <GridPane fx:id="formGrid" hgap="10" prefHeight="542.0" prefWidth="909.0" styleClass="contact-form" vgap="10">
                         <columnConstraints>
@@ -69,10 +69,11 @@
                                 <children>
                                     <Label fx:id="descriptionLabel" text="Description" />
                                     <TextArea fx:id="descriptionField" promptText="Enter event description" />
+                                    <Button fx:id="generateDescriptionButton" styleClass="btn" text="Generate AI Description" />
                                     <Label fx:id="descriptionErrorLabel" managed="false" styleClass="Red" visible="false" />
                                 </children>
                             </VBox>
-                            <VBox alignment="CENTER_LEFT" GridPane.rowIndex="2">
+                            <VBox GridPane.rowIndex="2">
                                 <children>
                                     <Label fx:id="startDateLabel" text="Start Date" />
                                     <DatePicker fx:id="startDatePicker" promptText="Select start date" />

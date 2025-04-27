@@ -9,8 +9,14 @@ import javafx.stage.FileChooser;
 import tn.esprit.models.Events;
 import tn.esprit.services.ServiceEvents;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,6 +39,8 @@ public class EventFormController {
     private Label descriptionLabel;
     @FXML
     private Label descriptionErrorLabel;
+    @FXML
+    private Button generateDescriptionButton;
     @FXML
     private DatePicker startDatePicker;
     @FXML
@@ -135,6 +143,7 @@ public class EventFormController {
         longitudeField.textProperty().addListener((obs, old, newValue) -> validateLongitude());
 
         imageButton.setOnAction(e -> chooseImage());
+        generateDescriptionButton.setOnAction(e -> generateAIDescription());
         saveButton.setOnAction(e -> saveEvent());
         resetButton.setOnAction(e -> resetForm());
         backToEventsButton.setOnAction(event -> navigateToEvents());
@@ -180,6 +189,88 @@ public class EventFormController {
             selectedImageFile = file;
             imageLabel.setText(file.getName());
             validateImage();
+        }
+    }
+
+
+    private void generateAIDescription() {
+        if (!validateTitle() || !validateStartDate() || !validateEndDate() || !validateType() ||
+                !validateLocation() || !validateCategory()) {
+            showAlert(Alert.AlertType.WARNING, "Incomplete Form", "Please fill in Title, Start Date, End Date, Type, Location, and Category to generate a description.");
+            return;
+        }
+
+        try {
+            String prompt = String.format(
+                    "Generate a detailed event description (minimum 50 words) for an event with the following details:\n" +
+                            "Title: %s\n" +
+                            "Type: %s\n" +
+                            "Category: %s\n" +
+                            "Location: %s\n" +
+                            "Start Date: %s\n" +
+                            "End Date: %s\n" +
+                            "Max Participants: %s\n" +
+                            "Seats Available: %s\n" +
+                            "Latitude: %s\n" +
+                            "Longitude: %s\n" +
+                            "Ensure the description is engaging, professional, and highlights the event's purpose and appeal.",
+                    titleField.getText(),
+                    typeCombo.getValue(),
+                    categoryCombo.getValue(),
+                    locationField.getText(),
+                    startDatePicker.getValue(),
+                    endDatePicker.getValue(),
+                    maxParticipantsField.getText().isEmpty() ? "Not specified" : maxParticipantsField.getText(),
+                    seatsAvailableField.getText().isEmpty() ? "Not specified" : seatsAvailableField.getText(),
+                    latitudeField.getText().isEmpty() ? "Not specified" : latitudeField.getText(),
+                    longitudeField.getText().isEmpty() ? "Not specified" : longitudeField.getText()
+            );
+
+            String apiUrl = "https://api.groq.com/openai/v1/chat/completions";
+            String apiKey = "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";
+            String requestBody = String.format(
+                    "{\"model\": \"llama3-8b-8192\", \"messages\": [{\"role\": \"user\", \"content\": \"%s\"}], \"max_tokens\": 200}",
+                    prompt.replace("\"", "\\\"").replace("\n", "\\n")
+            );
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(apiUrl))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + apiKey)
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("Groq API Response: " + response.body()); // Log the raw response for debugging
+
+            if (response.statusCode() == 200) {
+                // Parse the JSON response using Jackson
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode rootNode = mapper.readTree(response.body());
+                JsonNode choicesNode = rootNode.path("choices");
+                if (choicesNode.isArray() && choicesNode.size() > 0) {
+                    JsonNode messageNode = choicesNode.get(0).path("message");
+                    if (messageNode.has("content")) {
+                        String generatedText = messageNode.get("content").asText();
+                        generatedText = generatedText.replace("\\n", "\n").replace("\\\"", "\"");
+                        descriptionField.setText(generatedText);
+                        validateDescription();
+                    } else {
+                        showAlert(Alert.AlertType.ERROR, "Parsing Error", "No generated content found in the response.");
+                    }
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Parsing Error", "No choices found in the response.");
+                }
+            } else {
+                showAlert(Alert.AlertType.ERROR, "API Error", "Failed to generate description: " + response.body());
+            }
+        } catch (IOException | InterruptedException e) {
+            showAlert(Alert.AlertType.ERROR, "API Error", "Error contacting Groq API: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Parsing Error", "Failed to parse Groq API response: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
