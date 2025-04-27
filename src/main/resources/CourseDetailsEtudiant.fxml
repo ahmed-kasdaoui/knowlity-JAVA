@@ -88,7 +88,7 @@
             <!-- Boutons d'action -->
             <HBox spacing="20" alignment="CENTER">
                 <Button fx:id="enrollButton" onAction="#handleEnrollAction" styleClass="action-button" text="S'inscrire au cours" />
-                <Button fx:id="statsButton" onAction="#handleStatsAction" styleClass="action-button" text="Statistiques" />
+
             </HBox>
         </VBox>
         

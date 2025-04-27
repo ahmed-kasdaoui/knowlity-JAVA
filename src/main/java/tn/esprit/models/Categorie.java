@@ -93,13 +93,6 @@ public class Categorie {
 
     @Override
     public String toString() {
-        return "Categorie{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", descrption='" + descrption + '\'' +
-                ", icone='" + icone + '\'' +
-                ", motsCles='" + motsCles + '\'' +
-                ", publicCible='" + publicCible + '\'' +
-                "}\n";
+        return name;
     }
 }

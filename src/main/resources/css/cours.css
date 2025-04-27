@@ -459,7 +459,7 @@
 
     /* Stats animation */
     .stat-count {
-        transition: transform 0.3s ease, -fx-text-fill 0.3s ease;
+        transition: transform 0.01s ease, -fx-text-fill 0.3s ease;
     }
 
     .course-card:hover .stat-count {

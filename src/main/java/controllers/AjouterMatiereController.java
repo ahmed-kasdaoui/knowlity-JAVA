@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -56,6 +57,9 @@ public class AjouterMatiereController {
     private ServiceMatiere serviceMatiere = new ServiceMatiere();
     private ServiceCategorie serviceCategorie = new ServiceCategorie();
     private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("^#[0-9A-Fa-f]{6}$");
+    private Matiere matiereToEdit;
+    private boolean isEditMode = false;
+    private Runnable onReturnCallback;
 
     @FXML
     public void initialize() {
@@ -76,6 +80,13 @@ public class AjouterMatiereController {
             }
         });
         System.out.println("categorieComboBox populated with: " + categorieComboBox.getItems().size() + " categories");
+
+        // Set default color
+        couleurThemePicker.setValue(Color.web("#7c3aed"));
+    }
+
+    public void setOnReturnCallback(Runnable callback) {
+        this.onReturnCallback = callback;
     }
 
     @FXML
@@ -166,43 +177,44 @@ public class AjouterMatiereController {
             }
 
             // Create and save Matiere
-            Matiere matiere = new Matiere();
+            Matiere matiere = isEditMode ? matiereToEdit : new Matiere();
             matiere.setTitre(titre);
             matiere.setCategorie(categorie);
             matiere.setPrerequis(prerequis);
             matiere.setDescription(description);
             matiere.setCouleurTheme(hexColor);
-            matiere.setCreatedAt(LocalDateTime.now());
+            if (!isEditMode) {
+                matiere.setCreatedAt(LocalDateTime.now());
+            }
             matiere.setUpdatedAt(LocalDateTime.now());
 
-            serviceMatiere.add(matiere);
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Matière enregistrée.");
-            clearForm(); // Vider le formulaire après une soumission réussie
-            try {
-                Parent root = FXMLLoader.load(getClass().getResource("/ListeMatiere.fxml"));
-                titreField.getScene().setRoot(root);
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
+            if (isEditMode) {
+                serviceMatiere.update(matiere);
+                showAlert(Alert.AlertType.INFORMATION, "Succès", "Matière modifiée.");
+            } else {
+                serviceMatiere.add(matiere);
+                showAlert(Alert.AlertType.INFORMATION, "Succès", "Matière enregistrée.");
             }
+
+            if (onReturnCallback != null) {
+                onReturnCallback.run();
+            }
+            clearForm(); // Vider le formulaire après une soumission réussie
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close();
         } catch (Exception e) {
             System.err.println("Save error: " + e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
         }
     }
+
     @FXML
-    private void retourAuxMatiere(Event event){
- try {FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListeMatiere.fxml"));
-     Scene scene = new Scene(loader.load(), 1150, 700); // Match CourseDetails.fxml dimensions
+    private void retourAuxMatiere(Event event) {
+        if (onReturnCallback != null) {
+            onReturnCallback.run();
+        }
+    }
 
-     Stage stage = (Stage) titreField.getScene().getWindow(); // Adjust to your @FXML node
-     stage.setScene(scene);
-     stage.setTitle("Liste des Matieres ");
-     stage.show();
-
-
-    } catch (IOException e) {
-        System.out.println(e.getMessage());
-    }}
     /** Méthode pour vider le formulaire */
     private void clearForm() {
         // Vider les champs texte
@@ -249,10 +261,12 @@ public class AjouterMatiereController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
     void handleListes(ActionEvent event) {
         System.out.println("handleListes clicked");
         loadScene("/ListeCategories.fxml");
     }
+
     private void loadScene(String fxmlPath) {
         try {
             // Load the new FXML
@@ -267,6 +281,18 @@ public class AjouterMatiereController {
             System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
             e.printStackTrace();
         }
+    }
 
+    public void setMatiere(Matiere matiere) {
+        this.matiereToEdit = matiere;
+        this.isEditMode = true;
+        
+        titreField.setText(matiere.getTitre());
+        categorieComboBox.setValue(matiere.getCategorie());
+        descriptionField.setText(matiere.getDescription());
+        prerequisField.setText(matiere.getPrerequis());
+        if (matiere.getCouleurTheme() != null && !matiere.getCouleurTheme().isEmpty()) {
+            couleurThemePicker.setValue(Color.web(matiere.getCouleurTheme()));
+        }
     }
 }

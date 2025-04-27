@@ -75,6 +75,12 @@ public class AjouterCategorieController {
     private static final String[] PUBLIC_CIBLE_OPTIONS = {"élèves", "étudiants", "adultes", "professionnels"};
     private static final int TARGET_SIZE = 200; // 200x200 pixels
 
+    private Runnable onSaveCallback;
+
+    public void setOnSaveCallback(Runnable callback) {
+        this.onSaveCallback = callback;
+    }
+
     @FXML
     public void initialize() {
         // Ensure upload directory exists
@@ -276,92 +282,43 @@ public class AjouterCategorieController {
     @FXML
     void saveAction(ActionEvent event) {
         try {
-            // Reset validation
             resetValidation();
 
-            // Retrieve inputs
             String name = nameField.getText().trim();
             String motsCles = motsClesField.getText().trim();
             String publicCible = publicCibleComboBox.getValue();
             String descrption = descrptionField.getText().trim();
             String icone = fileLabel.getText();
 
-            // Validate
             boolean hasError = false;
+
             if (name.isEmpty()) {
                 nameError.setText("Le nom est requis.");
                 nameError.setVisible(true);
-                nameError.setManaged(true);
-                nameField.getStyleClass().add("error");
-                hasError = true;
-            } else if (name.length() < 3) {
-                nameError.setText("Minimum 3 caractères.");
-                nameError.setVisible(true);
-                nameError.setManaged(true);
-                nameField.getStyleClass().add("error");
-                hasError = true;
-            } else if (name.length() > 255) {
-                nameError.setText("Maximum 255 caractères.");
-                nameError.setVisible(true);
-                nameError.setManaged(true);
-                nameField.getStyleClass().add("error");
                 hasError = true;
             }
 
             if (motsCles.isEmpty()) {
-                motsClesError.setText("Les mots-clés sont requis.");
+                motsClesError.setText("Les mots clés sont requis.");
                 motsClesError.setVisible(true);
-                motsClesError.setManaged(true);
-                motsClesField.getStyleClass().add("error");
-                hasError = true;
-            } else if (motsCles.length() > 255) {
-                motsClesError.setText("Maximum 255 caractères.");
-                motsClesError.setVisible(true);
-                motsClesError.setManaged(true);
-                motsClesField.getStyleClass().add("error");
                 hasError = true;
             }
 
-            if (publicCible == null) {
+            if (publicCible == null || publicCible.isEmpty()) {
                 publicCibleError.setText("Le public cible est requis.");
                 publicCibleError.setVisible(true);
-                publicCibleError.setManaged(true);
-                publicCibleComboBox.getStyleClass().add("error");
-                hasError = true;
-            } else if (!Arrays.asList(PUBLIC_CIBLE_OPTIONS).contains(publicCible)) {
-                publicCibleError.setText("Choix invalide.");
-                publicCibleError.setVisible(true);
-                publicCibleError.setManaged(true);
-                publicCibleComboBox.getStyleClass().add("error");
                 hasError = true;
             }
 
             if (descrption.isEmpty()) {
                 descrptionError.setText("La description est requise.");
                 descrptionError.setVisible(true);
-                descrptionError.setManaged(true);
-                descrptionField.getStyleClass().add("error");
-                hasError = true;
-            } else if (descrption.length() < 10) {
-                descrptionError.setText("Minimum 10 caractères.");
-                descrptionError.setVisible(true);
-                descrptionError.setManaged(true);
-                descrptionField.getStyleClass().add("error");
-                hasError = true;
-            } else if (descrption.length() > 255) {
-                descrptionError.setText("Maximum 255 caractères.");
-                descrptionError.setVisible(true);
-                descrptionError.setManaged(true);
-                descrptionField.getStyleClass().add("error");
                 hasError = true;
             }
 
-            if (icone.equals("Aucune image") || icone.startsWith("Erreur")) {
-                brochureError.setText("L’image est requise.");
+            if (icone.isEmpty()) {
+                brochureError.setText("L'image est requise.");
                 brochureError.setVisible(true);
-                brochureError.setManaged(true);
-                fileLabel.getStyleClass().removeAll("text-muted", "text-success");
-                fileLabel.getStyleClass().add("text-danger");
                 hasError = true;
             }
 
@@ -369,22 +326,24 @@ public class AjouterCategorieController {
                 return;
             }
 
-            // Create and save categorie
-            Categorie categorie = new Categorie();
-            categorie.setName(name);
-            categorie.setMotsCles(motsCles);
-            categorie.setPublicCible(publicCible);
-            categorie.setDescrption(descrption);
-            categorie.setIcone(icone);
-
+            Categorie categorie = new Categorie(name, descrption, icone, motsCles, publicCible);
             serviceCategorie.add(categorie);
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Catégorie enregistrée.");
-            // Navigate to category list (implement as needed)
 
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Catégorie ajoutée avec succès.");
+            
+            if (onSaveCallback != null) {
+                onSaveCallback.run();
+            }
+            
         } catch (Exception e) {
-            System.err.println("Save error: " + e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
         }
+    }
+
+    @FXML
+    void cancelAction(ActionEvent event) {
+        Stage stage = (Stage) nameField.getScene().getWindow();
+        stage.close();
     }
 
     private void resetValidation() {

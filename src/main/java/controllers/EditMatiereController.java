@@ -202,23 +202,9 @@ public class EditMatiereController {
     }
 
     private void backToList(ActionEvent event) {
-        try {
-            // Utilisez le contexte de l'événement pour obtenir la fenêtre actuelle
-            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-
-            // Chargez la scène de liste des matières
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListeMatiere.fxml"));
-            Scene scene = new Scene(loader.load());
-
-            // Appliquez la nouvelle scène à la fenêtre
-            stage.setScene(scene);
-            stage.setTitle("Liste des Matières");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Navigation impossible",
-                    "Impossible de retourner à la liste des matières: " + e.getMessage());
-        }
+        // Fermer la fenêtre actuelle
+        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        currentStage.close();
     }
 
     private boolean validateAllFields() {

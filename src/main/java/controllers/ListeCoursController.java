@@ -545,13 +545,9 @@ public class ListeCoursController {
         fadeOut.setToValue(0.0);
         fadeOut.setOnFinished(e -> {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjoutCours.fxml"));
-                Scene scene = new Scene(loader.load(), 1000, 900);
+                Parent root = FXMLLoader.load(getClass().getResource("/AjoutCours.fxml"));
+                noCoursesBox.getScene().setRoot(root);
 
-                Stage stage = (Stage) mainBox.getScene().getWindow();
-                stage.setScene(scene);
-                stage.setTitle("Ajouter un cours");
-                stage.show();
 
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
@@ -584,11 +580,16 @@ public class ListeCoursController {
         exitTransition.setOnFinished(e -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/CourseDetails.fxml"));
-                Scene scene = new Scene(loader.load(), 1000, 900);
+                Parent root = loader.load();
                 CourseDetailsController controller = loader.getController();
-                controller.setCourse(cours);
+                controller.setCourse(cours); // Pass the Cours object
                 Stage stage = (Stage) mainBox.getScene().getWindow();
-                stage.setScene(scene);
+
+                // Garder les dimensions actuelles de la fenêtre
+                Scene currentScene = stage.getScene();
+                Scene newScene = new Scene(root, currentScene.getWidth(), currentScene.getHeight());
+
+                stage.setScene(newScene);
                 stage.setTitle("Détails du Cours - " + cours.getTitle());
                 stage.show();
             } catch (IOException ex) {

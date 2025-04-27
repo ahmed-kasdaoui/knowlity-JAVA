@@ -7,6 +7,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -14,6 +17,10 @@ import tn.esprit.models.Cours;
 import tn.esprit.models.Matiere;
 import tn.esprit.services.ServiceCours;
 import tn.esprit.services.ServiceMatiere;
+import org.vosk.Model;
+import org.vosk.Recognizer;
+import org.vosk.LibVosk;
+import javax.sound.sampled.*;
 
 import javax.imageio.ImageIO;
 import java.awt.AlphaComposite;
@@ -29,9 +36,12 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.Normalizer;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
+import org.vosk.LogLevel;
 
 public class AjouterCoursController {
 
@@ -62,6 +72,12 @@ public class AjouterCoursController {
     @FXML
     private Button submitButton;
 
+    @FXML
+    private ImageView imagePreview;
+
+    @FXML
+    private Button voiceButton;
+
     private static final String UPLOAD_DIR = "Uploads/";
     private static final String WATERMARK_PATH = "src/main/resources/watermark.png";
     private static final String[] VALID_LANGUAGES = {"fr", "en", "es", "de", "ar"};
@@ -69,6 +85,21 @@ public class AjouterCoursController {
     private static final String COURSE_URL_BASE = "http://localhost:8080/cours/";
     private static final String FACEBOOK_PAGE_ID = "535397399664579";
     private static final String FACEBOOK_ACCESS_TOKEN = "EAAq1jUXunxQBOxr3qXCxWKLKVarrhK90Je7GnHrKGY4QF2jghFYTgAzJZAuYFDRISY2rkMJduXxVWNeUZCNnWBw88VScGzySVY4GrlrJODmACZCFfMimoxNS7uHZBLPtZApUJhUMckALChavZBe8NWT8HizJU9yXjPmelMf3mFjsoanmQHTrgAzzGFWXCHKnuZB";
+
+    private File selectedFile;
+    private final ServiceCours serviceCours;
+    private final ServiceMatiere serviceMatiere;
+    private final Object lock = new Object();
+    private volatile boolean listening = false;
+    private Thread recognitionThread;
+    private volatile TargetDataLine currentLine;
+    private volatile Model currentModel;
+    private volatile Recognizer currentRecognizer;
+
+    public AjouterCoursController() {
+        this.serviceCours = new ServiceCours();
+        this.serviceMatiere = new ServiceMatiere();
+    }
 
     @FXML
     public void initialize() {
@@ -101,8 +132,8 @@ public class AjouterCoursController {
         System.out.println("langueComboBox populated with: " + Arrays.toString(VALID_LANGUAGES));
 
         // Populate matiereComboBox
-        ServiceMatiere serviceMatiere = new ServiceMatiere();
-        matiereComboBox.getItems().addAll(serviceMatiere.getAll());
+        List<Matiere> matieres = serviceMatiere.getAll();
+        matiereComboBox.getItems().addAll(matieres);
         System.out.println("matiereComboBox populated with " + matiereComboBox.getItems().size() + " items");
 
         // Display only titre in matiereComboBox
@@ -117,6 +148,296 @@ public class AjouterCoursController {
                 return null;
             }
         });
+
+        // Set button factory for selected matiere display
+        matiereComboBox.setButtonCell(new ListCell<Matiere>() {
+            @Override
+            protected void updateItem(Matiere item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getTitre());
+                }
+            }
+        });
+
+        // Add voice recognition button
+        voiceButton = new Button("🎙️ Dicter la description");
+        voiceButton.setOnAction(e -> toggleVoiceRecognition());
+        VBox descriptionContainer = (VBox) descriptionField.getParent();
+        descriptionContainer.getChildren().add(voiceButton);
+    }
+
+    private void toggleVoiceRecognition() {
+        if (!listening) {
+            startVoiceRecognition();
+        } else {
+            stopVoiceRecognition();
+        }
+    }
+
+    private void startVoiceRecognition() {
+        synchronized (lock) {
+            if (listening) {
+                System.out.println("La reconnaissance est déjà en cours");
+                return;
+            }
+
+            try {
+                listening = true;
+                voiceButton.setText("⏹️ Arrêter la dictée");
+                voiceButton.setStyle("-fx-background-color: linear-gradient(to right, #ff416c, #ff4b2b); -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 25px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 0, 0); -fx-padding: 10 20 10 20; -fx-cursor: hand; -fx-transition: all 0.3s ease;");
+                
+                // Ajouter une animation au bouton
+                voiceButton.setOnMouseEntered(e -> voiceButton.setStyle("-fx-background-color: linear-gradient(to right, #ff4b2b, #ff416c); -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 25px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 15, 0, 0, 0); -fx-padding: 10 20 10 20; -fx-cursor: hand; -fx-transition: all 0.3s ease;"));
+                voiceButton.setOnMouseExited(e -> voiceButton.setStyle("-fx-background-color: linear-gradient(to right, #ff416c, #ff4b2b); -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 25px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 0, 0); -fx-padding: 10 20 10 20; -fx-cursor: hand; -fx-transition: all 0.3s ease;"));
+
+                // Initialisation du modèle
+                String workingDir = System.getProperty("user.dir");
+                String absoluteModelPath = new File(workingDir, "models/fr").getAbsolutePath();
+                System.out.println("Chargement du modèle depuis: " + absoluteModelPath);
+                
+                currentModel = new Model(absoluteModelPath);
+                System.out.println("Modèle chargé avec succès");
+
+                // Configuration du microphone
+                AudioFormat format = new AudioFormat(16000, 16, 1, true, false);
+                DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
+
+                if (!AudioSystem.isLineSupported(info)) {
+                    throw new LineUnavailableException("Format audio non supporté");
+                }
+
+                currentLine = (TargetDataLine) AudioSystem.getLine(info);
+                currentLine.open(format);
+                System.out.println("Microphone ouvert avec format: " + format);
+
+                // Configuration du recognizer
+                currentRecognizer = new Recognizer(currentModel, 16000);
+                System.out.println("Recognizer créé");
+
+                // Démarrage de la capture
+                currentLine.start();
+                System.out.println("Capture audio démarrée");
+
+                recognitionThread = new Thread(() -> {
+                    try {
+                        byte[] buffer = new byte[4096];
+                        System.out.println("Début de la reconnaissance vocale");
+                        System.out.println("Parlez maintenant...");
+
+                        while (listening && currentLine != null && currentLine.isOpen()) {
+                            int bytesRead = currentLine.read(buffer, 0, buffer.length);
+                            
+                            if (bytesRead > 0) {
+                                // Calcul du niveau audio
+                                double level = calculateAudioLevel(buffer, bytesRead);
+                                if (level > 0.01) {
+                                    System.out.print("█");
+                                }
+
+                                // Reconnaissance
+                                if (currentRecognizer != null && currentRecognizer.acceptWaveForm(buffer, bytesRead)) {
+                                    String result = currentRecognizer.getResult();
+                                    System.out.println("\nRésultat: " + result);
+                                    
+                                    // Extraction du texte sans accolades
+                                    String text = result.replaceAll("[{}]", "").replaceAll(".*\"text\"\\s*:\\s*\"([^\"]*)\".*", "$1").trim();
+                                    if (!text.isEmpty()) {
+                                        final String finalText = text;
+                                        javafx.application.Platform.runLater(() -> {
+                                            String currentText = descriptionField.getText();
+                                            descriptionField.setText(currentText + (currentText.isEmpty() ? "" : " ") + finalText);
+                                        });
+                                    }
+                                } else if (currentRecognizer != null) {
+                                    // Affichage des résultats partiels
+                                    String partial = currentRecognizer.getPartialResult();
+                                    String partialText = partial.replaceAll("[{}]", "").replaceAll(".*\"partial\"\\s*:\\s*\"([^\"]*)\".*", "$1").trim();
+                                    if (!partialText.isEmpty()) {
+                                        System.out.println("\nPartiel: " + partialText);
+                                    }
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Erreur pendant la reconnaissance: " + e.getMessage());
+                        e.printStackTrace();
+                        javafx.application.Platform.runLater(() -> {
+                            showAlert("Erreur", "Erreur pendant la reconnaissance: " + e.getMessage(), Alert.AlertType.ERROR);
+                        });
+                    } finally {
+                        cleanup();
+                    }
+                });
+
+                recognitionThread.start();
+                System.out.println("Thread de reconnaissance démarré");
+
+            } catch (Exception e) {
+                System.err.println("Erreur au démarrage: " + e.getMessage());
+                e.printStackTrace();
+                showAlert("Erreur", "Erreur au démarrage de la reconnaissance: " + e.getMessage(), Alert.AlertType.ERROR);
+                cleanup();
+            }
+        }
+    }
+
+    private void cleanup() {
+        synchronized (lock) {
+            System.out.println("Début du nettoyage des ressources...");
+            listening = false;
+
+            // Attendre que le thread de reconnaissance se termine
+            if (recognitionThread != null && recognitionThread.isAlive()) {
+                try {
+                    System.out.println("Attente de la fin du thread de reconnaissance...");
+                    recognitionThread.join(1000); // Attendre max 1 seconde
+                } catch (InterruptedException e) {
+                    System.err.println("Interruption pendant l'attente de fin du thread");
+                }
+            }
+            
+            // Fermer la ligne audio
+            if (currentLine != null) {
+                try {
+                    System.out.println("Fermeture de la ligne audio...");
+                    if (currentLine.isActive()) {
+                        currentLine.stop();
+                    }
+                    if (currentLine.isOpen()) {
+                        currentLine.close();
+                    }
+                } catch (Exception e) {
+                    System.err.println("Erreur lors de la fermeture de la ligne audio: " + e.getMessage());
+                } finally {
+                    currentLine = null;
+                }
+            }
+
+            // Fermer le recognizer
+            if (currentRecognizer != null) {
+                try {
+                    System.out.println("Fermeture du recognizer...");
+                    currentRecognizer.close();
+                } catch (Exception e) {
+                    System.err.println("Erreur lors de la fermeture du recognizer: " + e.getMessage());
+                } finally {
+                    currentRecognizer = null;
+                }
+            }
+
+            // Fermer le modèle
+            if (currentModel != null) {
+                try {
+                    System.out.println("Fermeture du modèle...");
+                    currentModel.close();
+                } catch (Exception e) {
+                    System.err.println("Erreur lors de la fermeture du modèle: " + e.getMessage());
+                } finally {
+                    currentModel = null;
+                }
+            }
+
+            System.out.println("Nettoyage terminé");
+        }
+
+        // Mettre à jour l'UI sur le thread JavaFX
+        javafx.application.Platform.runLater(() -> {
+            voiceButton.setText("🎙️ Dicter la description");
+            voiceButton.setStyle("");
+        });
+    }
+
+    private void stopVoiceRecognition() {
+        System.out.println("Demande d'arrêt de la reconnaissance vocale");
+        cleanup();
+    }
+
+    private double calculateAudioLevel(byte[] buffer, int bytesRead) {
+        long sum = 0;
+        // Traiter les échantillons 16-bit
+        for (int i = 0; i < bytesRead - 1; i += 2) {
+            short sample = (short) ((buffer[i + 1] << 8) | (buffer[i] & 0xff));
+            sum += Math.abs(sample);
+        }
+        // Calculer le niveau moyen
+        return sum / (bytesRead / 2.0) / 32768.0;
+    }
+
+    private TargetDataLine getMicrophone() throws LineUnavailableException {
+        System.out.println("Configuration du microphone...");
+        
+        // Essayer différents formats audio
+        AudioFormat[] formats = {
+            new AudioFormat(16000, 16, 1, true, false),  // Format Vosk préféré
+            new AudioFormat(44100, 16, 1, true, false),  // Format standard
+            new AudioFormat(48000, 16, 1, true, false)   // Format haute qualité
+        };
+        
+        // Lister et chercher le microphone AMD
+        System.out.println("\nRecherche du microphone...");
+        Mixer.Info[] mixerInfos = AudioSystem.getMixerInfo();
+        
+        // D'abord essayer le microphone par défaut avec le format Vosk
+        AudioFormat voskFormat = formats[0];
+        DataLine.Info defaultInfo = new DataLine.Info(TargetDataLine.class, voskFormat);
+        
+        if (AudioSystem.isLineSupported(defaultInfo)) {
+            try {
+                TargetDataLine line = (TargetDataLine) AudioSystem.getLine(defaultInfo);
+                line.open(voskFormat);
+                System.out.println("Microphone configuré avec le format Vosk");
+                return configureLineSettings(line);
+            } catch (Exception e) {
+                System.out.println("Échec du format Vosk: " + e.getMessage());
+            }
+        }
+
+        // Si le format Vosk échoue, essayer tous les formats disponibles
+        for (AudioFormat format : formats) {
+            try {
+                DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
+                if (AudioSystem.isLineSupported(info)) {
+                    TargetDataLine line = (TargetDataLine) AudioSystem.getLine(info);
+                    line.open(format);
+                    System.out.println("Microphone configuré avec format alternatif: " + format);
+                    return configureLineSettings(line);
+                }
+            } catch (Exception e) {
+                System.out.println("Échec du format " + format.getSampleRate() + "Hz: " + e.getMessage());
+            }
+        }
+
+        throw new LineUnavailableException("Aucun format audio compatible trouvé");
+    }
+    
+    private TargetDataLine configureLineSettings(TargetDataLine line) {
+        try {
+            // Vérifier si le contrôle de volume est supporté
+            if (line.isControlSupported(FloatControl.Type.VOLUME)) {
+                FloatControl volume = (FloatControl) line.getControl(FloatControl.Type.VOLUME);
+                volume.setValue(volume.getMaximum()); // Mettre le volume au maximum
+                System.out.println("Volume du microphone réglé au maximum: " + volume.getValue());
+            }
+            
+            // Vérifier si le gain est supporté
+            if (line.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+                FloatControl gain = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
+                gain.setValue(gain.getMaximum()); // Mettre le gain au maximum
+                System.out.println("Gain du microphone réglé au maximum: " + gain.getValue());
+            }
+            
+            System.out.println("Microphone configuré avec succès");
+            System.out.println("Format: " + line.getFormat());
+            System.out.println("Buffer size: " + line.getBufferSize() + " bytes");
+            
+            return line;
+        } catch (Exception e) {
+            System.err.println("Attention: Impossible de configurer les contrôles audio: " + e.getMessage());
+            return line; // Retourner la ligne même si la configuration a échoué
+        }
     }
 
     @FXML
@@ -187,6 +508,16 @@ public class AjouterCoursController {
             fileLabel.setText(newFilename);
             System.out.println("fileLabel updated: " + fileLabel.getText());
 
+            // Preview image
+            try {
+                Image image = new Image(selectedFile.toURI().toString());
+                imagePreview.setImage(image);
+                imagePreview.setVisible(true);
+                imagePreview.setManaged(true);
+            } catch (Exception e) {
+                System.err.println("Error loading image preview: " + e.getMessage());
+            }
+
         } catch (Exception e) {
             System.err.println("Upload error: " + e.getMessage());
             showErrorAlert("Erreur d'upload", e.getMessage());
@@ -242,7 +573,6 @@ public class AjouterCoursController {
             cours.setLienDePaiment(lienDePaiment.isEmpty() ? null : lienDePaiment);
 
             // Save to database
-            ServiceCours serviceCours = new ServiceCours();
             serviceCours.add(cours);
             System.out.println("Cours saved: " + cours);
 
@@ -373,6 +703,7 @@ public class AjouterCoursController {
             System.out.println(e.getMessage());
         }
     }
+
     @FXML
     private void retourAuxCours(Event event){
         try {
@@ -382,11 +713,13 @@ public class AjouterCoursController {
             System.out.println(e.getMessage());
         }
     }
+
     @FXML
     void handleListes(ActionEvent event) {
         System.out.println("handleListes clicked");
         loadScene("/ListeCours.fxml");
     }
+
     private void loadScene(String fxmlPath) {
         try {
             // Load the new FXML
@@ -401,6 +734,13 @@ public class AjouterCoursController {
             System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
             e.printStackTrace();
         }
+    }
 
+    private void showAlert(String title, String content, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

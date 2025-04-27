@@ -41,7 +41,7 @@ public class ChapitreDetailsController {
     private Cours cours;
     private final ServiceChapitre serviceChapitre = new ServiceChapitre();
     private final ServiceCours serviceCours = new ServiceCours();
-    private static final String UPLOAD_DIR = "Uploads/";
+    private static final String UPLOAD_DIR = "uploads/";
 
     public void setChapitre(Chapitre chapitre, Cours cours) {
         this.chapitre = chapitre;
@@ -145,6 +145,18 @@ public class ChapitreDetailsController {
             Parent root = loader.load();
             EditChapitreController controller = loader.getController();
             controller.setChapitre(chapitre);
+            controller.setOnSaveCallback(() -> {
+                try {
+                    FXMLLoader courseLoader = new FXMLLoader(getClass().getResource("/CourseDetails.fxml"));
+                    Parent courseRoot = courseLoader.load();
+                    CourseDetailsController courseController = courseLoader.getController();
+                    courseController.setCourse(cours);
+                    mainBox.getScene().setRoot(courseRoot);
+                } catch (IOException e) {
+                    System.err.println("Failed to load CourseDetails.fxml: " + e.getMessage());
+                    showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de retourner aux détails du cours.");
+                }
+            });
             mainBox.getScene().setRoot(root);
         } catch (IOException e) {
             System.err.println("Failed to load EditChapitre.fxml: " + e.getMessage());

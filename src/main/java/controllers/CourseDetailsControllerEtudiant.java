@@ -88,7 +88,16 @@ public class CourseDetailsControllerEtudiant {
         // Set course details
         courseTitle.setText(course.getTitle());
         descriptionLabel.setText(course.getDescription());
-        
+
+        // Position the enroll button
+        mainBox.getChildren().remove(enrollButton);
+        mainBox.getChildren().add(2, enrollButton); // Add below description
+
+        // Ensure stats button is removed
+        if (mainBox.getChildren().contains(statsButton)) {
+            mainBox.getChildren().remove(statsButton);
+        }
+
         // Set category and subject badges
         if (course.getMatiere() != null) {
             matiereBadge.setText(course.getMatiere().getTitre());
@@ -96,22 +105,23 @@ public class CourseDetailsControllerEtudiant {
                 categorieBadge.setText(course.getMatiere().getCategorie().getName());
             }
         }
-        
+
         // Calculate total duration from chapters
         int totalDuration = course.getChapitres().stream()
                            .mapToInt(Chapitre::getDureeEstimee)
                            .sum();
         dureeLabel.setText(totalDuration + " minutes");
-        
+
         // Set other details
         prixLabel.setText(course.getPrix() + " DT");
         langueLabel.setText(course.getLangue());
         favoritesLabel.setText("0"); // Default value since favorites are not implemented
-        
-        // Load course image
+
+        // Load course image with modern design
         try {
             Image image = new Image("file:Uploads/" + course.getUrlImage());
             courseImage.setImage(image);
+            courseImage.setStyle("-fx-border-color: #ccc; -fx-border-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 0);");
         } catch (Exception e) {
             System.err.println("Error loading course image: " + e.getMessage());
             // Set a default image
@@ -145,8 +155,10 @@ public class CourseDetailsControllerEtudiant {
         // Set teacher email (temporarily disabled as we don't have access to teacher info)
         teacherEmail.setText("Enseignant");
 
-        // Load chapters
-        loadChapters();
+        // Load chapters only if enrolled
+        if (serviceInscription.estInscrit(DEFAULT_USER_ID, course.getId())) {
+            loadChapters();
+        }
     }
 
     private void loadChapters() {
@@ -182,9 +194,10 @@ public class CourseDetailsControllerEtudiant {
         VBox contentBox = new VBox(8);
         HBox.setHgrow(contentBox, Priority.ALWAYS);
         
-        // Titre du chapitre
+        // Titre du chapitre en noir
         Label title = new Label(chapitre.getTitle());
         title.getStyleClass().add("chapter-title");
+        title.setStyle("-fx-text-fill: black;");
         title.setWrapText(true);
         
         // Description
@@ -486,6 +499,9 @@ public class CourseDetailsControllerEtudiant {
             // Mettre à jour l'interface
             updateEnrollButtonState();
 
+            // Rafraîchir l'interface pour afficher les chapitres
+            initializeUI();
+
             // Afficher un message de succès
             showAlert("Succès", "Inscription réussie ! Un email de confirmation vous a été envoyé.", Alert.AlertType.INFORMATION);
         } catch (Exception e) {
@@ -558,5 +574,13 @@ public class CourseDetailsControllerEtudiant {
             System.err.println("Error handling favorite action: " + e.getMessage());
             showAlert("Erreur", "Une erreur est survenue lors de la gestion des favoris.", Alert.AlertType.ERROR);
         }
+    }
+
+    // Modernize back button
+    @FXML
+    private void initialize() {
+        backButton.setStyle("-fx-background-color: #f0f0f0; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-cursor: hand;");
+        backButton.setOnMouseEntered(e -> backButton.setStyle("-fx-background-color: #e0e0e0; -fx-border-color: #bbb; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-cursor: hand;"));
+        backButton.setOnMouseExited(e -> backButton.setStyle("-fx-background-color: #f0f0f0; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-cursor: hand;"));
     }
 }

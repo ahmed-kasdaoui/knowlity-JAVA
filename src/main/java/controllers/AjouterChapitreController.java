@@ -291,13 +291,11 @@ public class AjouterChapitreController {
     public void retourAction(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CourseDetails.fxml"));
-            Scene scene = new Scene(loader.load(), 1000, 800); // Match CourseDetails.fxml dimensions
+            Parent root = loader.load();
             CourseDetailsController controller = loader.getController();
-            controller.setCourse(cours); // Pass the Cours object
-            Stage stage = (Stage) fileLabel.getScene().getWindow(); // Adjust to your @FXML node
-            stage.setScene(scene);
-            stage.setTitle("Détails du Cours - " + cours.getTitle());
-            stage.show();
+            controller.setCourse(cours);
+            titleField.getScene().setRoot(root);
+
         } catch (IOException e) {
             System.err.println("Error loading CourseDetails.fxml: " + e.getMessage());
             e.printStackTrace();

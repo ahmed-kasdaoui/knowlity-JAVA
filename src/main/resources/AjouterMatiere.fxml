@@ -132,11 +132,6 @@
                 </Button>
             </children>
         </VBox>
-      <Button fx:id="saveButton1" layoutX="57.0" layoutY="11.0" onAction="#retourAuxMatiere" styleClass="btn, btn-outline-secondary, btn-animated" text="retour">
-         <font>
-            <Font name="System Bold" size="16.0" />
-         </font>
-      </Button>
     </children>
     <stylesheets>
         <URL value="@/styles/forms2.css" />

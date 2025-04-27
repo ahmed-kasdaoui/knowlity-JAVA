@@ -63,6 +63,7 @@ public class EditCategorieController {
     private static final String UPLOAD_DIR = "Uploads/";
     private static final String[] PUBLIC_CIBLE_OPTIONS = {"élèves", "étudiants", "adultes", "professionnels"};
     private Categorie currentCategorie;
+    private Runnable onSaveCallback;
 
     @FXML
     public void initialize() {
@@ -97,20 +98,23 @@ public class EditCategorieController {
         }
     }
 
+    public void setOnSaveCallback(Runnable callback) {
+        this.onSaveCallback = callback;
+    }
+
     @FXML
     void saveAction(ActionEvent event) {
         try {
             resetValidation();
 
-            // Récupération des données
             String name = nameField.getText().trim();
             String motsCles = motsClesField.getText().trim();
             String publicCible = publicCibleComboBox.getValue();
             String descrption = descrptionField.getText().trim();
             String icone = fileLabel.getText();
 
-            // Validation
             boolean hasError = false;
+
             if (name.isEmpty()) {
                 nameError.setText("Le nom est requis.");
                 nameError.setVisible(true);
@@ -118,12 +122,12 @@ public class EditCategorieController {
             }
 
             if (motsCles.isEmpty()) {
-                motsClesError.setText("Les mots-clés sont requis.");
+                motsClesError.setText("Les mots clés sont requis.");
                 motsClesError.setVisible(true);
                 hasError = true;
             }
 
-            if (publicCible == null) {
+            if (publicCible == null || publicCible.isEmpty()) {
                 publicCibleError.setText("Le public cible est requis.");
                 publicCibleError.setVisible(true);
                 hasError = true;
@@ -136,7 +140,7 @@ public class EditCategorieController {
             }
 
             if (icone.isEmpty()) {
-                brochureError.setText("L’image est requise.");
+                brochureError.setText("L'image est requise.");
                 brochureError.setVisible(true);
                 hasError = true;
             }
@@ -154,16 +158,21 @@ public class EditCategorieController {
 
             serviceCategorie.update(currentCategorie);
 
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Catégorie mise à jour avec succès.");
-            try {
-                Parent root = FXMLLoader.load(getClass().getResource("/ListeCategories.fxml"));
-                nameField.getScene().setRoot(root);
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Catégorie mise à jour avec succès");
+            
+            if (onSaveCallback != null) {
+                onSaveCallback.run();
             }
+            
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
         }
+    }
+
+    @FXML
+    void cancelAction(ActionEvent event) {
+        Stage stage = (Stage) nameField.getScene().getWindow();
+        stage.close();
     }
 
     private void resetValidation() {
