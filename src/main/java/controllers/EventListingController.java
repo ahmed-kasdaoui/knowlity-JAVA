@@ -16,6 +16,8 @@ import tn.esprit.services.ServiceEvents;
 import tn.esprit.services.ServiceUserEventPreference;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,7 +58,7 @@ public class EventListingController {
         root.getStyleClass().add("light-theme");
 
         try {
-            events.addAll(serviceEvents.getAll());
+            events.addAll(getByStartDate(serviceEvents.getAll()));
             System.out.println("Fetched " + events.size() + " events from the database.");
         } catch (Exception e) {
             System.err.println("Error fetching events: " + e.getMessage());
@@ -64,7 +66,8 @@ public class EventListingController {
         }
 
         try {
-            recommendedEvents.addAll(userEventPreferenceService.getRecommendedEvents(1, 20));
+            List<Events> preference=userEventPreferenceService.getRecommendedEvents(1, 20);
+            recommendedEvents.addAll(getByStartDate(preference));
             System.out.println("Found " + recommendedEvents.size() + " recommended events for user ID: " + 1);
             if (recommendedEvents.isEmpty()) {
                 recommendedEvents.addAll(events);
@@ -136,10 +139,8 @@ public class EventListingController {
             for (int i = startIndex; i < endIndex; i++) {
                 Events event = currentDisplayList.get(i);
 
-                // Alternate the card themes
                 String theme = cardThemes.get(i % cardThemes.size());
 
-                // Create a postcard with alternating directions based on even/odd index
                 HBox card = createPostcard(event, theme, i % 2 == 0);
                 eventContainer.getChildren().add(card);
             }
@@ -157,7 +158,6 @@ public class EventListingController {
         HBox postcard = new HBox();
         postcard.getStyleClass().addAll("postcard", "light", colorTheme);
         postcard.getStyleClass().add("postcard-bg-" + colorTheme);
-        // Create image section
         ImageView imageView = new ImageView();
         imageView.setFitWidth(300);
         imageView.setFitHeight(180);
@@ -290,5 +290,19 @@ public class EventListingController {
         alert.setContentText(content);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
+    }
+
+    public List<Events> getByStartDate(List<Events> eventsList) {
+        List<Events> upcomingEvents = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
+
+        for (Events event : eventsList) {
+            LocalDateTime startDate = event.getStartDate();
+            if (startDate.isAfter(now)) {
+                upcomingEvents.add(event);
+            }
+        }
+
+        return upcomingEvents;
     }
 }

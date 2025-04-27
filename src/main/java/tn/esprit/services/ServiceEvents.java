@@ -33,6 +33,9 @@ public class ServiceEvents implements IService<Events> {
             }
         }
     }
+
+
+
     @Override
     public void add(Events event) {
         String qry = "INSERT INTO `events` (`title`, `description`, `start_date`, `end_date`, `type`, `max_participants`, `seats_available`, `location`, `created_at`, `image`, `category`, `longitude`, `latitude`,`organizer_id`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -197,6 +200,8 @@ public class ServiceEvents implements IService<Events> {
         }
         return event;
     }
+
+
 
 
 }
