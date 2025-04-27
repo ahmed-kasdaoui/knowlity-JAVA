@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+
+<AnchorPane fx:id="root" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CourseDetailsControllerEtudiant">
+    <ScrollPane fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <VBox fx:id="mainBox" styleClass="course-details-container" spacing="30">
+            <!-- Header avec bouton retour -->
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <Button fx:id="backButton" onAction="#handleBack" styleClass="back-button" text="← Retour" />
+            </HBox>
+
+            <!-- En-tête du cours -->
+            <VBox styleClass="course-header">
+                <HBox spacing="20" alignment="CENTER_LEFT">
+                    <!-- Image du cours -->
+                    <StackPane styleClass="course-image-container">
+                        <ImageView fx:id="courseImage" fitHeight="250" fitWidth="400" preserveRatio="true" styleClass="course-image" />
+                    </StackPane>
+                    
+                    <!-- Informations principales -->
+                    <VBox spacing="15">
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label fx:id="courseTitle" styleClass="course-title-large" wrapText="true" />
+                            <Button fx:id="favoriteButton" onAction="#handleFavoriteAction" styleClass="favorite-button">
+                                <graphic>
+                                    <FontAwesomeIconView fx:id="favoriteIcon" glyphName="STAR" size="20" />
+                                </graphic>
+                            </Button>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label fx:id="matiereBadge" styleClass="info-badge" />
+                            <Label fx:id="categorieBadge" styleClass="info-badge" />
+                        </HBox>
+                        
+                        <!-- Section enseignant -->
+                        <HBox styleClass="teacher-section" spacing="15" alignment="CENTER_LEFT">
+                            <ImageView fx:id="teacherImage" fitHeight="60" fitWidth="60" styleClass="teacher-image" />
+                            <VBox styleClass="teacher-info">
+                                <Label text="Enseignant" styleClass="info-label" />
+                                <Label fx:id="teacherEmail" styleClass="teacher-email" />
+                            </VBox>
+                        </HBox>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Informations détaillées -->
+            <HBox styleClass="info-section" spacing="30">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Durée" styleClass="info-label" />
+                    <Label fx:id="dureeLabel" styleClass="info-value" />
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Prix" styleClass="info-label" />
+                    <Label fx:id="prixLabel" styleClass="info-value" />
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Langue" styleClass="info-label" />
+                    <Label fx:id="langueLabel" styleClass="info-value" />
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Favoris" styleClass="info-label" />
+                    <Label fx:id="favoritesLabel" styleClass="info-value" />
+                </VBox>
+            </HBox>
+
+            <!-- Description -->
+            <VBox styleClass="description-section">
+                <Label text="Description du cours" styleClass="info-label" />
+                <Label fx:id="descriptionLabel" styleClass="description-text" wrapText="true" />
+            </VBox>
+
+            <!-- Chapitres -->
+            <VBox styleClass="chapters-section" spacing="15">
+                <Label text="Contenu du cours" styleClass="section-title"/>
+                <VBox fx:id="chaptersContainer" spacing="10">
+                    <!-- Les chapitres seront ajoutés ici dynamiquement -->
+                </VBox>
+            </VBox>
+
+            <!-- Boutons d'action -->
+            <HBox spacing="20" alignment="CENTER">
+                <Button fx:id="enrollButton" onAction="#handleEnrollAction" styleClass="action-button" text="S'inscrire au cours" />
+
+            </HBox>
+        </VBox>
+        
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20" />
+        </padding>
+    </ScrollPane>
+
+    <stylesheets>
+        <URL value="@css/cours.css" />
+    </stylesheets>
+</AnchorPane>

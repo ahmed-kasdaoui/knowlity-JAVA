@@ -5,8 +5,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import tn.esprit.models.Chapitre;
 import tn.esprit.models.Cours;
 import tn.esprit.services.ServiceChapitre;
@@ -42,14 +44,23 @@ public class EditChapitreController {
     private static final String UPLOAD_DIR = "Uploads";
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
+    private Runnable onSaveCallback;
+
+    public void setOnSaveCallback(Runnable callback) {
+        this.onSaveCallback = callback;
+    }
+
     public void setChapitre(Chapitre chapitre) {
         this.chapitre = chapitre;
-
+        if (chapitre != null) {
+            loadChapitreData();
+        }
     }
 
     @FXML
     public void initialize() {
         // Ensure upload directory exists
+        loadChapitreData();
         File uploadDir = new File(UPLOAD_DIR);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
@@ -59,13 +70,24 @@ public class EditChapitreController {
 
     private void loadChapitreData() {
         if (chapitre != null) {
+            // Remplir le titre
             titleField.setText(chapitre.getTitle());
+            
+            // Remplir l'ordre du chapitre
             chapOrderField.setText(String.valueOf(chapitre.getChapOrder()));
+            
+            // Remplir la durée estimée
             dureeEstimeeField.setText(String.valueOf(chapitre.getDureeEstimee()));
-            fileLabel.setText(chapitre.getContenu() != null ? chapitre.getContenu() : "Aucun PDF");
-            if (!fileLabel.getText().equals("Aucun PDF")) {
+            
+            // Remplir le nom du fichier PDF
+            if (chapitre.getContenu() != null && !chapitre.getContenu().isEmpty()) {
+                fileLabel.setText(chapitre.getContenu());
                 fileLabel.getStyleClass().removeAll("text-muted", "text-danger");
                 fileLabel.getStyleClass().add("text-success");
+            } else {
+                fileLabel.setText("Aucun PDF");
+                fileLabel.getStyleClass().removeAll("text-success", "text-danger");
+                fileLabel.getStyleClass().add("text-muted");
             }
         }
     }
@@ -115,26 +137,38 @@ public class EditChapitreController {
     }
 
     @FXML
-    void saveAction(ActionEvent event) {
+    void saveAction(ActionEvent event) throws IOException {
         if (validateAndSave()) {
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Chapitre mis à jour.");
-            navigateToCourseDetails();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CourseDetails.fxml"));
+            Parent root = loader.load();
+            CourseDetailsController controller = loader.getController();
+            controller.setCourse(chapitre.getCours());
+            titleField.getScene().setRoot(root);
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Chapitre mis à jour avec succès");
+            if (onSaveCallback != null) {
+                onSaveCallback.run();
+            }
         }
     }
 
     @FXML
     void saveAndAddAnotherAction(ActionEvent event) {
         if (validateAndSave()) {
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Chapitre mis à jour. Ajoutez un autre.");
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Chapitre mis à jour avec succès");
+            if (onSaveCallback != null) {
+                onSaveCallback.run();
+            }
+            // Rediriger vers l'ajout d'un nouveau chapitre
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterChapitre.fxml"));
-                Parent root = loader.load();
+                Scene scene = new Scene(loader.load());
                 AjouterChapitreController controller = loader.getController();
                 controller.setCourse(chapitre.getCours());
-                titleField.getScene().setRoot(root);
+                Stage stage = (Stage) saveButton.getScene().getWindow();
+                stage.setScene(scene);
             } catch (IOException e) {
-                System.err.println("Failed to load AjouterChapitre.fxml: " + e.getMessage());
-                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger le formulaire d'ajout.");
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir le formulaire d'ajout");
             }
         }
     }
@@ -142,10 +176,18 @@ public class EditChapitreController {
     @FXML
     void saveAndAddEvaluationAction(ActionEvent event) {
         if (validateAndSave()) {
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Chapitre mis à jour. Redirection vers ajout d'évaluation.");
-            // TODO: Implement navigation to evaluation form
-            navigateToCourseDetails(); // Fallback
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Chapitre mis à jour avec succès");
+            if (onSaveCallback != null) {
+                onSaveCallback.run();
+            }
+            // TODO: Rediriger vers l'ajout d'une évaluation
         }
+    }
+
+    @FXML
+    void cancelAction(ActionEvent event) {
+        Stage stage = (Stage) saveButton.getScene().getWindow();
+        stage.close();
     }
 
     private boolean validateAndSave() {
@@ -292,5 +334,26 @@ public class EditChapitreController {
             System.err.println("Failed to load CourseDetails.fxml: " + e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de retourner aux détails du cours.");
         }
+    }
+    @FXML
+    void handleListes(ActionEvent event) {
+        System.out.println("handleListes clicked");
+        loadScene("/ListeCours.fxml");
+    }
+    private void loadScene(String fxmlPath) {
+        try {
+            // Load the new FXML
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+            // Get the current stage from a known node
+            Stage stage = (Stage) chapOrderField.getScene().getWindow();
+            // Create a new scene with the loaded root
+            Scene scene = new Scene(root, 1000, 700); // Match FXML dimensions
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 }

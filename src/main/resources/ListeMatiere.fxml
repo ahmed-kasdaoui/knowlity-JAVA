@@ -8,15 +8,15 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controllers.ListeCategoriesController"
-      stylesheets="@./css/categories.css"
+      fx:controller="controllers.MatiereListController"
+      stylesheets="@./css/matieres.css"
       spacing="20">
 
     <!-- Header Section -->
     <HBox styleClass="page-header" alignment="CENTER_LEFT">
         <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
-            <FontAwesomeIconView glyphName="TAGS" styleClass="title-icon"/>
-            <Label text="Liste des Catégories" styleClass="page-title">
+            <FontAwesomeIconView glyphName="BOOK" styleClass="title-icon"/>
+            <Label text="Liste des Matières" styleClass="page-title">
                 <HBox.margin>
                     <Insets left="10"/>
                 </HBox.margin>
@@ -26,7 +26,7 @@
         <!-- Search Box -->
         <HBox styleClass="search-container" alignment="CENTER">
             <StackPane>
-                <TextField fx:id="searchField" promptText="Rechercher une catégorie..." styleClass="search-field"/>
+                <TextField fx:id="searchField" promptText="Rechercher une matière..." styleClass="search-field"/>
                 <FontAwesomeIconView glyphName="SEARCH" styleClass="search-icon" StackPane.alignment="CENTER_LEFT">
                     <StackPane.margin>
                         <Insets left="12"/>
@@ -36,11 +36,11 @@
         </HBox>
 
         <!-- Add Button -->
-        <Button fx:id="createButton" styleClass="add-button" onAction="#createAction">
+        <Button fx:id="addButton" styleClass="add-button" onAction="#createAction">
             <graphic>
                 <HBox spacing="5" alignment="CENTER">
                     <FontAwesomeIconView glyphName="PLUS"/>
-                    <Label text="Ajouter une catégorie" textFill="WHITE"/>
+                    <Label text="Ajouter une matière" textFill="WHITE"/>
                 </HBox>
             </graphic>
         </Button>
@@ -55,7 +55,7 @@
     <StackPane fx:id="emptyState" styleClass="empty-state">
         <HBox alignment="CENTER" spacing="10">
             <FontAwesomeIconView glyphName="INBOX" size="24" styleClass="empty-icon"/>
-            <Label text="Aucune catégorie trouvée" styleClass="empty-state-text"/>
+            <Label text="Aucune matière trouvée" styleClass="empty-state-text"/>
         </HBox>
     </StackPane>
 

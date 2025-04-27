@@ -1,10 +1,11 @@
 package controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -12,10 +13,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Pos;
+import javafx.stage.Stage;
 import tn.esprit.models.Chapitre;
 import tn.esprit.models.Cours;
 import tn.esprit.services.ServiceCours;
+import tn.esprit.services.ServiceChapitre;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -100,8 +104,33 @@ public class CourseDetailsController {
         // Populate chapters
         List<Chapitre> chapitres = serviceCours.getChapitres(course);
         System.out.println(chapitres);
-        if (chapitres == null || chapitres.isEmpty()) {
-            System.out.println("No chapters available for course: " + course.getTitle());
+        populateGrid(chaptersGrid, chapitres);
+    }
+
+    private void populateGrid(GridPane grid, List<Chapitre> chapitres) {
+        grid.getChildren().clear();
+        int row = 0, col = 0;
+
+        // Add "New" card first
+        VBox newCard = createNewCard("Chapitre");
+        grid.add(newCard, col, row);
+        col++;
+
+        // Then add existing chapters
+        if (chapitres != null && !chapitres.isEmpty()) {
+            for (Chapitre chapitre : chapitres) {
+                if (chapitre != null) {
+                    VBox card = createChapitreCard(chapitre);
+                    grid.add(card, col, row);
+                    col++;
+                    if (col > 2) {
+                        col = 0;
+                        row++;
+                    }
+                }
+            }
+        } else {
+            // Show message when no chapters exist
             VBox alertBox = new VBox(10);
             alertBox.getStyleClass().addAll("alert", "alert-info");
             alertBox.setAlignment(Pos.CENTER);
@@ -111,65 +140,82 @@ public class CourseDetailsController {
             heading.getStyleClass().add("alert-heading");
             Label message = new Label("Commencez par ajouter un nouveau chapitre");
             alertBox.getChildren().addAll(icon, heading, message);
-            chaptersGrid.add(alertBox, 0, 0, 3, 1); // Span all columns
-        } else {
-            System.out.println("Populating " + chapitres.size() + " chapters");
-            populateGrid(chaptersGrid, chapitres);
+            grid.add(alertBox, col, row); // Add alert next to the "New" card
         }
-    }
-
-    private void populateGrid(GridPane grid, List<Chapitre> chapitres) {
-        grid.getChildren().clear();
-        int row = 0, col = 0;
-        for (Chapitre chapitre : chapitres) {
-            if (chapitre != null) {
-                VBox card = createChapitreCard(chapitre);
-                grid.add(card, col, row);
-                col++;
-                if (col > 2) {
-                    col = 0;
-                    row++;
-                }
-            }
-        }
-        // Add "New" card
-        VBox newCard = createNewCard("Chapitre");
-        grid.add(newCard, col, row);
     }
 
     private VBox createChapitreCard(Chapitre chapitre) {
         VBox card = new VBox(10);
         card.getStyleClass().addAll("card", "chapter-card");
 
-        // Header: Badge and ID
+        // Header with chapter number badge
         HBox header = new HBox();
         header.getStyleClass().add("header-row");
-        Label order = new Label("#" + chapitre.getChapOrder());
-        order.getStyleClass().addAll("badge", "bg-primary");
-        HBox spacer = new HBox();
-        HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
-        Label idLabel = new Label("ID: " + chapitre.getId());
-        idLabel.getStyleClass().add("text-muted");
-        header.getChildren().addAll(order, spacer, idLabel);
+        header.setAlignment(Pos.CENTER_LEFT);
+        
+        Label order = new Label("Chapitre " + chapitre.getChapOrder());
+        order.getStyleClass().add("chapter-badge");
+        header.getChildren().add(order);
 
-        // Title
+        // Title with icon
+        HBox titleBox = new HBox(10);
+        titleBox.setAlignment(Pos.CENTER_LEFT);
+        Label titleIcon = new Label("📚");
         Label title = new Label(chapitre.getTitle() != null ? chapitre.getTitle() : "Untitled");
         title.getStyleClass().add("card-title");
+        titleBox.getChildren().addAll(titleIcon, title);
+
+        // Chapter info
+        VBox infoBox = new VBox(5);
+        infoBox.getStyleClass().add("chapter-info");
+        
+        // Duration info
+        HBox durationBox = new HBox(5);
+        durationBox.setAlignment(Pos.CENTER_LEFT);
+        Label clockIcon = new Label("⏱️");
+        clockIcon.getStyleClass().add("chapter-icon");
+        Label duration = new Label(chapitre.getDureeEstimee() + " minutes");
+        duration.getStyleClass().add("chapter-duration");
+        durationBox.getChildren().addAll(clockIcon, duration);
+
+        // Views info
+        HBox viewsBox = new HBox(5);
+        viewsBox.setAlignment(Pos.CENTER_LEFT);
+        Label eyeIcon = new Label("👁️");
+        eyeIcon.getStyleClass().add("chapter-icon");
+        Label views = new Label(chapitre.getNbrVues() + " vues");
+        views.getStyleClass().add("chapter-duration");
+        viewsBox.getChildren().addAll(eyeIcon, views);
+
+        infoBox.getChildren().addAll(durationBox, viewsBox);
 
         // Buttons
         HBox buttons = new HBox(10);
+        buttons.getStyleClass().add("button-container");
         buttons.setAlignment(Pos.CENTER_RIGHT);
-        Button viewBtn = new Button("Voir");
+
+        Button viewBtn = new Button("Voir le contenu");
         viewBtn.getStyleClass().addAll("btn", "btn-outline-primary", "btn-sm");
         viewBtn.setGraphic(new Label("👁️"));
         viewBtn.setOnAction(e -> handleChapitreView(chapitre));
+
         Button editBtn = new Button("Modifier");
         editBtn.getStyleClass().addAll("btn", "btn-outline-warning", "btn-sm");
         editBtn.setGraphic(new Label("✏️"));
         editBtn.setOnAction(e -> handleChapitreEdit(chapitre));
-        buttons.getChildren().addAll(viewBtn, editBtn);
 
-        card.getChildren().addAll(header, title, buttons);
+        Button deleteBtn = new Button("Supprimer");
+        deleteBtn.getStyleClass().addAll("btn", "btn-outline-danger", "btn-sm");
+        deleteBtn.setGraphic(new Label("🗑️"));
+        deleteBtn.setStyle("-fx-text-fill: #dc3545; -fx-border-color: #dc3545; -fx-background-color: transparent; -fx-cursor: hand; -fx-border-radius: 5px;");
+        deleteBtn.setOnMouseEntered(e -> deleteBtn.setStyle("-fx-text-fill: white; -fx-background-color: #dc3545; -fx-border-color: #dc3545; -fx-cursor: hand; -fx-border-radius: 5px; -fx-background-radius: 5px;"));
+        deleteBtn.setOnMouseExited(e -> deleteBtn.setStyle("-fx-text-fill: #dc3545; -fx-border-color: #dc3545; -fx-background-color: transparent; -fx-cursor: hand; -fx-border-radius: 5px;"));
+        deleteBtn.setOnAction(e -> handleChapitreDelete(chapitre));
+
+        buttons.getChildren().addAll(viewBtn, editBtn, deleteBtn);
+
+        // Add all components to the card
+        card.getChildren().addAll(header, titleBox, infoBox, buttons);
         return card;
     }
 
@@ -201,16 +247,19 @@ public class CourseDetailsController {
         System.out.println("Editing chapter: " + chapitre.getTitle());
         try {
             if (chapitre == null) {
-                System.err.println("No course selected for adding a chapter");
+                System.err.println("No chapter selected for editing");
+                showAlert("Erreur", "Aucun chapitre sélectionné.", Alert.AlertType.ERROR);
                 return;
             }
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/EditChapitre.fxml"));
             Parent root = loader.load();
+            System.out.println(chapitre);
             EditChapitreController controller = loader.getController();
             controller.setChapitre(chapitre);
             mainBox.getScene().setRoot(root);
         } catch (IOException e) {
-            System.err.println("Failed to load EditCours.fxml: " + e.getMessage());
+            System.err.println("Failed to load EditChapitre.fxml: " + e.getMessage());
+            showAlert("Erreur", "Impossible de charger le formulaire d'édition.", Alert.AlertType.ERROR);
         }
     }
 
@@ -234,7 +283,9 @@ public class CourseDetailsController {
     private void handleBackAction() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/ListeCours.fxml"));
-            mainBox.getScene().setRoot(root);
+            favoritesLabel.getScene().setRoot(root);
+
+
         } catch (IOException e) {
             System.err.println("Failed to load ListeCours.fxml: " + e.getMessage());
         }
@@ -251,7 +302,15 @@ public class CourseDetailsController {
             Parent root = loader.load();
             EditCoursController controller = loader.getController();
             controller.setCourse(course);
-            mainBox.getScene().setRoot(root);
+            Stage stage = (Stage) mainBox.getScene().getWindow(); // Adjust to your @FXML node
+            Scene currentScene = stage.getScene();
+            Scene newScene = new Scene(root, currentScene.getWidth(), currentScene.getHeight());
+            stage.setScene(newScene);
+            stage.setTitle("Détails du Cours - " + course.getTitle());
+            stage.show();
+
+
+
         } catch (IOException e) {
             System.err.println("Failed to load EditCours.fxml: " + e.getMessage());
         }
@@ -262,4 +321,141 @@ public class CourseDetailsController {
         System.out.println("Viewing stats for course: " + (course != null ? course.getTitle() : "null"));
         // TODO: Implement stats navigation
     }
+    @FXML
+    private void handleDeleteAction() {
+        if (course == null) {
+            System.err.println("No course selected for deletion");
+            return;
+        }
+
+        // Confirm deletion
+        boolean confirmed = showConfirmationDialog("Supprimer le cours", "Êtes-vous sûr de vouloir supprimer ce cours ?");
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            // Call the service to delete the course
+            serviceCours.delete(course);
+
+            // Show a success message
+            showAlert("Succès", "Le cours a été supprimé avec succès.", Alert.AlertType.INFORMATION);
+
+            // Navigate back to the list of courses
+            handleBackAction();
+        } catch (Exception e) {
+            System.err.println("Failed to delete course: " + e.getMessage());
+            showAlert("Erreur", "Une erreur est survenue lors de la suppression du cours.", Alert.AlertType.ERROR);
+        }
+    }
+
+    // Utility method to show a confirmation dialog
+    private boolean showConfirmationDialog(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        ButtonType okButton = new ButtonType("Oui", ButtonBar.ButtonData.YES);
+        ButtonType cancelButton = new ButtonType("Non", ButtonBar.ButtonData.NO);
+        alert.getButtonTypes().setAll(okButton, cancelButton);
+
+        return alert.showAndWait().filter(response -> response == okButton).isPresent();
+    }
+
+    // Utility method to show an alert dialog
+    private void showAlert(String title, String message, Alert.AlertType alertType) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+    @FXML
+    void handleListes(ActionEvent event) {
+        System.out.println("handleListes clicked");
+        loadScene("/ListeCours.fxml");
+    }
+    private void loadScene(String fxmlPath) {
+        try {
+            // Load the new FXML
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+            // Get the current stage from a known node
+            Stage stage = (Stage) mainBox.getScene().getWindow();
+            // Create a new scene with the loaded root
+            Scene scene = new Scene(root, 1000, 700); // Match FXML dimensions
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+
+    @FXML
+    void addChapitreAction(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EditChapitre.fxml"));
+            Parent root = loader.load();
+            EditChapitreController controller = loader.getController();
+            Chapitre chapitre = new Chapitre();
+            chapitre.setCours(course);
+            controller.setChapitre(chapitre);
+            controller.setOnSaveCallback(() -> {
+                try {
+                    FXMLLoader courseLoader = new FXMLLoader(getClass().getResource("/CourseDetails.fxml"));
+                    Parent courseRoot = courseLoader.load();
+                    CourseDetailsController courseController = courseLoader.getController();
+                    courseController.setCourse(course);
+                    mainBox.getScene().setRoot(courseRoot);
+                } catch (IOException e) {
+                    System.err.println("Failed to load CourseDetails.fxml: " + e.getMessage());
+                    showAlert("Erreur", "Impossible de retourner aux détails du cours.", Alert.AlertType.ERROR);
+                }
+            });
+            mainBox.getScene().setRoot(root);
+        } catch (IOException e) {
+            System.err.println("Failed to load EditChapitre.fxml: " + e.getMessage());
+            showAlert("Erreur", "Impossible de charger le formulaire d'ajout.", Alert.AlertType.ERROR);
+        }
+    }
+
+    private void handleChapitreDelete(Chapitre chapitre) {
+        if (chapitre == null) {
+            showAlert("Erreur", "Aucun chapitre sélectionné.", Alert.AlertType.ERROR);
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmer la suppression");
+        confirm.setHeaderText(null);
+        confirm.setContentText("Voulez-vous vraiment supprimer le chapitre '" + chapitre.getTitle() + "' ?");
+
+        if (confirm.showAndWait().filter(response -> response == ButtonType.OK).isPresent()) {
+            try {
+                // Delete associated PDF file if it exists
+                if (chapitre.getContenu() != null && !chapitre.getContenu().isEmpty()) {
+                    File pdfFile = new File("Uploads/" + chapitre.getContenu());
+                    if (pdfFile.exists()) {
+                        pdfFile.delete();
+                    }
+                }
+
+                // Delete the chapter from the database
+                ServiceChapitre serviceChapitre = new ServiceChapitre();
+                serviceChapitre.delete(chapitre);
+
+                // Show success message
+                showAlert("Succès", "Le chapitre a été supprimé avec succès.", Alert.AlertType.INFORMATION);
+
+                // Refresh the course details view
+                initializeUI();
+            } catch (Exception e) {
+                System.err.println("Failed to delete chapter: " + e.getMessage());
+                showAlert("Erreur", "Une erreur est survenue lors de la suppression du chapitre.", Alert.AlertType.ERROR);
+            }
+        }
+    }
+
 }

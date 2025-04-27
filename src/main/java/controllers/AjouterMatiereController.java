@@ -1,14 +1,21 @@
 package controllers;
 
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import tn.esprit.models.Categorie;
 import tn.esprit.models.Matiere;
 import tn.esprit.services.ServiceCategorie;
 import tn.esprit.services.ServiceMatiere;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
@@ -50,6 +57,9 @@ public class AjouterMatiereController {
     private ServiceMatiere serviceMatiere = new ServiceMatiere();
     private ServiceCategorie serviceCategorie = new ServiceCategorie();
     private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("^#[0-9A-Fa-f]{6}$");
+    private Matiere matiereToEdit;
+    private boolean isEditMode = false;
+    private Runnable onReturnCallback;
 
     @FXML
     public void initialize() {
@@ -70,6 +80,13 @@ public class AjouterMatiereController {
             }
         });
         System.out.println("categorieComboBox populated with: " + categorieComboBox.getItems().size() + " categories");
+
+        // Set default color
+        couleurThemePicker.setValue(Color.web("#7c3aed"));
+    }
+
+    public void setOnReturnCallback(Runnable callback) {
+        this.onReturnCallback = callback;
     }
 
     @FXML
@@ -160,22 +177,41 @@ public class AjouterMatiereController {
             }
 
             // Create and save Matiere
-            Matiere matiere = new Matiere();
+            Matiere matiere = isEditMode ? matiereToEdit : new Matiere();
             matiere.setTitre(titre);
             matiere.setCategorie(categorie);
             matiere.setPrerequis(prerequis);
             matiere.setDescription(description);
             matiere.setCouleurTheme(hexColor);
-            matiere.setCreatedAt(LocalDateTime.now());
+            if (!isEditMode) {
+                matiere.setCreatedAt(LocalDateTime.now());
+            }
             matiere.setUpdatedAt(LocalDateTime.now());
 
-            serviceMatiere.add(matiere);
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Matière enregistrée.");
-            clearForm(); // Vider le formulaire après une soumission réussie
+            if (isEditMode) {
+                serviceMatiere.update(matiere);
+                showAlert(Alert.AlertType.INFORMATION, "Succès", "Matière modifiée.");
+            } else {
+                serviceMatiere.add(matiere);
+                showAlert(Alert.AlertType.INFORMATION, "Succès", "Matière enregistrée.");
+            }
 
+            if (onReturnCallback != null) {
+                onReturnCallback.run();
+            }
+            clearForm(); // Vider le formulaire après une soumission réussie
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.close();
         } catch (Exception e) {
             System.err.println("Save error: " + e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
+        }
+    }
+
+    @FXML
+    private void retourAuxMatiere(Event event) {
+        if (onReturnCallback != null) {
+            onReturnCallback.run();
         }
     }
 
@@ -224,5 +260,39 @@ public class AjouterMatiereController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    void handleListes(ActionEvent event) {
+        System.out.println("handleListes clicked");
+        loadScene("/ListeCategories.fxml");
+    }
+
+    private void loadScene(String fxmlPath) {
+        try {
+            // Load the new FXML
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+            // Get the current stage from a known node
+            Stage stage = (Stage) titreField.getScene().getWindow();
+            // Create a new scene with the loaded root
+            Scene scene = new Scene(root, 1000, 700); // Match FXML dimensions
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void setMatiere(Matiere matiere) {
+        this.matiereToEdit = matiere;
+        this.isEditMode = true;
+        
+        titreField.setText(matiere.getTitre());
+        categorieComboBox.setValue(matiere.getCategorie());
+        descriptionField.setText(matiere.getDescription());
+        prerequisField.setText(matiere.getPrerequis());
+        if (matiere.getCouleurTheme() != null && !matiere.getCouleurTheme().isEmpty()) {
+            couleurThemePicker.setValue(Color.web(matiere.getCouleurTheme()));
+        }
     }
 }

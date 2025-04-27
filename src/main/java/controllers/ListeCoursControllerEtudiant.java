@@ -4,6 +4,7 @@ import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -20,15 +21,17 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import tn.esprit.models.Cours;
 import tn.esprit.services.ServiceCours;
+import javafx.scene.layout.StackPane;
+import javafx.scene.Node;
+import javafx.animation.PauseTransition;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.control.Labeled;
+import java.util.prefs.Preferences;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class ListeCoursController {
+public class ListeCoursControllerEtudiant {
 
     @FXML
     private AnchorPane root;
@@ -53,6 +56,10 @@ public class ListeCoursController {
 
     @FXML
     private VBox noCoursesBox;
+
+    @FXML
+    private TextField searchField;
+
     @FXML
     private ChoiceBox<String> filterChoiceBox;
 
@@ -60,7 +67,22 @@ public class ListeCoursController {
     private ChoiceBox<String> sortChoiceBox;
 
     @FXML
-    private TextField searchField;
+    private StackPane guideTooltip;
+
+    @FXML
+    private Label guideContent;
+
+    @FXML
+    private Button guidePrevButton;
+
+    @FXML
+    private Button guideNextButton;
+
+    @FXML
+    private Button guideCloseButton;
+
+    @FXML
+    private Button reopenGuideButton;
 
     private ServiceCours serviceCours = new ServiceCours();
     private int visibleCourses = 0;
@@ -70,17 +92,26 @@ public class ListeCoursController {
     private List<Cours> allCourses = new ArrayList<>();
     private List<Cours> filteredCourses = new ArrayList<>();
 
+    private SimpleIntegerProperty currentStep = new SimpleIntegerProperty(0);
+    private List<GuideStep> guideSteps;
+
+    private static class GuideStep {
+        final String message;
+        final String targetId;
+        final boolean showPrevious;
+
+        GuideStep(String message, String targetId, boolean showPrevious) {
+            this.message = message;
+            this.targetId = targetId;
+            this.showPrevious = showPrevious;
+        }
+    }
+
     @FXML
     public void initialize() {
         // Configurer ScrollPane
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-
-        // Préparer l'animation du contenu principal
-        prepareMainContentAnimation();
-
-        // Animation d'entrée pour le titre et le bouton de création
-        animateHeader();
 
         // Initialiser les listes de cours
         allCourses = serviceCours.getAll();
@@ -98,71 +129,29 @@ public class ListeCoursController {
         filterChoiceBox.getSelectionModel().select("Toutes les matières");
         sortChoiceBox.getSelectionModel().select("Trier par");
 
+        // Créer et configurer le bouton de réouverture du guide
+        reopenGuideButton = new Button("Ouvrir le Guide");
+        reopenGuideButton.getStyleClass().add("guide-reopen-button");
+        reopenGuideButton.setOnAction(e -> restartGuide());
+        
+        // Ajouter le bouton en haut à droite du mainBox
+        HBox headerBox = (HBox) mainBox.getChildren().get(0);
+        headerBox.getChildren().add(reopenGuideButton);
+
         // Charger les cours initiaux
         refreshCoursesGrid();
-    }
 
-    private void prepareMainContentAnimation() {
-        // Animation d'ouverture pour tout le contenu principal
-        mainBox.setOpacity(0);
-        mainBox.setScaleX(0.9);
-        mainBox.setScaleY(0.9);
+        // Initialiser les étapes du guide
+        initializeGuideSteps();
 
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(800), mainBox);
-        fadeIn.setFromValue(0);
-        fadeIn.setToValue(1);
-
-        ScaleTransition scaleUp = new ScaleTransition(Duration.millis(800), mainBox);
-        scaleUp.setFromX(0.9);
-        scaleUp.setFromY(0.9);
-        scaleUp.setToX(1);
-        scaleUp.setToY(1);
-        scaleUp.setInterpolator(Interpolator.EASE_OUT);
-
-        ParallelTransition mainAnimation = new ParallelTransition(fadeIn, scaleUp);
-        mainAnimation.play();
-    }
-
-    private void animateHeader() {
-        // Trouver les éléments du header
-        HBox headerBox = (HBox) mainBox.getChildren().get(0);
-        Label titleLabel = (Label) headerBox.getChildren().get(0);
-        Button createBtn = (Button) headerBox.getChildren().get(1);
-
-        // Configurer l'état initial
-        titleLabel.setOpacity(0);
-        titleLabel.setTranslateY(-50);
-        createBtn.setOpacity(0);
-        createBtn.setTranslateY(-50);
-
-        // Animation du titre
-        Timeline titleAnim = new Timeline(
-                new KeyFrame(Duration.ZERO,
-                        new KeyValue(titleLabel.opacityProperty(), 0),
-                        new KeyValue(titleLabel.translateYProperty(), -50)
-                ),
-                new KeyFrame(Duration.millis(800),
-                        new KeyValue(titleLabel.opacityProperty(), 1, Interpolator.EASE_OUT),
-                        new KeyValue(titleLabel.translateYProperty(), 0, Interpolator.EASE_OUT)
-                )
-        );
-
-        // Animation du bouton
-        Timeline btnAnim = new Timeline(
-                new KeyFrame(Duration.ZERO,
-                        new KeyValue(createBtn.opacityProperty(), 0),
-                        new KeyValue(createBtn.translateYProperty(), -50)
-                ),
-                new KeyFrame(Duration.millis(800),
-                        new KeyValue(createBtn.opacityProperty(), 1, Interpolator.EASE_OUT),
-                        new KeyValue(createBtn.translateYProperty(), 0, Interpolator.EASE_OUT)
-                )
-        );
-
-        // Démarrer les animations
-        titleAnim.play();
-        btnAnim.setDelay(Duration.millis(300));
-        btnAnim.play();
+        // Démarrer le guide après un court délai
+        PauseTransition delay = new PauseTransition(Duration.seconds(1));
+        delay.setOnFinished(e -> {
+            if (!Boolean.parseBoolean(getPreference("courseGuideCompleted", "false"))) {
+                startGuide();
+            }
+        });
+        delay.play();
     }
 
     private void initializeFilterChoices() {
@@ -333,11 +322,11 @@ public class ListeCoursController {
         ScaleTransition scaleUp = new ScaleTransition(Duration.millis(500), card);
         scaleUp.setFromX(0.3);
         scaleUp.setFromY(0.3);
-        scaleUp.setToX(1.05); // Légèrement plus grand pour l'effet rebond
+        scaleUp.setToX(1.05);
         scaleUp.setToY(1.05);
-        scaleUp.setInterpolator(Interpolator.SPLINE(0.215, 0.610, 0.355, 1.000)); // Effet rebond
+        scaleUp.setInterpolator(Interpolator.SPLINE(0.215, 0.610, 0.355, 1.000));
 
-        // Animation de remise à l'échelle normale après le rebond
+        // Animation de remise à l'échelle normale
         ScaleTransition scaleNormal = new ScaleTransition(Duration.millis(300), card);
         scaleNormal.setFromX(1.05);
         scaleNormal.setFromY(1.05);
@@ -346,7 +335,7 @@ public class ListeCoursController {
         scaleNormal.setInterpolator(Interpolator.EASE_OUT);
         scaleNormal.setDelay(Duration.millis(500));
 
-        // Animation de translation Y (montée)
+        // Animation de translation
         TranslateTransition slideUp = new TranslateTransition(Duration.millis(600), card);
         slideUp.setFromY(50);
         slideUp.setToY(0);
@@ -354,8 +343,6 @@ public class ListeCoursController {
 
         // Combinaison des animations
         ParallelTransition cardAnimation = new ParallelTransition(card, fadeIn, scaleUp, scaleNormal, slideUp);
-
-        // Délai entre les cartes pour effet séquentiel plus prononcé
         cardAnimation.setDelay(Duration.millis(100 * index));
 
         return cardAnimation;
@@ -367,57 +354,6 @@ public class ListeCoursController {
         card.getStyleClass().add("course-card");
         card.setAlignment(Pos.TOP_CENTER);
         card.setMaxWidth(400);
-
-        // Ajouter effet de survol avec animation
-        card.setOnMouseEntered(e -> {
-            // Annuler les animations en cours pour éviter les conflits
-            if (cardsEntryAnimation != null && cardsEntryAnimation.getStatus() == Animation.Status.RUNNING) {
-                return;
-            }
-
-            ScaleTransition scaleUp = new ScaleTransition(Duration.millis(200), card);
-            scaleUp.setToX(1.05);
-            scaleUp.setToY(1.05);
-
-            // Effet d'élévation supplémentaire
-            Timeline elevate = new Timeline(
-                    new KeyFrame(Duration.ZERO,
-                            new KeyValue(card.translateYProperty(), 0)
-                    ),
-                    new KeyFrame(Duration.millis(200),
-                            new KeyValue(card.translateYProperty(), -10, Interpolator.EASE_OUT)
-                    )
-            );
-
-            // Jouer les animations en parallèle
-            ParallelTransition hover = new ParallelTransition(scaleUp, elevate);
-            hover.play();
-        });
-
-        card.setOnMouseExited(e -> {
-            // Annuler les animations en cours pour éviter les conflits
-            if (cardsEntryAnimation != null && cardsEntryAnimation.getStatus() == Animation.Status.RUNNING) {
-                return;
-            }
-
-            ScaleTransition scaleDown = new ScaleTransition(Duration.millis(200), card);
-            scaleDown.setToX(1.0);
-            scaleDown.setToY(1.0);
-
-            // Retour à la position d'origine
-            Timeline descend = new Timeline(
-                    new KeyFrame(Duration.ZERO,
-                            new KeyValue(card.translateYProperty(), -10)
-                    ),
-                    new KeyFrame(Duration.millis(200),
-                            new KeyValue(card.translateYProperty(), 0, Interpolator.EASE_OUT)
-                    )
-            );
-
-            // Jouer les animations en parallèle
-            ParallelTransition exit = new ParallelTransition(scaleDown, descend);
-            exit.play();
-        });
 
         // Header
         StackPane header = new StackPane();
@@ -442,26 +378,6 @@ public class ListeCoursController {
         badge.getStyleClass().add("badge");
         StackPane.setAlignment(badge, Pos.TOP_LEFT);
         StackPane.setMargin(badge, new Insets(10, 0, 0, 10));
-
-        // Animation du badge
-        badge.setScaleX(0);
-        badge.setScaleY(0);
-
-        // Animer le badge avec un léger délai
-        ScaleTransition badgeAnim = new ScaleTransition(Duration.millis(300), badge);
-        badgeAnim.setDelay(Duration.millis(600));
-        badgeAnim.setFromX(0);
-        badgeAnim.setFromY(0);
-        badgeAnim.setToX(1);
-        badgeAnim.setToY(1);
-        badgeAnim.setInterpolator(Interpolator.EASE_OUT);
-
-        // Déclencher l'animation quand la carte est ajoutée à la scène
-        card.sceneProperty().addListener((obs, oldScene, newScene) -> {
-            if (newScene != null) {
-                badgeAnim.play();
-            }
-        });
 
         header.getChildren().addAll(imageView, overlay, badge);
 
@@ -510,27 +426,6 @@ public class ListeCoursController {
         Button viewButton = new Button("Voir le cours");
         viewButton.getStyleClass().addAll("btn", "btn-outline-primary", "btn-hover");
         viewButton.setOnAction(e -> viewCourse(cours));
-
-        // Animation du bouton au survol
-        viewButton.setOnMouseEntered(e -> {
-            // Effet de pulsation du bouton
-            Timeline pulse = new Timeline(
-                    new KeyFrame(Duration.ZERO,
-                            new KeyValue(viewButton.scaleXProperty(), 1),
-                            new KeyValue(viewButton.scaleYProperty(), 1)
-                    ),
-                    new KeyFrame(Duration.millis(150),
-                            new KeyValue(viewButton.scaleXProperty(), 1.1),
-                            new KeyValue(viewButton.scaleYProperty(), 1.1)
-                    ),
-                    new KeyFrame(Duration.millis(300),
-                            new KeyValue(viewButton.scaleXProperty(), 1),
-                            new KeyValue(viewButton.scaleYProperty(), 1)
-                    )
-            );
-            pulse.play();
-        });
-
         footer.getChildren().add(viewButton);
 
         card.getChildren().addAll(header, body, footer);
@@ -539,124 +434,209 @@ public class ListeCoursController {
 
     @FXML
     void createAction(ActionEvent event) {
-        // Animation de transition avant de naviguer
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(300), mainBox);
-        fadeOut.setFromValue(1.0);
-        fadeOut.setToValue(0.0);
-        fadeOut.setOnFinished(e -> {
-            try {
-                Parent root = FXMLLoader.load(getClass().getResource("/AjoutCours.fxml"));
-                noCoursesBox.getScene().setRoot(root);
-
-
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
-            }
-        });
-        fadeOut.play();
+        // TODO: Naviguer vers le formulaire de création
+        System.out.println("Naviguer vers création de cours");
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/AjoutCours.fxml"));
+            mainBox.getScene().setRoot(root);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
-
 
     @FXML
     void loadMoreAction(ActionEvent event) {
-        loadCourses(); // Directly load more courses without any animations
+        loadCourses();
     }
+
     private void viewCourse(Cours cours) {
         System.out.println(serviceCours.getChapitres(cours));
 
-        // Animation de transition avant de naviguer
-        // Animation "Zoom out" puis fondu
-        ScaleTransition scaleOut = new ScaleTransition(Duration.millis(300), mainBox);
-        scaleOut.setFromX(1.0);
-        scaleOut.setFromY(1.0);
-        scaleOut.setToX(0.8);
-        scaleOut.setToY(0.8);
-
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(300), mainBox);
-        fadeOut.setFromValue(1.0);
-        fadeOut.setToValue(0.0);
-
-        ParallelTransition exitTransition = new ParallelTransition(scaleOut, fadeOut);
-        exitTransition.setOnFinished(e -> {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/CourseDetails.fxml"));
-                Parent root = loader.load();
-                CourseDetailsController controller = loader.getController();
-                controller.setCourse(cours); // Pass the Cours object
-                Stage stage = (Stage) mainBox.getScene().getWindow();
-
-                // Garder les dimensions actuelles de la fenêtre
-                Scene currentScene = stage.getScene();
-                Scene newScene = new Scene(root, currentScene.getWidth(), currentScene.getHeight());
-
-                stage.setScene(newScene);
-                stage.setTitle("Détails du Cours - " + cours.getTitle());
-                stage.show();
-            } catch (IOException ex) {
-                System.err.println("Error loading CourseDetails.fxml: " + ex.getMessage());
-                ex.printStackTrace();
-            }
-        });
-        exitTransition.play();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CourseDetailsEtudiant.fxml"));
+            Parent root = loader.load();
+            CourseDetailsControllerEtudiant controller = loader.getController();
+            controller.setCourse(cours); // Pass the Cours object
+            Stage stage = (Stage) mainBox.getScene().getWindow();
+            
+            // Garder les dimensions actuelles de la fenêtre
+            Scene currentScene = stage.getScene();
+            Scene newScene = new Scene(root, currentScene.getWidth(), currentScene.getHeight());
+            
+            stage.setScene(newScene);
+            stage.setTitle("Détails du Cours - " + cours.getTitle());
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading CourseDetails.fxml: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void handleMesOffres(ActionEvent event) {
+        System.out.println("handleMesOffres clicked");
+        loadScene("/ListeCours.fxml");
     }
 
     @FXML
     void handleListes(ActionEvent event) {
         System.out.println("handleListes clicked");
+        loadScene("/ListeCoursEtudiant.fxml");
+    }
 
-        // Animation de transition de page avec zoom-out et fondu
-        ScaleTransition scaleOut = new ScaleTransition(Duration.millis(400), mainBox);
-        scaleOut.setFromX(1.0);
-        scaleOut.setFromY(1.0);
-        scaleOut.setToX(0.8);
-        scaleOut.setToY(0.8);
-        scaleOut.setInterpolator(Interpolator.EASE_IN);
-
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(400), mainBox);
-        fadeOut.setFromValue(1.0);
-        fadeOut.setToValue(0.0);
-
-        ParallelTransition transition = new ParallelTransition(scaleOut, fadeOut);
-        transition.setOnFinished(e -> loadScene("/ListeCours.fxml"));
-        transition.play();
+    @FXML
+    void handleAutresOffres(ActionEvent event) {
+        System.out.println("handleAutresOffres clicked");
+        loadScene("/ListeCours.fxml");
     }
 
     private void loadScene(String fxmlPath) {
         try {
-            // Charger le nouveau FXML
+            // Load the new FXML
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
-
-            // Configurer l'animation d'entrée
-            root.setOpacity(0);
-            root.setScaleX(1.2);
-            root.setScaleY(1.2);
-
-            // Obtenir la scène actuelle
+            // Get the current stage from a known node
             Stage stage = (Stage) mainBox.getScene().getWindow();
-
-            // Créer une nouvelle scène avec le root chargé
-            Scene scene = new Scene(root, 1000, 700);
+            // Create a new scene with the loaded root
+            Scene scene = new Scene(root, 1000, 700); // Match FXML dimensions
             stage.setScene(scene);
-
-            // Animation d'entrée pour la nouvelle scène
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(500), root);
-            fadeIn.setFromValue(0);
-            fadeIn.setToValue(1);
-
-            ScaleTransition scaleIn = new ScaleTransition(Duration.millis(500), root);
-            scaleIn.setFromX(1.2);
-            scaleIn.setFromY(1.2);
-            scaleIn.setToX(1.0);
-            scaleIn.setToY(1.0);
-            scaleIn.setInterpolator(Interpolator.EASE_OUT);
-
-            ParallelTransition entryTransition = new ParallelTransition(fadeIn, scaleIn);
-            entryTransition.play();
-
             stage.show();
         } catch (IOException e) {
             System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private void initializeGuideSteps() {
+        guideSteps = Arrays.asList(
+            new GuideStep("Bienvenue dans la liste des cours ! Je vais vous guider à travers les fonctionnalités principales.", null, false),
+            new GuideStep("Utilisez la barre de recherche pour trouver rapidement un cours par son titre ou sa description.", "searchField", true),
+            new GuideStep("Filtrez les cours par matière pour afficher uniquement ceux qui vous intéressent.", "filterChoiceBox", true),
+            new GuideStep("Triez les cours selon différents critères pour les organiser comme vous le souhaitez.", "sortChoiceBox", true),
+            new GuideStep("Les cours sont affichés ici sous forme de cartes. Cliquez sur 'Voir le cours' pour plus de détails.", "coursesGrid", true),
+            new GuideStep("Si vous ne trouvez pas ce que vous cherchez, utilisez le bouton 'Afficher plus' pour voir plus de cours.", "loadMoreButton", true),
+            new GuideStep("Vous pouvez maintenant explorer les cours ! N'hésitez pas à utiliser ces fonctionnalités pour trouver les cours qui vous intéressent.", null, true)
+        );
+    }
+
+    private void startGuide() {
+        currentStep.set(0);
+        showCurrentStep();
+    }
+
+    @FXML
+    private void nextGuideStep() {
+        if (currentStep.get() < guideSteps.size() - 1) {
+            currentStep.set(currentStep.get() + 1);
+            showCurrentStep();
+        }
+    }
+
+    @FXML
+    private void previousGuideStep() {
+        if (currentStep.get() > 0) {
+            currentStep.set(currentStep.get() - 1);
+            showCurrentStep();
+        }
+    }
+
+    @FXML
+    private void closeGuide() {
+        guideTooltip.setVisible(false);
+        guideTooltip.setManaged(false);
+        removeAllHighlights();
+        setPreference("courseGuideCompleted", "true");
+    }
+
+    private void showCurrentStep() {
+        GuideStep step = guideSteps.get(currentStep.get());
+        
+        // Mettre à jour le contenu
+        guideContent.setText(step.message);
+        
+        // Gérer les boutons
+        guidePrevButton.setVisible(step.showPrevious);
+        guidePrevButton.setManaged(step.showPrevious);
+        guideNextButton.setText(currentStep.get() == guideSteps.size() - 1 ? "Terminer" : "Suivant");
+        
+        // Supprimer les surlignages précédents
+        removeAllHighlights();
+        
+        // Positionner le tooltip et surligner l'élément cible
+        if (step.targetId != null) {
+            Node targetNode = root.lookup("#" + step.targetId);
+            if (targetNode != null) {
+                highlightNode(targetNode);
+                positionTooltipNearNode(targetNode);
+            }
+        } else {
+            // Centrer le tooltip pour les étapes sans cible
+            centerTooltip();
+        }
+        
+        // Afficher le tooltip
+        guideTooltip.setVisible(true);
+        guideTooltip.setManaged(true);
+    }
+
+    private void removeAllHighlights() {
+        root.lookupAll(".guide-highlight").forEach(node -> 
+            node.getStyleClass().remove("guide-highlight")
+        );
+    }
+
+    private void highlightNode(Node node) {
+        node.getStyleClass().add("guide-highlight");
+    }
+
+    private void positionTooltipNearNode(Node targetNode) {
+        // Obtenir les coordonnées de l'élément cible
+        Bounds bounds = targetNode.localToScene(targetNode.getBoundsInLocal());
+        
+        // Calculer la position du tooltip
+        double tooltipX = bounds.getMinX() + bounds.getWidth() / 2 - guideTooltip.getWidth() / 2;
+        double tooltipY = bounds.getMaxY() + 10;
+        
+        // Ajuster si le tooltip dépasse les bords
+        if (tooltipX < 0) tooltipX = 10;
+        if (tooltipX + guideTooltip.getWidth() > root.getWidth()) {
+            tooltipX = root.getWidth() - guideTooltip.getWidth() - 10;
+        }
+        
+        // Positionner au-dessus si pas assez d'espace en dessous
+        if (tooltipY + guideTooltip.getHeight() > root.getHeight()) {
+            tooltipY = bounds.getMinY() - guideTooltip.getHeight() - 10;
+            guideTooltip.setStyle("--arrow-top: auto; --arrow-bottom: -6px;");
+        } else {
+            guideTooltip.setStyle("--arrow-top: -6px; --arrow-bottom: auto;");
+        }
+        
+        // Appliquer la position
+        guideTooltip.setTranslateX(tooltipX);
+        guideTooltip.setTranslateY(tooltipY);
+    }
+
+    private void centerTooltip() {
+        guideTooltip.setTranslateX((root.getWidth() - guideTooltip.getWidth()) / 2);
+        guideTooltip.setTranslateY((root.getHeight() - guideTooltip.getHeight()) / 2);
+        guideTooltip.setStyle("--arrow-top: auto; --arrow-bottom: auto;");
+    }
+
+    private String getPreference(String key, String defaultValue) {
+        Preferences prefs = Preferences.userNodeForPackage(ListeCoursControllerEtudiant.class);
+        return prefs.get(key, defaultValue);
+    }
+
+    private void setPreference(String key, String value) {
+        Preferences prefs = Preferences.userNodeForPackage(ListeCoursControllerEtudiant.class);
+        prefs.put(key, value);
+    }
+
+    @FXML
+    private void restartGuide() {
+        // Réinitialiser la préférence du guide
+        setPreference("courseGuideCompleted", "false");
+        
+        // Réinitialiser et redémarrer le guide
+        currentStep.set(0);
+        showCurrentStep();
     }
 }

@@ -9,6 +9,8 @@ public class Chapitre {
     private int dureeEstimee;
     private int nbrVues;
     private String brochure;
+    private String description;
+    private String creationDate;
 
     public Chapitre() {
     }
@@ -17,7 +19,7 @@ public class Chapitre {
         return brochure;
     }
 
-    public Chapitre(int id, String title, int chapOrder, Cours cours, String contenu, int dureeEstimee, int nbrVues) {
+    public Chapitre(int id, String title, int chapOrder, Cours cours, String contenu, int dureeEstimee, int nbrVues, String description, String creationDate) {
         this.id = id;
         this.title = title;
         this.chapOrder = chapOrder;
@@ -25,15 +27,19 @@ public class Chapitre {
         this.contenu = contenu;
         this.dureeEstimee = dureeEstimee;
         this.nbrVues = nbrVues;
+        this.description = description;
+        this.creationDate = creationDate;
     }
 
-    public Chapitre(String title, int chapOrder, Cours cours, String contenu, int dureeEstimee, int nbrVues) {
+    public Chapitre(String title, int chapOrder, Cours cours, String contenu, int dureeEstimee, int nbrVues, String description, String creationDate) {
         this.title = title;
         this.chapOrder = chapOrder;
         this.cours = cours;
         this.contenu = contenu;
         this.dureeEstimee = dureeEstimee;
         this.nbrVues = nbrVues;
+        this.description = description;
+        this.creationDate = creationDate;
     }
 
     public int getId() {
@@ -92,6 +98,22 @@ public class Chapitre {
         this.nbrVues = nbrVues;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(String creationDate) {
+        this.creationDate = creationDate;
+    }
+
     @Override
     public String toString() {
         return "Chapitre{" +
@@ -102,9 +124,12 @@ public class Chapitre {
                 ", contenu='" + contenu + '\'' +
                 ", dureeEstimee=" + dureeEstimee +
                 ", nbrVues=" + nbrVues +
+                ", description='" + description + '\'' +
+                ", creationDate='" + creationDate + '\'' +
                 "}\n";
     }
 
     public void setBrochure(String brochure) {
+        this.brochure = brochure;
     }
 }

@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -12,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import tn.esprit.models.Categorie;
 import tn.esprit.services.ServiceCategorie;
 
@@ -72,6 +74,12 @@ public class AjouterCategorieController {
     private static final long MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
     private static final String[] PUBLIC_CIBLE_OPTIONS = {"élèves", "étudiants", "adultes", "professionnels"};
     private static final int TARGET_SIZE = 200; // 200x200 pixels
+
+    private Runnable onSaveCallback;
+
+    public void setOnSaveCallback(Runnable callback) {
+        this.onSaveCallback = callback;
+    }
 
     @FXML
     public void initialize() {
@@ -274,92 +282,43 @@ public class AjouterCategorieController {
     @FXML
     void saveAction(ActionEvent event) {
         try {
-            // Reset validation
             resetValidation();
 
-            // Retrieve inputs
             String name = nameField.getText().trim();
             String motsCles = motsClesField.getText().trim();
             String publicCible = publicCibleComboBox.getValue();
             String descrption = descrptionField.getText().trim();
             String icone = fileLabel.getText();
 
-            // Validate
             boolean hasError = false;
+
             if (name.isEmpty()) {
                 nameError.setText("Le nom est requis.");
                 nameError.setVisible(true);
-                nameError.setManaged(true);
-                nameField.getStyleClass().add("error");
-                hasError = true;
-            } else if (name.length() < 3) {
-                nameError.setText("Minimum 3 caractères.");
-                nameError.setVisible(true);
-                nameError.setManaged(true);
-                nameField.getStyleClass().add("error");
-                hasError = true;
-            } else if (name.length() > 255) {
-                nameError.setText("Maximum 255 caractères.");
-                nameError.setVisible(true);
-                nameError.setManaged(true);
-                nameField.getStyleClass().add("error");
                 hasError = true;
             }
 
             if (motsCles.isEmpty()) {
-                motsClesError.setText("Les mots-clés sont requis.");
+                motsClesError.setText("Les mots clés sont requis.");
                 motsClesError.setVisible(true);
-                motsClesError.setManaged(true);
-                motsClesField.getStyleClass().add("error");
-                hasError = true;
-            } else if (motsCles.length() > 255) {
-                motsClesError.setText("Maximum 255 caractères.");
-                motsClesError.setVisible(true);
-                motsClesError.setManaged(true);
-                motsClesField.getStyleClass().add("error");
                 hasError = true;
             }
 
-            if (publicCible == null) {
+            if (publicCible == null || publicCible.isEmpty()) {
                 publicCibleError.setText("Le public cible est requis.");
                 publicCibleError.setVisible(true);
-                publicCibleError.setManaged(true);
-                publicCibleComboBox.getStyleClass().add("error");
-                hasError = true;
-            } else if (!Arrays.asList(PUBLIC_CIBLE_OPTIONS).contains(publicCible)) {
-                publicCibleError.setText("Choix invalide.");
-                publicCibleError.setVisible(true);
-                publicCibleError.setManaged(true);
-                publicCibleComboBox.getStyleClass().add("error");
                 hasError = true;
             }
 
             if (descrption.isEmpty()) {
                 descrptionError.setText("La description est requise.");
                 descrptionError.setVisible(true);
-                descrptionError.setManaged(true);
-                descrptionField.getStyleClass().add("error");
-                hasError = true;
-            } else if (descrption.length() < 10) {
-                descrptionError.setText("Minimum 10 caractères.");
-                descrptionError.setVisible(true);
-                descrptionError.setManaged(true);
-                descrptionField.getStyleClass().add("error");
-                hasError = true;
-            } else if (descrption.length() > 255) {
-                descrptionError.setText("Maximum 255 caractères.");
-                descrptionError.setVisible(true);
-                descrptionError.setManaged(true);
-                descrptionField.getStyleClass().add("error");
                 hasError = true;
             }
 
-            if (icone.equals("Aucune image") || icone.startsWith("Erreur")) {
-                brochureError.setText("L’image est requise.");
+            if (icone.isEmpty()) {
+                brochureError.setText("L'image est requise.");
                 brochureError.setVisible(true);
-                brochureError.setManaged(true);
-                fileLabel.getStyleClass().removeAll("text-muted", "text-success");
-                fileLabel.getStyleClass().add("text-danger");
                 hasError = true;
             }
 
@@ -367,22 +326,24 @@ public class AjouterCategorieController {
                 return;
             }
 
-            // Create and save categorie
-            Categorie categorie = new Categorie();
-            categorie.setName(name);
-            categorie.setMotsCles(motsCles);
-            categorie.setPublicCible(publicCible);
-            categorie.setDescrption(descrption);
-            categorie.setIcone(icone);
-
+            Categorie categorie = new Categorie(name, descrption, icone, motsCles, publicCible);
             serviceCategorie.add(categorie);
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Catégorie enregistrée.");
-            // Navigate to category list (implement as needed)
 
+            showAlert(Alert.AlertType.INFORMATION, "Succès", "Catégorie ajoutée avec succès.");
+            
+            if (onSaveCallback != null) {
+                onSaveCallback.run();
+            }
+            
         } catch (Exception e) {
-            System.err.println("Save error: " + e.getMessage());
             showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
         }
+    }
+
+    @FXML
+    void cancelAction(ActionEvent event) {
+        Stage stage = (Stage) nameField.getScene().getWindow();
+        stage.close();
     }
 
     private void resetValidation() {
@@ -417,4 +378,26 @@ public class AjouterCategorieController {
         int dotIndex = filename.lastIndexOf('.');
         return dotIndex == -1 ? "" : filename.substring(dotIndex + 1);
     }
+    @FXML
+    void handleListes(ActionEvent event) {
+        System.out.println("handleListes clicked");
+        loadScene("/ListeCategories.fxml");
+    }
+    private void loadScene(String fxmlPath) {
+        try {
+            // Load the new FXML
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+            // Get the current stage from a known node
+            Stage stage = (Stage) nameField.getScene().getWindow();
+            // Create a new scene with the loaded root
+            Scene scene = new Scene(root, 1000, 700); // Match FXML dimensions
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+
 }
