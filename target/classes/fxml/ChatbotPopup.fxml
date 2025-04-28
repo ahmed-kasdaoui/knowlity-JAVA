@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+
+<?import java.net.URL?>
+<AnchorPane prefHeight="600" prefWidth="400" style="-fx-background-color: #ffffff; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 5);" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChatbotController">
+    <stylesheets>
+        <URL value="@/chatbot.css"/>
+    </stylesheets>
+
+    <!-- Chat Header -->
+    <VBox fx:id="chatHeader" styleClass="chat-header" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-padding: 0 0 10 0;">
+            <ImageView fx:id="chatbotLogo" fitHeight="40" fitWidth="40" styleClass="chatbot-logo">
+                <Image url="@/images/robotic.png"/>
+            </ImageView>
+            <VBox spacing="2">
+                <Label text="9arini Assistant" styleClass="logo-text"/>
+                <Label text="En ligne" styleClass="status-text"/>
+            </VBox>
+        </HBox>
+    </VBox>
+
+    <!-- Chat Body -->
+    <ScrollPane fx:id="chatBody" styleClass="chat-body" AnchorPane.topAnchor="90" AnchorPane.bottomAnchor="100" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <VBox fx:id="messageContainer" spacing="10" style="-fx-background-color: transparent; -fx-padding: 0 15;"/>
+    </ScrollPane>
+
+    <!-- Chat Footer -->
+    <HBox fx:id="chatFooter" styleClass="chat-footer" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <TextArea fx:id="messageInput" styleClass="message-input" promptText="Écrivez votre message..."/>
+        <Button fx:id="sendMessage" styleClass="send-button" onAction="#handleSendMessage">
+            <graphic>
+                <ImageView fitHeight="20" fitWidth="20">
+                    <Image url="@/images/chat_icon.png"/>
+                </ImageView>
+            </graphic>
+        </Button>
+    </HBox>
+</AnchorPane>

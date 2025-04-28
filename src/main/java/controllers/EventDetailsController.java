@@ -9,18 +9,24 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.util.Duration;
+import netscape.javascript.JSObject;
 import tn.esprit.models.Events;
 import tn.esprit.services.ServiceEvents;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 
 public class EventDetailsController {
 
@@ -32,8 +38,6 @@ public class EventDetailsController {
     private Label dateLocationLabel;
     @FXML
     private Text descriptionText;
-    @FXML
-    private Label LocationLabel;
     @FXML
     private Label maxParticipantsLabel;
     @FXML
@@ -71,7 +75,29 @@ public class EventDetailsController {
     public void initialize() {
         reserveButton.setOnAction(e -> handleReserve());
         backButton.setOnAction(e -> handleBack());
-        mapView.setVisible(true);
+        mapView.widthProperty().addListener((obs, oldVal, newVal) -> {
+            // When width changes, execute JavaScript to resize the map
+            executeMapResize();
+        });
+
+        mapView.heightProperty().addListener((obs, oldVal, newVal) -> {
+            // When height changes, execute JavaScript to resize the map
+            executeMapResize();
+        });
+    }
+
+
+    private void executeMapResize() {
+        // Execute JavaScript to force map resize
+        Platform.runLater(() -> {
+            try {
+                mapView.getEngine().executeScript(
+                        "if (typeof map !== 'undefined') { map.invalidateSize(); }"
+                );
+            } catch (Exception e) {
+                // Map might not be initialized yet
+            }
+        });
     }
 
     private void loadEventData() {
@@ -91,14 +117,15 @@ public class EventDetailsController {
             System.err.println("Event not found for ID: " + eventId);
             return;
         }
+        initializeMapWithBridge(event);
+
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
 
         titleLabel.setText(event.getTitle());
         categoryLabel.setText("Category: Event");
         dateLocationLabel.setText(event.getStartDate() != null ? event.getStartDate().format(formatter) + " | " + event.getLocation() : "TBD | " + event.getLocation());
-        descriptionText.setText(event.getDescription()); // Updated
-        LocationLabel.setText(event.getLocation());
+        descriptionText.setText(event.getDescription());
         maxParticipantsLabel.setText(event.getMaxParticipants() != null ? event.getMaxParticipants() + "+ Seats" : "N/A");
         seatsAvailableLabel.setText(event.getSeatsAvailable() != null ? event.getSeatsAvailable() + " Tickets" : "N/A");
         durationLabel.setText(calculateDuration(event.getStartDate(), event.getEndDate()));
@@ -111,8 +138,6 @@ public class EventDetailsController {
         timer.setCycleCount(Timeline.INDEFINITE);
         timer.play();
 
-        // TODO: Load map
-        // mapView.getEngine().load("https://maps.google.com/maps?q=" + URLEncoder.encode(event.getLocation(), "UTF-8") + "&t=&z=13&ie=UTF8&iwloc=&output=embed");
     }
 
     private String calculateDuration(LocalDateTime startDate, LocalDateTime endDate) {
@@ -182,5 +207,61 @@ public class EventDetailsController {
         alert.setContentText(content);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
+    }
+
+
+
+    private void initializeMapWithBridge(Events event) {
+        WebEngine webEngine = mapView.getEngine();
+
+        MapBridge bridge = new MapBridge();
+        webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
+            if (newState == javafx.concurrent.Worker.State.SUCCEEDED) {
+                // Add the bridge object to JavaScript context
+                JSObject window = (JSObject) webEngine.executeScript("window");
+                window.setMember("javaMapBridge", bridge);
+
+                Platform.runLater(() -> {
+                    setMapLocation(event.getLatitude(), event.getLongitude(), event.getLocation());
+                });
+            }
+        });
+
+        URL mapUrl = getClass().getResource("/fxml/map.html");
+        if (mapUrl != null) {
+            webEngine.load(mapUrl.toExternalForm());
+        } else {
+            System.err.println("Could not find map.html resource");
+        }
+    }
+
+    public void setMapLocation(double latitude, double longitude, String locationName) {
+        WebEngine webEngine = mapView.getEngine();
+        String script = String.format(
+                "updateMapLocation(%f, %f, '%s');",
+                latitude, longitude, locationName.replace("'", "\\'")
+        );
+
+        try {
+            webEngine.executeScript(script);
+        } catch (Exception e) {
+            // Map might not be initialized yet, retry after a delay
+            Platform.runLater(() -> {
+                try {
+                    Thread.sleep(100);
+                    webEngine.executeScript(script);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+        }
+    }
+
+    // Bridge class for Java-JavaScript communication
+    public class MapBridge {
+        // Method that can be called from JavaScript
+        public void reportMapStatus(String status) {
+            System.out.println("Map status: " + status);
+        }
     }
 }

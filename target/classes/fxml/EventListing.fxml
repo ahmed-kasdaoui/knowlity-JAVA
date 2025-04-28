@@ -8,6 +8,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -46,7 +48,12 @@
                         <Button fx:id="showRecommended" styleClass="toggle-button" text="Recommended Events" />
                     </HBox>
                     <VBox fx:id="eventContainer" alignment="CENTER" spacing="20" styleClass="event-container" />
-                    <Button fx:id="moreButton" styleClass="more-button" text="More" visible="false" />
+               <HBox prefHeight="38.0" prefWidth="172.0">
+                  <children>
+                          <Button fx:id="moreButton" styleClass="more-button" text="More" visible="false" />
+
+                  </children>
+               </HBox>
                 </VBox>
             </content>
         </ScrollPane>

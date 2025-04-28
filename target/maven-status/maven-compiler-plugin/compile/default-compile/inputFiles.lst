@@ -1,5 +1,6 @@
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\ActionCellController.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\AddEvent.java
+C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\ChatbotController.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\EditEventController.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\EditEventRegistrationController.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\EventDetailsController.java
@@ -8,6 +9,8 @@ C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\EventList.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\EventListController.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\EventListingController.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\EventRegistrationListController.java
+C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\MapApplication.java
+C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\MapController.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\NewEventRegistrationFormController.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\ShowEventRegistrationController.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\UserEventRegistrationFormController.java
@@ -28,6 +31,7 @@ C:\xampp\htdocs\knowlity-JAVA\src\main\java\tn\esprit\services\ServiceEventRegis
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\tn\esprit\services\ServiceEvents.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\tn\esprit\services\ServiceMatiere.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\tn\esprit\services\ServiceUserEventPreference.java
+C:\xampp\htdocs\knowlity-JAVA\src\main\java\tn\esprit\test\EventStatisticsChart.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\tn\esprit\test\Main.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\tn\esprit\test\MainFX.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\tn\esprit\test\Test.java
