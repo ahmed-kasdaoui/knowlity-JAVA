@@ -18,8 +18,8 @@
                 <Image url="@/images/robotic.png"/>
             </ImageView>
             <VBox spacing="2">
-                <Label text="9arini Assistant" styleClass="logo-text"/>
-                <Label text="En ligne" styleClass="status-text"/>
+                <Label text="Knowlity Bot" styleClass="logo-text"/>
+                <Label text="On-Ligne" styleClass="status-text"/>
             </VBox>
         </HBox>
     </VBox>
@@ -31,7 +31,7 @@
 
     <!-- Chat Footer -->
     <HBox fx:id="chatFooter" styleClass="chat-footer" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
-        <TextArea fx:id="messageInput" styleClass="message-input" promptText="Écrivez votre message..."/>
+        <TextArea fx:id="messageInput" styleClass="message-input" promptText="What are you thinking about ..."/>
         <Button fx:id="sendMessage" styleClass="send-button" onAction="#handleSendMessage">
             <graphic>
                 <ImageView fitHeight="20" fitWidth="20">

@@ -2,15 +2,20 @@ package controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import tn.esprit.models.Events;
 import tn.esprit.services.ServiceEvents;
 import tn.esprit.services.ServiceUserEventPreference;
@@ -20,6 +25,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EventListingController {
 
@@ -47,6 +54,10 @@ public class EventListingController {
     private ServiceEvents serviceEvents = new ServiceEvents();
     private int displayedCount = 0;
     private final int BATCH_SIZE = 4;
+    @FXML private Button chatbotToggler;
+    private Stage chatbotStage;
+    private static final Logger LOGGER = Logger.getLogger(EventListingController.class.getName());
+
 
     // Color themes for cards
     private final List<String> cardThemes = Arrays.asList("blue", "red", "green", "yellow");
@@ -305,5 +316,29 @@ public class EventListingController {
         }
 
         return upcomingEvents;
+    }
+
+    @FXML
+    private void toggleChatbot() {
+        if (chatbotStage != null && chatbotStage.isShowing()) {
+            chatbotStage.close();
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ChatbotPopup.fxml"));
+            Parent root = loader.load();
+
+            ChatbotController controller = loader.getController();
+
+            chatbotStage = new Stage();
+            chatbotStage.setTitle("Knowitly");
+            chatbotStage.setScene(new Scene(root));
+            chatbotStage.initModality(Modality.NONE);
+            controller.setStage(chatbotStage);
+            chatbotStage.show();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error opening chatbot window", e);
+        }
     }
 }

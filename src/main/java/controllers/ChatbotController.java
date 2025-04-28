@@ -20,6 +20,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import tn.esprit.models.Events;
+import tn.esprit.services.ServiceEvents;
 
 public class ChatbotController {
 
@@ -40,15 +42,22 @@ public class ChatbotController {
 
     public void initialize() {
         chatHistory = new ArrayList<>();
-        chatHistory.add(new ChatMessage("user", "Context: You are an AI assistant for 9arini. This website is a Tunisian online platform specializing in computer science and education. It offers a variety of features, including:" +
-                "1. **Courses**: Users can take online courses related to computer science." +
-                "2. **Tests and Quizzes**: Interactive assessments to evaluate knowledge and skills." +
-                "3. **Certificates**: After completing courses or tests, users can receive official certificates." +
-                "4. **Offers**: There are various offers available to users on courses and other services." +
-                "5. **Events**: The website also offers different events related to computer science and education." +
-                "6. **Forum**: A community forum where users can discuss topics and ask questions." +
-                "7. **Complaints**: Users can submit complaints related to their experience on the website." +
-                "Your job is to help users navigate these features and provide relevant information. If users ask unrelated questions, you can provide general knowledge, but always prioritize website-related queries."));
+        chatHistory.add(new ChatMessage("user", "Context: You are an AI assistant for Knowlity. This website is about online education. \n" +
+                "            Your job is to help users navigate and understand its features.\n" +
+                "\n" +
+                "            Here is some basic information about the current user: \n" +
+                "            - ID: 1\n" +
+                "            - Name: najd\n" +
+                "            - Role: Etudiant\n" +
+                "\n" +
+                "            his/her Courses: \n" +
+                "            java , python \n" +
+                "\n" +
+
+                "            Additional Notes:\n" +
+                "            - If the user needs help with courses, guide them on enrollment, pricing, or available subjects.\n" +
+                "            - If the user asks about events, provide details about schedules, participation, and deadlines.\n" +
+                "            - If they ask unrelated questions, you can provide general knowledge, but always prioritize website-related queries."));
 
         addBotMessage("Hey there\nHow can I help you today?");
     }

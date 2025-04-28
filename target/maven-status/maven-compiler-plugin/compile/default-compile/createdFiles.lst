@@ -1,6 +1,5 @@
 tn\esprit\test\MainFX.class
 controllers\EventDetailsController$MapBridge.class
-controllers\ActionCellController.class
 controllers\AddEvent.class
 controllers\EventDetailsController.class
 tn\esprit\interfaces\EventControllerInterface.class

@@ -51,7 +51,16 @@
                <HBox prefHeight="38.0" prefWidth="172.0">
                   <children>
                           <Button fx:id="moreButton" styleClass="more-button" text="More" visible="false" />
-
+                     <Button fx:id="chatbotToggler" onAction="#toggleChatbot" prefHeight="50" prefWidth="50" style="-fx-background-color: #4c87af; -fx-background-radius: 50;">
+                        <graphic>
+                           <ImageView fitHeight="30" fitWidth="30">
+                              <image>
+                                 <Image url="@/images/chat_icon.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                     </Button>
+                      
                   </children>
                </HBox>
                 </VBox>
