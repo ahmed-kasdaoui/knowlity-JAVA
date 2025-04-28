@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="root" prefHeight="788.0" prefWidth="800.0" styleClass="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterChapitreController">
+    <children>
+        <!-- Navigation Bar from ListeCoursControllerEtudiant -->
+        <HBox alignment="CENTER_LEFT" spacing="30" style="-fx-background-color: linear-gradient(to right, #c9eaff, #eaf6ff); -fx-padding: 15; -fx-border-width: 0 0 2 0; -fx-border-color: #b3d1f5; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+            <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #002244; -fx-font-family: 'Segoe UI', sans-serif;" text="Knowlity App pour les enseignants" textFill="#436839">
+                <font>
+                    <Font name="Blackadder ITC" size="12.0" />
+                </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <HBox alignment="CENTER" spacing="20">
+                <MenuButton style="-fx-background-color: rgba(255,255,255,0.6); -fx-text-fill: #002557; -fx-font-size: 17px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 18;" text="les Cours">
+                    <items>
+                        <MenuItem fx:id="mesOffresItem" onAction="#handleListes" style="-fx-font-size: 16px; -fx-text-fill: #002244;" text=" Mes favoris" />
+                        <MenuItem fx:id="autresOffresItem" onAction="#handleListes" style="-fx-font-size: 16px; -fx-text-fill: #002244;" text=" mes cours" />
+                    </items>
+                </MenuButton>
+                <Button onAction="#handleListes" style="-fx-background-color: rgba(255,255,255,0.6); -fx-text-fill: #002244; -fx-font-size: 17px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 20;" text="📋 Listes">
+                    <effect>
+                        <DropShadow color="#d0e5ff" radius="4" />
+                    </effect>
+                </Button>
+            </HBox>
+        </HBox>
+
+        <!-- Main Content -->
+        <VBox fx:id="mainBox" alignment="CENTER" spacing="20.0" styleClass="glass-card" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="153.0">
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
+            <children>
+                <!-- Header -->
+                <HBox alignment="CENTER">
+                    <children>
+                        <Label styleClass="display-5" text="📑 Créer un Chapitre">
+                            <font>
+                                <Font name="System Bold" size="32.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+
+                <!-- Form Grid -->
+                <GridPane hgap="20" styleClass="form-grid" vgap="15">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50.0" />
+                        <ColumnConstraints percentWidth="50.0" />
+                    </columnConstraints>
+
+                    <!-- Title -->
+                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0">
+                        <Label styleClass="form-label" text="Titre *">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="titleField" promptText="Ex: Introduction au cours" styleClass="form-control">
+                            <tooltip>
+                                <Tooltip styleClass="tooltip" text="5 à 255 caractères" />
+                            </tooltip>
+                        </TextField>
+                        <Label fx:id="titleError" managed="false" styleClass="invalid-feedback" visible="false" />
+                    </VBox>
+
+                    <!-- ChapOrder -->
+                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <Label styleClass="form-label" text="Ordre *">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="chapOrderField" promptText="Ex: 1" styleClass="form-control">
+                            <tooltip>
+                                <Tooltip styleClass="tooltip" text="Nombre positif ou zéro" />
+                            </tooltip>
+                        </TextField>
+                        <Label fx:id="chapOrderError" managed="false" styleClass="invalid-feedback" visible="false" />
+                    </VBox>
+
+                    <!-- DureeEstimée -->
+                    <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Label styleClass="form-label" text="Durée (minutes) *">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="dureeEstimeeField" promptText="Ex: 30" styleClass="form-control">
+                            <tooltip>
+                                <Tooltip styleClass="tooltip" text="Durée en minutes, positif ou zéro" />
+                            </tooltip>
+                        </TextField>
+                        <Label fx:id="dureeEstimeeError" managed="false" styleClass="invalid-feedback" visible="false" />
+                    </VBox>
+
+                    <!-- Brochure -->
+                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                        <Label styleClass="form-label" text="Fichier PDF *">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Button fx:id="uploadButton" onAction="#uploadButtonAction" styleClass="btn, btn-outline-primary" text="Choisir PDF">
+                                <graphic>
+                                    <Label styleClass="icon" text="📄" />
+                                </graphic>
+                                <tooltip>
+                                    <Tooltip styleClass="tooltip" text="PDF uniquement, max 10 Mo" />
+                                </tooltip>
+                            </Button>
+                            <Label fx:id="fileLabel" styleClass="text-muted" text="Aucun PDF" />
+                        </HBox>
+                        <Label fx:id="brochureError" managed="false" styleClass="invalid-feedback" visible="false" />
+                        <Label styleClass="text-muted" text="Formats acceptés : PDF (max 10 Mo)" />
+                    </VBox>
+                    <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                    </rowConstraints>
+                </GridPane>
+
+                <!-- Buttons -->
+                <HBox alignment="CENTER" spacing="10">
+                    <Button fx:id="saveButton" onAction="#saveAction" styleClass="btn, btn-primary, btn-animated" text="Enregistrer">
+                        <graphic>
+                            <Label styleClass="icon" text="💾" />
+                        </graphic>
+                        <font>
+                            <Font name="System Bold" size="16.0" />
+                        </font>
+                    </Button>
+                    <Button fx:id="addAnotherButton" onAction="#addAnotherAction" styleClass="btn, btn-success, btn-animated" text=" Chapitre">
+                        <graphic>
+                            <Label styleClass="icon" text="➕" />
+                        </graphic>
+                        <font>
+                            <Font name="System Bold" size="16.0" />
+                        </font>
+                    </Button>
+                    <Button fx:id="addEvaluationButton" onAction="#addEvaluationAction" styleClass="btn, btn-success, btn-animated" text="+ Évaluation">
+                        <graphic>
+                            <Label styleClass="icon" text="📋" />
+                        </graphic>
+                        <font>
+                            <Font name="System Bold" size="16.0" />
+                        </font>
+                    </Button>
+                </HBox>
+            </children>
+        </VBox>
+
+        <!-- Back Button -->
+        <Button fx:id="saveButton1" layoutY="96.0" onAction="#retourAction" styleClass="btn, btn-outline-secondary, btn-animated" text="retour" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="96.0">
+            <font>
+                <Font name="System Bold" size="16.0" />
+            </font>
+        </Button>
+    </children>
+    <stylesheets>
+        <URL value="@/styles/forms1.css" />
+    </stylesheets>
+</AnchorPane>

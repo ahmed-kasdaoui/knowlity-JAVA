@@ -1,0 +1,68 @@
+.card {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d2d6de;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3);
+}
+
+.card-header {
+    -fx-background-color: #007bff;
+    -fx-padding: 10;
+}
+
+.card-title {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+}
+
+.card-footer {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 10;
+}
+
+.table {
+    -fx-background-color: #ffffff;
+}
+
+.table .column-header {
+    -fx-background-color: #343a40;
+    -fx-text-fill: #ffffff;
+}
+
+.table .column-header .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #f2f2f2;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #e9ecef;
+}
+
+.btn {
+    -fx-padding: 5 10;
+    -fx-font-size: 12;
+}
+
+.btn.info {
+    -fx-background-color: #17a2b8;
+    -fx-text-fill: #ffffff;
+}
+
+.btn.warning {
+    -fx-background-color: #ffc107;
+    -fx-text-fill: #212529;
+}
+
+.btn.success {
+    -fx-background-color: #28a745;
+    -fx-text-fill: #ffffff;
+}
+
+.btn:hover {
+    -fx-opacity: 0.8;
+}

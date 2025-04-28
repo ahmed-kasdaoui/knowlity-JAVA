@@ -333,8 +333,14 @@ public class EventListingController {
 
             chatbotStage = new Stage();
             chatbotStage.setTitle("Knowitly");
+            try {
+                chatbotStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/robotic.png")));
+            } catch (Exception e) {
+                System.err.println("Failed to load application icon: " + e.getMessage());
+            }
             chatbotStage.setScene(new Scene(root));
             chatbotStage.initModality(Modality.NONE);
+            chatbotStage.setResizable(false);
             controller.setStage(chatbotStage);
             chatbotStage.show();
         } catch (IOException e) {

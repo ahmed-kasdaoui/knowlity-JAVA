@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20" styleClass="form-section" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EditEventRegistrationController" stylesheets="/event_admin.css">
+<VBox alignment="CENTER" spacing="20" styleClass="form-section" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EditEventRegistrationController" stylesheets="/css/event_admin.css">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="root" stylesheets="/show_event.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EventListingController">
+<BorderPane fx:id="root" stylesheets="/css/show_event.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EventListingController">
     <center>
         <ScrollPane fx:id="scrollPane" fitToHeight="false" fitToWidth="true" styleClass="event-scroll-pane">
             <content>
@@ -55,7 +55,7 @@
                         <graphic>
                            <ImageView fitHeight="30" fitWidth="30">
                               <image>
-                                 <Image url="@/images/chat_icon.png" />
+                                 <Image url="@/images/robotic.png" />
                               </image>
                            </ImageView>
                         </graphic>

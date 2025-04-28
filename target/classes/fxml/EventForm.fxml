@@ -21,12 +21,12 @@
 
 <StackPane fx:id="root" prefHeight="634.0" prefWidth="817.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EventFormController">
     <stylesheets>
-        <URL value="@/colors.css" />
-        <URL value="@/skeleton.css" />
-        <URL value="@/bootstrap.css" />
-        <URL value="@/shapes.css" />
-        <URL value="@/typographic.css" />
-        <URL value="@/helpers.css" />
+        <URL value="@/css/colors.css" />
+        <URL value="@/css/skeleton.css" />
+        <URL value="@/css/bootstrap.css" />
+        <URL value="@/css/shapes.css" />
+        <URL value="@/css/typographic.css" />
+        <URL value="@/css/helpers.css" />
     </stylesheets>
     <children>
         <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="508.0" prefWidth="665.0">

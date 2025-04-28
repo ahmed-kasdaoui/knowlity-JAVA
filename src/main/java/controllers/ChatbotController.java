@@ -2,6 +2,7 @@ package controllers;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import tn.esprit.models.Events;
 import tn.esprit.services.ServiceEvents;
+import tn.esprit.models.EventRegistration;
+import tn.esprit.services.ServiceEventRegistration;
 
 public class ChatbotController {
 
@@ -36,12 +39,23 @@ public class ChatbotController {
     @FXML private Button sendMessage;
 
     private Stage stage;
-    private static final String API_KEY = "AIzaSyCJTX4kLgIWKyNqguBWdcZ20qHg9Uw7wgg";
+    private static final String API_KEY = "AIzaSyBHhllR3_CLW-9EsTxGxsIrFQGog0DbF0c";
     private static final String API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=" + API_KEY;
     private List<ChatMessage> chatHistory;
 
+
     public void initialize() {
         chatHistory = new ArrayList<>();
+        Events event;
+        ServiceEventRegistration serviceEventRegistration = new ServiceEventRegistration();
+        List<EventRegistration> eventRegistrations = serviceEventRegistration.getAll();
+        eventRegistrations=serviceEventRegistration.getByUserId(4);
+        String registration= "list of events :";
+        for (EventRegistration eventRegistration : eventRegistrations) {
+            event = eventRegistration.getEvent();
+            registration+=event.toString();
+        }
+        System.out.println(registration);
         chatHistory.add(new ChatMessage("user", "Context: You are an AI assistant for Knowlity. This website is about online education. \n" +
                 "            Your job is to help users navigate and understand its features.\n" +
                 "\n" +
@@ -53,7 +67,8 @@ public class ChatbotController {
                 "            his/her Courses: \n" +
                 "            java , python \n" +
                 "\n" +
-
+                "his/her Events: \n" +
+                    registration+
                 "            Additional Notes:\n" +
                 "            - If the user needs help with courses, guide them on enrollment, pricing, or available subjects.\n" +
                 "            - If the user asks about events, provide details about schedules, participation, and deadlines.\n" +
@@ -89,7 +104,7 @@ public class ChatbotController {
 
     private void addUserMessage(String message) {
         HBox messageBox = new HBox();
-        messageBox.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+        messageBox.setAlignment(Pos.CENTER_RIGHT);
         messageBox.setSpacing(10);
         messageBox.getStyleClass().add("user-message");
 
@@ -110,7 +125,7 @@ public class ChatbotController {
 
     private HBox addBotMessage(String message) {
         HBox messageBox = new HBox();
-        messageBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        messageBox.setAlignment(Pos.CENTER_LEFT);
         messageBox.setSpacing(10);
         messageBox.getStyleClass().add("bot-message");
 

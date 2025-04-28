@@ -15,14 +15,14 @@
 
 <StackPane fx:id="root" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: white; -fx-border-color: -light-gray-2; -fx-border-width: 0 1 0 0;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EventListController">
     <stylesheets>
-        <URL value="@/colors.css" />
-        <URL value="@/drawer.css" />
-        <URL value="@/dash.css" />
-        <URL value="@/skeleton.css" />
-        <URL value="@/bootstrap.css" />
-        <URL value="@/immersive_scroll.css" />
-        <URL value="@/typographic.css" />
-        <URL value="@/shapes.css" />
+        <URL value="@/css/colors.css" />
+        <URL value="@/css/drawer.css" />
+        <URL value="@/css/dash.css" />
+        <URL value="@/css/skeleton.css" />
+        <URL value="@/css/bootstrap.css" />
+        <URL value="@/css/immersive_scroll.css" />
+        <URL value="@/css/typographic.css" />
+        <URL value="@/css/shapes.css" />
     </stylesheets>
     <children>
         <AnchorPane prefHeight="600.0" prefWidth="1000.0">

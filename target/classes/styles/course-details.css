@@ -1,0 +1,379 @@
+/* Root styles */
+.root {
+    -fx-background-color: #f8f9fa;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+/* Container styles */
+.container {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+}
+
+/* Header styles */
+.header {
+    -fx-padding: 15px 20px;
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
+    -fx-background-radius: 8px;
+}
+
+.display-4 {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+/* Button styles */
+.btn {
+    -fx-padding: 8px 16px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.btn-animated:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);
+}
+
+.btn-outline-secondary {
+    -fx-background-color: transparent;
+    -fx-border-color: #6c757d;
+    -fx-text-fill: #6c757d;
+    -fx-border-width: 1px;
+}
+
+.btn-danger {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: white;
+}
+
+.btn-warning {
+    -fx-background-color: #ffc107;
+    -fx-text-fill: #000;
+}
+
+.btn-info {
+    -fx-background-color: #17a2b8;
+    -fx-text-fill: white;
+}
+
+/* Card styles */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-padding: 15px;
+}
+
+.card-hero {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 15, 0, 0, 8);
+}
+
+.shadow-lg {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 20, 0, 0, 10);
+}
+
+/* Image container styles */
+.image-container {
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 4);
+}
+
+.object-fit-cover {
+    -fx-background-radius: 8px;
+}
+
+/* Badge styles */
+.badge {
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 4px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.bg-primary {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+}
+
+.bg-secondary {
+    -fx-background-color: #6c757d;
+    -fx-text-fill: white;
+}
+
+.bg-info {
+    -fx-background-color: #17a2b8;
+    -fx-text-fill: white;
+}
+
+.bg-success {
+    -fx-background-color: #28a745;
+    -fx-text-fill: white;
+}
+
+.bg-warning {
+    -fx-background-color: #ffc107;
+    -fx-text-fill: #000;
+}
+
+.bg-dark {
+    -fx-background-color: #343a40;
+    -fx-text-fill: white;
+}
+
+/* Stats grid styles */
+.stats-grid {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 15px;
+    -fx-background-radius: 8px;
+}
+
+.stat-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.stat-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #6c757d;
+}
+
+.text-primary { -fx-text-fill: #007bff; }
+.text-danger { -fx-text-fill: #dc3545; }
+.text-success { -fx-text-fill: #28a745; }
+.text-muted { -fx-text-fill: #6c757d; }
+
+/* Alert styles */
+.alert {
+    -fx-padding: 15px;
+    -fx-background-radius: 8px;
+    -fx-spacing: 10px;
+}
+
+.alert-info {
+    -fx-background-color: #cce5ff;
+    -fx-border-color: #b8daff;
+}
+
+.alert-warning {
+    -fx-background-color: #fff3cd;
+    -fx-border-color: #ffeeba;
+}
+
+/* Section title styles */
+.section-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+/* Icon styles */
+.icon {
+    -fx-font-size: 16px;
+    -fx-text-fill: inherit;
+}
+
+/* Teacher section styles */
+.teacher-name {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.rounded-circle {
+    -fx-background-radius: 50%;
+}
+
+.border {
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 50%;
+}
+
+/* ScrollPane styles */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 0 5;
+}
+
+.scroll-pane > .scroll-bar:vertical > .thumb {
+    -fx-background-color: #dee2e6;
+    -fx-background-radius: 5px;
+}
+
+/* Grid styles */
+.grid {
+    -fx-hgap: 20px;
+    -fx-vgap: 20px;
+}
+
+/* Width utilities */
+.w-100 {
+    -fx-pref-width: 100%;
+}
+
+/* Margin utilities */
+.mb-4 {
+    -fx-margin-bottom: 1.5em;
+}
+
+.me-2 {
+    -fx-margin-right: 0.5em;
+}
+
+/* Text utilities */
+.text-break {
+    -fx-wrap-text: true;
+}
+
+/* Card body styles */
+.card-body {
+    -fx-padding: 15px;
+    -fx-spacing: 10px;
+}
+
+/* Card inner styles */
+.card-inner {
+    -fx-background-color: rgba(255, 255, 255, 0.9);
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+/* Image overlay styles */
+.image-overlay {
+    -fx-background-color: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.5));
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+}
+
+/* Chapter Card Styles */
+.chapter-card {
+    -fx-background-color: white;
+    -fx-background-radius: 15px;
+    -fx-padding: 20px;
+    -fx-spacing: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 4);
+    -fx-border-color: #f0f0f0;
+    -fx-border-radius: 15px;
+    -fx-border-width: 1px;
+    -fx-min-width: 300px;
+    -fx-transition: all 0.3s ease;
+}
+
+.chapter-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 8);
+    -fx-translate-y: -2px;
+    -fx-border-color: #e0e0e0;
+}
+
+.header-row {
+    -fx-spacing: 10;
+    -fx-padding: 0 0 10 0;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.card-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 5 0;
+}
+
+/* Button Styles */
+.btn-sm {
+    -fx-font-size: 13px;
+    -fx-padding: 6px 12px;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-transition: all 0.2s ease;
+}
+
+.btn-outline-primary {
+    -fx-background-color: transparent;
+    -fx-border-color: #007bff;
+    -fx-text-fill: #007bff;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+}
+
+.btn-outline-primary:hover {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,123,255,0.3), 10, 0, 0, 4);
+}
+
+.btn-outline-warning {
+    -fx-background-color: transparent;
+    -fx-border-color: #ffc107;
+    -fx-text-fill: #ffc107;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+}
+
+.btn-outline-warning:hover {
+    -fx-background-color: #ffc107;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(255,193,7,0.3), 10, 0, 0, 4);
+}
+
+.btn-outline-success {
+    -fx-background-color: transparent;
+    -fx-border-color: #28a745;
+    -fx-text-fill: #28a745;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+}
+
+.btn-outline-success:hover {
+    -fx-background-color: #28a745;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(40,167,69,0.3), 10, 0, 0, 4);
+}
+
+/* Badge Styles in Chapter Cards */
+.chapter-badge {
+    -fx-background-color: rgba(0,123,255,0.1);
+    -fx-text-fill: #007bff;
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 20px;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+/* Chapter Info Styles */
+.chapter-info {
+    -fx-spacing: 5;
+    -fx-padding: 10 0;
+}
+
+.chapter-duration {
+    -fx-text-fill: #6c757d;
+    -fx-font-size: 13px;
+}
+
+.chapter-icon {
+    -fx-fill: #6c757d;
+    -fx-font-size: 13px;
+}
+
+/* Button Container Styles */
+.button-container {
+    -fx-spacing: 10;
+    -fx-padding: 10 0 0 0;
+    -fx-border-color: #f0f0f0 transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+}

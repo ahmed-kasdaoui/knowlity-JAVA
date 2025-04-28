@@ -1,0 +1,59 @@
+/* Navigation Button Styling */
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ECF0F1;
+    -fx-font-size: 15px;
+    -fx-font-family: "Arial";
+    -fx-pref-width: 180px;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-padding: 10 15 10 15;
+    -fx-alignment: CENTER_LEFT;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 10;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(52, 152, 219, 0.2); /* Subtle blue hover effect */
+    -fx-text-fill: #3498DB; /* Light blue text on hover */
+    -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.5), 10, 0.3, 0, 0);
+}
+
+.nav-button:pressed {
+    -fx-background-color: rgba(52, 152, 219, 0.4);
+}
+
+/* Logout Button Styling */
+.logout-button {
+    -fx-background-color: #E74C3C;
+    -fx-text-fill: #ECF0F1;
+    -fx-font-size: 15px;
+    -fx-font-family: "Arial";
+    -fx-pref-width: 180px;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-padding: 10 15 10 15;
+    -fx-alignment: CENTER_LEFT;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 10;
+}
+
+.logout-button:hover {
+    -fx-background-color: #C0392B;
+    -fx-effect: dropshadow(gaussian, rgba(231, 76, 60, 0.5), 10, 0.3, 0, 0);
+}
+
+.logout-button:pressed {
+    -fx-background-color: #A93226;
+}
+
+/* User Name Label Styling */
+.user-name-label {
+    -fx-text-fill: #ECF0F1;
+    -fx-font-size: 14px;
+    -fx-font-family: "Arial";
+    -fx-font-weight: bold;
+    -fx-background-color: rgba(52, 152, 219, 0.2);
+    -fx-padding: 5 10 5 10;
+    -fx-background-radius: 5;
+}

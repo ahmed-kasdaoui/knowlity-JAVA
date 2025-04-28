@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.ListeCategoriesController"
+      stylesheets="@./css/categories.css"
+      spacing="20">
+
+    <!-- Header Section -->
+    <HBox styleClass="page-header" alignment="CENTER_LEFT">
+        <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+            <FontAwesomeIconView glyphName="TAGS" styleClass="title-icon"/>
+            <Label text="Liste des Catégories" styleClass="page-title">
+                <HBox.margin>
+                    <Insets left="10"/>
+                </HBox.margin>
+            </Label>
+        </HBox>
+
+        <!-- Search Box -->
+        <HBox styleClass="search-container" alignment="CENTER">
+            <StackPane>
+                <TextField fx:id="searchField" promptText="Rechercher une catégorie..." styleClass="search-field"/>
+                <FontAwesomeIconView glyphName="SEARCH" styleClass="search-icon" StackPane.alignment="CENTER_LEFT">
+                    <StackPane.margin>
+                        <Insets left="12"/>
+                    </StackPane.margin>
+                </FontAwesomeIconView>
+            </StackPane>
+        </HBox>
+
+        <!-- Add Button -->
+        <Button fx:id="createButton" styleClass="add-button" onAction="#createAction">
+            <graphic>
+                <HBox spacing="5" alignment="CENTER">
+                    <FontAwesomeIconView glyphName="PLUS"/>
+                    <Label text="Ajouter une catégorie" textFill="WHITE"/>
+                </HBox>
+            </graphic>
+        </Button>
+    </HBox>
+
+    <!-- Cards Container -->
+    <ScrollPane fitToWidth="true" styleClass="transparent-scroll-pane" VBox.vgrow="ALWAYS">
+        <FlowPane fx:id="cardsContainer" styleClass="cards-container" hgap="20" vgap="20"/>
+    </ScrollPane>
+
+    <!-- Empty State -->
+    <StackPane fx:id="emptyState" styleClass="empty-state">
+        <HBox alignment="CENTER" spacing="10">
+            <FontAwesomeIconView glyphName="INBOX" size="24" styleClass="empty-icon"/>
+            <Label text="Aucune catégorie trouvée" styleClass="empty-state-text"/>
+        </HBox>
+    </StackPane>
+
+</VBox>

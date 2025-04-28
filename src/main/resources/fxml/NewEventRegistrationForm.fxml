@@ -17,12 +17,12 @@
 <?import java.lang.String?>
 <StackPane fx:id="root" alignment="CENTER" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.NewEventRegistrationFormController">
     <stylesheets>
-        <URL value="@/colors.css" />
-        <URL value="@/skeleton.css" />
-        <URL value="@/bootstrap.css" />
-        <URL value="@/shapes.css" />
-        <URL value="@/typographic.css" />
-        <URL value="@/helpers.css" />
+        <URL value="@/css/colors.css" />
+        <URL value="@/css/skeleton.css" />
+        <URL value="@/css/bootstrap.css" />
+        <URL value="@/css/shapes.css" />
+        <URL value="@/css/typographic.css" />
+        <URL value="@/css/helpers.css" />
     </stylesheets>
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

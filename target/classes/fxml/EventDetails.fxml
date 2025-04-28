@@ -16,13 +16,13 @@
 
 <StackPane fx:id="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EventDetailsController">
     <stylesheets>
-        <URL value="@/colors.css" />
-        <URL value="@/skeleton.css" />
-        <URL value="@/bootstrap.css" />
-        <URL value="@/helpers.css" />
-        <URL value="@/typographic.css" />
-        <URL value="@/shapes.css" />
-        <URL value="@/dash.css" />
+        <URL value="@/css/colors.css" />
+        <URL value="@/css/skeleton.css" />
+        <URL value="@/css/bootstrap.css" />
+        <URL value="@/css/helpers.css" />
+        <URL value="@/css/typographic.css" />
+        <URL value="@/css/shapes.css" />
+        <URL value="@/css/dash.css" />
     </stylesheets>
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

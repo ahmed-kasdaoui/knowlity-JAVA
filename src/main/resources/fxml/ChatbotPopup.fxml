@@ -8,7 +8,7 @@
 <?import java.net.URL?>
 <AnchorPane prefHeight="600" prefWidth="400" style="-fx-background-color: #ffffff; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 5);" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChatbotController">
     <stylesheets>
-        <URL value="@/chatbot.css"/>
+        <URL value="@/css/chatbot.css"/>
     </stylesheets>
 
     <!-- Chat Header -->
@@ -35,7 +35,7 @@
         <Button fx:id="sendMessage" styleClass="send-button" onAction="#handleSendMessage">
             <graphic>
                 <ImageView fitHeight="20" fitWidth="20">
-                    <Image url="@/images/chat_icon.png"/>
+                    <Image url="@/images/send_icon.png"/>
                 </ImageView>
             </graphic>
         </Button>

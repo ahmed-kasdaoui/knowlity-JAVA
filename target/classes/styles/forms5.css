@@ -1,0 +1,76 @@
+.card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 3);
+}
+.shadow-lg {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 15, 0, 0, 5);
+}
+.bg-light {
+    -fx-background-color: #f8f9fa;
+}
+.btn-primary {
+    -fx-background-color: #007bff;
+    -fx-text-fill: #ffffff;
+}
+.btn-outline-secondary {
+    -fx-background-color: transparent;
+    -fx-border-color: #6c757d;
+    -fx-text-fill: #6c757d;
+}
+.btn-warning {
+    -fx-background-color: #ffc107;
+    -fx-text-fill: #212529;
+}
+.btn-danger {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: #ffffff;
+}
+.text-muted {
+    -fx-text-fill: #6c757d;
+}
+.text-white {
+    -fx-text-fill: #ffffff;
+}
+.badge {
+    -fx-background-color: #007bff;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 5 10;
+    -fx-background-radius: 12;
+}
+.h3 {
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+}
+.dt {
+    -fx-font-weight: 500;
+    -fx-text-fill: #6c757d;
+}
+.dd {
+    -fx-text-fill: #495057;
+    -fx-padding: 0 0 10 0;
+}
+.pdf-preview {
+    -fx-transition: -fx-translate-y 0.2s ease;
+}
+.pdf-preview:hover {
+    -fx-translate-y: -2;
+}
+.border {
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1;
+}
+.rounded-3 {
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+}
+.p-3 {
+    -fx-padding: 15;
+}
+.g-4 {
+    -fx-hgap: 20;
+    -fx-vgap: 15;
+}
+.row {
+    -fx-alignment: center;
+}

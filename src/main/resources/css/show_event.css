@@ -1,0 +1,366 @@
+/* Import fonts - note: JavaFX may need to load fonts differently */
+/* JavaFX doesn't support @import for web fonts directly */
+
+/* Root variables for colors */
+.root {
+  -main-green: #79dd09;
+  -main-green-rgb-015: rgba(121, 221, 9, 0.1);
+  -main-yellow: #bdbb49;
+  -main-yellow-rgb-015: rgba(189, 187, 73, 0.1);
+  -main-red: #bd150b;
+  -main-red-rgb-015: rgba(189, 21, 11, 0.1);
+  -main-blue: #0076bd;
+  -main-blue-rgb-015: rgba(0, 118, 189, 0.1);
+}
+
+/* Base Styles */
+.root {
+  -fx-font-family: "Baloo 2", sans-serif;
+  -fx-font-size: 14px;
+}
+
+.dark {
+  -fx-background-color: #110f16;
+}
+
+.light {
+  -fx-background-color: #f3f5f7;
+}
+
+/* Theme-specific styling */
+.light-theme .hero-area {
+  -fx-background-color: #e8eef2;
+}
+
+.light-theme .hero-title {
+  -fx-text-fill: #333;
+}
+
+.light-theme .hero-subtitle {
+  -fx-text-fill: #666;
+}
+
+.light-theme .search-input, .light-theme .search-combo {
+  -fx-background-color: white;
+  -fx-text-fill: #333;
+  -fx-prompt-text-fill: #999;
+  -fx-border-color: #ddd;
+}
+
+.light-theme .event-container {
+  -fx-background-color: #f3f5f7;
+}
+
+.light-theme .event-scroll-pane {
+  -fx-background-color: #f3f5f7;
+}
+
+.light-theme .event-scroll-pane > .viewport {
+  -fx-background-color: #f3f5f7;
+}
+
+.light-theme .no-events-label {
+  -fx-text-fill: #666;
+}
+
+/* Hero area */
+.hero-area {
+  -fx-background-image: url("/images/1745054281210_67ba1ad5706d7-bg.jpg");
+  -fx-padding: 20px;
+}
+
+.hero-title {
+  -fx-font-size: 24px;
+  -fx-font-weight: bold;
+  -fx-text-fill: white;
+}
+
+.hero-subtitle {
+  -fx-font-size: 16px;
+  -fx-text-fill: #ccc;
+}
+
+.search-form {
+  -fx-spacing: 10px;
+  -fx-padding: 10px 0;
+}
+
+.search-input, .search-combo {
+  -fx-background-color: #2c2c2c;
+  -fx-text-fill: white;
+  -fx-prompt-text-fill: #aaa;
+  -fx-border-color: #444;
+  -fx-border-radius: 5px;
+  -fx-background-radius: 5px;
+  -fx-padding: 8px 15px;
+}
+
+/* Toggle Buttons */
+.toggle-button {
+  -fx-background-color: #6c757d;
+  -fx-text-fill: white;
+  -fx-padding: 8px 15px;
+  -fx-background-radius: 5px;
+  -fx-cursor: hand;
+}
+
+.toggle-button:hover {
+  -fx-opacity: 0.9;
+}
+
+/* Event container */
+.event-container {
+  -fx-padding: 20px;
+  -fx-spacing: 20px;
+  -fx-background-color: #110f16;
+  -fx-alignment: center;
+}
+
+.event-scroll-pane {
+  -fx-background-color: #110f16;
+  -fx-padding: 10px;
+}
+
+.event-scroll-pane > .viewport {
+  -fx-background-color: #110f16;
+}
+
+/* Postcard Styles */
+.postcard {
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);
+  -fx-background-radius: 10px;
+  -fx-border-radius: 10px;
+  -fx-min-height: 180px;
+  -fx-max-width: 900px;
+  -fx-pref-width: 800px;
+}
+
+.postcard.dark {
+  -fx-background-color: #18151f;
+}
+
+.postcard.light {
+  -fx-background-color: #e1e5ea;
+}
+
+.t-dark {
+  -fx-text-fill: #18151f;
+}
+
+/* Postcard Image */
+.postcard__img {
+  -fx-max-height: 180px;
+  -fx-max-width: 300px;
+  -fx-background-radius: 10px 0 0 10px;
+}
+
+.postcard__img_link {
+  -fx-min-width: 300px;
+  -fx-background-radius: 10px 0 0 10px;
+}
+
+/* Postcard Text Content */
+.postcard__text {
+  -fx-spacing: 10px;
+  -fx-padding: 30px;
+  -fx-background-radius: 0 10px 10px 0;
+}
+
+.light .postcard__text {
+  -fx-padding: 30px 35px;
+}
+
+/* Title */
+.postcard__title {
+  -fx-font-size: 22px;
+  -fx-font-weight: bold;
+  -fx-underline: false;
+  -fx-border-color: transparent;
+}
+
+.dark .postcard__title {
+  -fx-text-fill: white;
+}
+
+.light .postcard__title {
+  -fx-text-fill: #333;
+}
+
+.postcard__title:hover {
+  -fx-underline: false;
+  -fx-border-color: transparent;
+}
+
+.blue .postcard__title:hover {
+  -fx-text-fill: -main-blue;
+}
+
+.red .postcard__title:hover {
+  -fx-text-fill: -main-red;
+}
+
+.green .postcard__title:hover {
+  -fx-text-fill: -main-green;
+}
+
+.yellow .postcard__title:hover {
+  -fx-text-fill: -main-yellow;
+}
+
+/* Subtitle */
+.dark .postcard__subtitle {
+  -fx-text-fill: #aaa;
+}
+
+.light .postcard__subtitle {
+  -fx-text-fill: #666;
+}
+
+.small {
+  -fx-font-size: 80%;
+}
+
+/* Font Awesome icons */
+.dark .fas {
+  -fx-font-family: "FontAwesome";
+  -fx-text-fill: #aaa;
+  -fx-font-size: 14px;
+}
+
+.light .fas {
+  -fx-font-family: "FontAwesome";
+  -fx-text-fill: #888;
+  -fx-font-size: 14px;
+}
+
+/* Decorative bar */
+.postcard__bar {
+  -fx-pref-width: 50px;
+  -fx-pref-height: 10px;
+  -fx-background-radius: 5px;
+  -fx-background-color: #424242;
+}
+
+.blue .postcard__bar {
+  -fx-background-color: -main-blue;
+}
+
+.red .postcard__bar {
+  -fx-background-color: -main-red;
+}
+
+.green .postcard__bar {
+  -fx-background-color: -main-green;
+}
+
+.yellow .postcard__bar {
+  -fx-background-color: -main-yellow;
+}
+
+/* Preview text */
+.dark .postcard__preview-txt {
+  -fx-wrap-text: true;
+  -fx-text-alignment: justify;
+  -fx-text-fill: #eee;
+}
+
+.light .postcard__preview-txt {
+  -fx-wrap-text: true;
+  -fx-text-alignment: justify;
+  -fx-text-fill: #555;
+}
+
+/* Tag items */
+.postcard__tagbox {
+  -fx-spacing: 5px;
+  -fx-padding: 10px 0 0 0;
+}
+
+.dark .tag__item {
+  -fx-padding: 5px 10px;
+  -fx-background-radius: 3px;
+  -fx-font-size: 14px;
+  -fx-text-fill: #ddd;
+  -fx-background-color: rgba(83, 83, 83, 0.4);
+}
+
+.light .tag__item {
+  -fx-padding: 5px 10px;
+  -fx-background-radius: 3px;
+  -fx-font-size: 14px;
+  -fx-text-fill: #333;
+  -fx-background-color: rgba(180, 180, 180, 0.3);
+}
+
+.dark .tag__item:hover {
+  -fx-background-color: rgba(83, 83, 83, 0.8);
+  -fx-cursor: hand;
+}
+
+.light .tag__item:hover {
+  -fx-background-color: rgba(180, 180, 180, 0.6);
+  -fx-cursor: hand;
+}
+
+/* Play button */
+.play {
+  -fx-underline: false;
+  -fx-border-color: transparent;
+}
+
+.blue .play:hover {
+  -fx-background-color: -main-blue;
+  -fx-text-fill: white;
+}
+
+.red .play:hover {
+  -fx-background-color: -main-red;
+  -fx-text-fill: white;
+}
+
+.green .play:hover {
+  -fx-background-color: -main-green;
+  -fx-text-fill: black;
+}
+
+.yellow .play:hover {
+  -fx-background-color: -main-yellow;
+  -fx-text-fill: black;
+}
+
+/* More button */
+.more-button {
+  -fx-background-color: #0076bd;
+  -fx-text-fill: white;
+  -fx-padding: 10px 20px;
+  -fx-background-radius: 5px;
+  -fx-cursor: hand;
+}
+
+.more-button:hover {
+  -fx-background-color: derive(#0076bd, -10%);
+}
+
+/* No events label */
+.no-events-label {
+  -fx-font-size: 18px;
+  -fx-text-fill: #aaa;
+  -fx-padding: 20px;
+}
+
+/* Card styles for even/odd index - implemented programmatically instead of with ::before pseudo-elements */
+.postcard-bg-blue {
+  -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, -main-blue-rgb-015, transparent);
+}
+
+.postcard-bg-red {
+  -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, -main-red-rgb-015, transparent);
+}
+
+.postcard-bg-green {
+  -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, -main-green-rgb-015, transparent);
+}
+
+.postcard-bg-yellow {
+  -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, -main-yellow-rgb-015, transparent);
+}

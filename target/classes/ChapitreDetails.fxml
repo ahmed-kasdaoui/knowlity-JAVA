@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="root" prefHeight="800.0" prefWidth="1000.0" style="-fx-background-color: linear-gradient(to bottom, #f3f4f6, #e3e4e8);" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChapitreDetailsController">
+    <children>
+        <!-- Navigation Bar from ListeCoursControllerEtudiant -->
+        <HBox alignment="CENTER_LEFT" spacing="30" style="-fx-background-color: linear-gradient(to right, #c9eaff, #eaf6ff); -fx-padding: 15; -fx-border-width: 0 0 2 0; -fx-border-color: #b3d1f5; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+            <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #002244; -fx-font-family: 'Segoe UI', sans-serif;" text="Knowlity App pour les enseignant" textFill="#436839">
+                <font>
+                    <Font name="Blackadder ITC" size="12.0" />
+                </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <HBox alignment="CENTER" spacing="20">
+                <MenuButton style="-fx-background-color: rgba(255,255,255,0.6); -fx-text-fill: #002557; -fx-font-size: 17px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 18;" text="les Cours">
+                    <items>
+                        <MenuItem fx:id="mesOffresItem" onAction="#handleListes" style="-fx-font-size: 16px; -fx-text-fill: #002244;" text=" Mes favoris" />
+                        <MenuItem fx:id="autresOffresItem" onAction="#handleListes" style="-fx-font-size: 16px; -fx-text-fill: #002244;" text=" mes cours" />
+                    </items>
+                </MenuButton>
+                <Button onAction="#handleListes" style="-fx-background-color: rgba(255,255,255,0.6); -fx-text-fill: #002244; -fx-font-size: 17px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 20;" text="📋 Listes">
+                    <effect>
+                        <DropShadow color="#d0e5ff" radius="4" />
+                    </effect>
+                </Button>
+            </HBox>
+        </HBox>
+
+        <!-- Main Content -->
+        <VBox fx:id="mainBox" alignment="CENTER" spacing="30.0" style="-fx-background-color: white; -fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 40; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 5);" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="115.0">
+            <children>
+                <!-- Header -->
+                <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: linear-gradient(to right, #8eb1ff, #2575fc); -fx-padding: 20; -fx-border-radius: 20; -fx-background-radius: 20;">
+                    <children>
+                        <Label fx:id="titleLabel" style="-fx-font-family: 'Sans Serif Extra Bold'; -fx-font-size: 30; -fx-text-fill: black;" text="Titre du chapitre" />
+                        <HBox HBox.hgrow="ALWAYS" />
+                        <Label style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: #1e40af; -fx-padding: 5 10; -fx-background-radius: 10;" text="Chapitre #">
+                            <graphic>
+                                <Label fx:id="orderLabel" style="-fx-text-fill: white;" text="0" />
+                            </graphic>
+                        </Label>
+                    </children>
+                </HBox>
+
+                <!-- Body -->
+                <VBox spacing="30" style="-fx-padding: 20;">
+                    <GridPane hgap="30" style="-fx-padding: 20;" vgap="25">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50.0" />
+                            <ColumnConstraints percentWidth="50.0" />
+                        </columnConstraints>
+
+                        <!-- Details -->
+                        <VBox spacing="20" style="-fx-padding: 10;" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #4b5563;" text="Détails du chapitre" />
+                            <GridPane hgap="20" vgap="20">
+                                <Label style="-fx-font-size: 16; -fx-text-fill: #6b7280;" text="Titre" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <Label fx:id="titleDetailLabel" style="-fx-font-size: 16; -fx-text-fill: #1f2937;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                <Label style="-fx-font-size: 16; -fx-text-fill: #6b7280;" text="Ordre" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <Label fx:id="orderDetailLabel" style="-fx-font-size: 16; -fx-text-fill: #1f2937;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <columnConstraints>
+                           <ColumnConstraints />
+                           <ColumnConstraints />
+                        </columnConstraints>
+                        <rowConstraints>
+                           <RowConstraints />
+                           <RowConstraints />
+                        </rowConstraints>
+                            </GridPane>
+                        </VBox>
+
+                        <!-- PDF Section -->
+                        <VBox spacing="20" style="-fx-padding: 10;" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #4b5563;" text="Contenu" />
+                            <VBox spacing="20" style="-fx-border-color: #d1d5db; -fx-border-radius: 10; -fx-background-color: #f9fafb; -fx-background-radius: 10; -fx-padding: 20;">
+                                <HBox alignment="CENTER_LEFT" spacing="20">
+                                    <Button fx:id="downloadPdfButton" onAction="#downloadPdfAction" style="-fx-background-color: #396ec7; -fx-text-fill: white; -fx-padding: 10 20; -fx-background-radius: 10;" text="Télécharger PDF" />
+                                    <Button fx:id="openPdfButton" onAction="#openPdfAction" style="-fx-border-color: #385491; -fx-text-fill: #7bbaef; -fx-padding: 10 20; -fx-border-radius: 10;" text="Ouvrir" />
+                                </HBox>
+                                <Label fx:id="contentLabel" style="-fx-text-fill: #9ca3af; -fx-font-size: 14;" text="Aucun PDF" />
+                            </VBox>
+                        </VBox>
+                  <rowConstraints>
+                     <RowConstraints />
+                  </rowConstraints>
+                    </GridPane>
+                </VBox>
+
+                <!-- Footer -->
+                <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: linear-gradient(to right, #7bbaef, #009ffd); -fx-padding: 20; -fx-border-radius: 20; -fx-background-radius: 20;">
+                    <Button fx:id="backButton" onAction="#backAction" style="-fx-border-color: white; -fx-text-fill: #1e40af; -fx-padding: 10 20; -fx-border-radius: 10;" text="Retour au cours" />
+                    <HBox HBox.hgrow="ALWAYS" />
+                    <Button fx:id="editButton" onAction="#editAction" style="-fx-background-color: #f9c369; -fx-text-fill: white; -fx-padding: 10 20; -fx-background-radius: 10;" text="Modifier" />
+                    <Button fx:id="deleteButton" onAction="#deleteAction" style="-fx-background-color: #de1616; -fx-text-fill: white; -fx-padding: 10 20; -fx-background-radius: 10;" text="Supprimer" />
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+    <stylesheets>
+        <URL value="@/css/cours.css" />
+    </stylesheets>
+</AnchorPane>
