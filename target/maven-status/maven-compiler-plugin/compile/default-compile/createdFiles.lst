@@ -1,4 +1,5 @@
 controllers\EventDetailsController$MapBridge.class
+controllers\StatsEventsController.class
 tn\esprit\interfaces\EventControllerInterface.class
 controllers\NewEventRegistrationFormController.class
 tn\esprit\test\TestEventRegistrationList.class
@@ -12,4 +13,5 @@ controllers\EventRegistrationListController.class
 controllers\EventListController.class
 controllers\ChatbotController.class
 controllers\ChatbotController$ChatMessage.class
+controllers\EventListController$1.class
 controllers\EditEventRegistrationController.class

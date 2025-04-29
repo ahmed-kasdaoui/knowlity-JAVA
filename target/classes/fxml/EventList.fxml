@@ -50,14 +50,15 @@
                                 <Tooltip text="Add New Event" />
                             </tooltip>
                         </Button>
-                        <Button fx:id="exportPdfButton" cache="true" cacheHint="QUALITY" contentDisplay="GRAPHIC_ONLY" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="round" text="Export PDF">
+                        <!-- Bouton Statistiques (Nouveau Style) -->
+                        <Button text="📊" fx:id="statistiquesBtn" cache="true" cacheHint="QUALITY" contentDisplay="GRAPHIC_ONLY" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" styleClass="round" onAction="#afficherStats">
                             <graphic>
-                                <SVGPath content="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" mouseTransparent="true" style="-fx-fill: white;" />
-                            </graphic>
+                                <SVGPath content="M2 20 L22 20 M5 20 V8.2 A0.2 0.2 0 0 1 5.2 8 H7.8 A0.2 0.2 0 0 1 8 8.2 V20 M11 20 V4.26667 C11 4.11939 11.08954 4 11.2 4 H13.8 C13.91046 4 14 4.11939 14 4.26667 V20 M17 20 V11.15 C17 11.06716 17.08954 11 17.2 11 H19.8 C19.91046 11 20 11.06716 20 11.15 V20" mouseTransparent="true" style="-fx-stroke: white; -fx-stroke-width: 1.5; -fx-fill: none;" />                            </graphic>
                             <tooltip>
-                                <Tooltip text="Export PDF" />
+                                <Tooltip text="Statistics" />
                             </tooltip>
                         </Button>
+
                         <TextField fx:id="searchField" prefHeight="40.0" promptText="Search" HBox.hgrow="ALWAYS">
                             <styleClass>
                                 <String fx:value="field-outlined" />

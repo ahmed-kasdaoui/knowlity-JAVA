@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Label?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.StatsEventsController">
+
+    <Label layoutX="20" layoutY="20"
+           text="Events Statistics"
+           style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <BarChart fx:id="barChart" layoutX="20" layoutY="50"
+              prefWidth="560" prefHeight="400"
+              title="Partition By Max Participants and Places Available"
+              categoryGap="20" barGap="10">
+        <xAxis>
+            <CategoryAxis label="Events"/>
+        </xAxis>
+        <yAxis>
+            <NumberAxis label="Number Of Places"/>
+        </yAxis>
+    </BarChart>
+
+</AnchorPane>

@@ -12,6 +12,7 @@ C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\MapApplication.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\MapController.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\NewEventRegistrationFormController.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\ShowEventRegistrationController.java
+C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\StatsEventsController.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\controllers\UserEventRegistrationFormController.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\tn\esprit\interfaces\EventControllerInterface.java
 C:\xampp\htdocs\knowlity-JAVA\src\main\java\tn\esprit\interfaces\IService.java

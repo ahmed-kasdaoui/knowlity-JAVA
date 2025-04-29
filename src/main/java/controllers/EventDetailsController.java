@@ -259,7 +259,6 @@ public class EventDetailsController {
 
     // Bridge class for Java-JavaScript communication
     public class MapBridge {
-        // Method that can be called from JavaScript
         public void reportMapStatus(String status) {
             System.out.println("Map status: " + status);
         }

@@ -148,9 +148,7 @@ public class EventRegistrationListController {
             deleteIcon.getStyleClass().add("icon");
             deleteRowButton.setGraphic(deleteIcon);
             deleteRowButton.setTooltip(new Tooltip("Delete Registration"));
-            deleteRowButton.setOnAction(e -> {
-                selectedRegistration = registration;
-            });
+            deleteRowButton.setOnAction(e -> delete(registration));
 
             actionBox.getChildren().addAll(showButton, deleteRowButton);
 
@@ -164,6 +162,25 @@ public class EventRegistrationListController {
                 row++;
             }
         }
+    }
+
+    private void delete(EventRegistration registration) {
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Delete Confirmation");
+        confirmAlert.setHeaderText("Are you sure you want to delete this registration?");
+        confirmAlert.setContentText("This registration will be deleted.\nAre you sure you want to continue?");
+        confirmAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        confirmAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    serviceEventRegistration.delete(registration);
+                    registrationsList.remove(registration);
+                    showAlert(Alert.AlertType.INFORMATION, "Success", "Registration deleted successfully.");
+                } catch (Exception e) {
+                    showAlert(Alert.AlertType.ERROR, "Error", "Failed to delete registration: " + e.getMessage());
+                }
+            }
+        });
     }
 
 

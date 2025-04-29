@@ -1,39 +1,34 @@
 package controllers;
 
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.properties.UnitValue;
-import com.itextpdf.kernel.colors.ColorConstants;
-import com.itextpdf.kernel.colors.DeviceRgb;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
-import com.itextpdf.kernel.geom.PageSize;
-import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.borders.SolidBorder;
-import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.properties.TextAlignment;
-import com.itextpdf.layout.properties.VerticalAlignment;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
+import javafx.stage.Stage;
 import tn.esprit.models.Events;
 import tn.esprit.services.ServiceEvents;
+import tn.esprit.services.ServiceEventRegistration;
+import tn.esprit.models.EventRegistration;
 
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Properties;
 
 public class EventListController {
 
@@ -44,16 +39,17 @@ public class EventListController {
     @FXML
     private Button addButton;
     @FXML
-    private Button exportPdfButton;
-    @FXML
     private GridPane eventsGrid;
 
     private final ServiceEvents serviceEvents;
+    private final ServiceEventRegistration serviceEventRegistration;
+    private List<EventRegistration> eventRegistration;
     private ObservableList<Events> eventsList;
     private ObservableList<Events> filteredEventsList;
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public EventListController() {
+        this.serviceEventRegistration = new ServiceEventRegistration();
         this.serviceEvents = new ServiceEvents();
     }
 
@@ -73,7 +69,6 @@ public class EventListController {
         // Set up buttons
         Registrationsbtn.setOnAction(event -> navigateToRegistration());
         addButton.setOnAction(event -> navigateToAdd());
-        exportPdfButton.setOnAction(event -> exportToPdf());
     }
 
 
@@ -192,16 +187,29 @@ public class EventListController {
     }
 
     private void deleteEvent(Events event) {
+        eventRegistration=serviceEventRegistration.getByEvent(event.getId());
+        int confirmed=0;
+        for (EventRegistration registration : eventRegistration){
+            if (registration.getStatus().equalsIgnoreCase("confirmed")){
+                confirmed++;
+            }
+        }
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmAlert.setTitle("Delete Confirmation");
         confirmAlert.setHeaderText("Are you sure you want to delete this event?");
-        confirmAlert.setContentText("Event: " + event.getTitle());
+        confirmAlert.setContentText("Event: " + event.getTitle() + "\nThis event have "+eventRegistration.size()+" registrations( "+confirmed+" Confirmed) .");
         confirmAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 
         confirmAlert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 try {
                     serviceEvents.delete(event);
+                    for (EventRegistration registration : eventRegistration){
+                        serviceEventRegistration.delete(registration);
+                        if (registration.getStatus().equalsIgnoreCase("confirmed")){
+                            sendEmail(registration,event);
+                        }
+                    }
                     eventsList.remove(event);
                     filterEvents(searchField.getText());
                     showAlert(Alert.AlertType.INFORMATION, "Success", "Event deleted successfully.");
@@ -212,112 +220,66 @@ public class EventListController {
         });
     }
 
-    private void exportToPdf() {
+
+    private void sendEmail(EventRegistration registration, Events event) {
+        final String username = "najd.rahmani1@gmail.com";
+        final String password = "mdbr dblk wjjb wfot";
+        String mail="najd.rahmani1@gmail.com";
+
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        // Create a session with authentication
+        Session session = Session.getInstance(props, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+
         try {
-            File file = new File("events_report.pdf");
-            PdfWriter writer = new PdfWriter(file);
-            PdfDocument pdf = new PdfDocument(writer);
-            Document document = new Document(pdf, PageSize.A4);
+            // Create a new email message
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mail));
+            message.setSubject("Subject: Cancellation Notice for " + event.getTitle());
 
-            // Colors
-            DeviceRgb LIGHT_BLUE = new DeviceRgb(173, 216, 230);
-            DeviceRgb DARK_BLUE = new DeviceRgb(70, 130, 180);
+            // Create the email body
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            String emailBody = String.format(
+                            "Dear %s,\n\n" +
+                            "We regret to inform you that the event '%s' scheduled for %s at %s has been cancelled.\n\n" +
+                            "We apologize for any inconvenience this may cause. If you have any questions or need further assistance, please contact our Event Management Team.\n\n" +
+                            "Thank you for your understanding.\n\n" +
+                            "Best regards,\nEvent Management Team",
+                    registration.getName(),
+                    event.getTitle(),
+                    event.getStartDate() != null ? event.getStartDate().format(dateFormatter) : "N/A",
+                    event.getLocation() != null ? event.getLocation() : "N/A"
+            );
+            messageBodyPart.setText(emailBody);
 
-            // Font
-            PdfFont font = PdfFontFactory.createFont("Helvetica");
-            PdfFont boldFont = PdfFontFactory.createFont("Helvetica-Bold");
 
-            // Title page
-            document.add(new Paragraph("Events Report")
-                    .setFont(boldFont)
-                    .setFontSize(24)
-                    .setFontColor(DARK_BLUE)
-                    .setTextAlignment(TextAlignment.CENTER)
-                    .setMarginTop(100));
+            // Create a multipart message to combine body and attachment
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messageBodyPart);
 
-            document.add(new Paragraph("Generated on: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
-                    .setFont(font)
-                    .setFontSize(12)
-                    .setFontColor(ColorConstants.GRAY)
-                    .setTextAlignment(TextAlignment.CENTER)
-                    .setMarginBottom(20));
+            // Set the multipart content to the message
+            message.setContent(multipart);
 
-            document.add(new Paragraph("Event Management System")
-                    .setFont(font)
-                    .setFontSize(14)
-                    .setFontColor(DARK_BLUE)
-                    .setTextAlignment(TextAlignment.CENTER));
+            // Send the email
+            Transport.send(message);
 
-            // Add new page for table
-            pdf.addNewPage();
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Confirmation email sent to " + "najd.rahmani1@gmail.com");
 
-            // Create table
-            float[] columnWidths = {150, 100, 80};
-            Table table = new Table(UnitValue.createPointArray(columnWidths))
-                    .setWidth(UnitValue.createPercentValue(100))
-                    .setMarginTop(20);
-
-            // Header cells
-            String[] headers = {"Title", "Start Date", "Category"};
-            for (String header : headers) {
-                table.addHeaderCell(new Cell()
-                        .add(new Paragraph(header)
-                                .setFont(boldFont)
-                                .setFontSize(10)
-                                .setFontColor(ColorConstants.WHITE))
-                        .setBackgroundColor(DARK_BLUE)
-                        .setBorder(new SolidBorder(ColorConstants.WHITE, 1))
-                        .setPadding(8)
-                        .setTextAlignment(TextAlignment.CENTER)
-                        .setVerticalAlignment(VerticalAlignment.MIDDLE));
-            }
-
-            // Data rows
-            boolean alternate = false;
-            for (Events event : eventsList) {
-                table.addCell(new Cell()
-                        .add(new Paragraph(event.getTitle() != null ? event.getTitle() : "N/A")
-                                .setFont(font)
-                                .setFontSize(9))
-                        .setBackgroundColor(alternate ? ColorConstants.WHITE : LIGHT_BLUE)
-                        .setBorder(new SolidBorder(ColorConstants.LIGHT_GRAY, 0.5f))
-                        .setPadding(6));
-
-                table.addCell(new Cell()
-                        .add(new Paragraph(event.getStartDate() != null ? event.getStartDate().format(dateFormatter) : "N/A")
-                                .setFont(font)
-                                .setFontSize(9))
-                        .setBackgroundColor(alternate ? ColorConstants.WHITE : LIGHT_BLUE)
-                        .setBorder(new SolidBorder(ColorConstants.LIGHT_GRAY, 0.5f))
-                        .setPadding(6));
-
-                table.addCell(new Cell()
-                        .add(new Paragraph(event.getCategory() != null ? event.getCategory() : "N/A")
-                                .setFont(font)
-                                .setFontSize(9))
-                        .setBackgroundColor(alternate ? ColorConstants.WHITE : LIGHT_BLUE)
-                        .setBorder(new SolidBorder(ColorConstants.LIGHT_GRAY, 0.5f))
-                        .setPadding(6));
-
-                alternate = !alternate;
-            }
-
-            document.add(table);
-
-            // Footer
-            document.add(new Paragraph("Page " + pdf.getNumberOfPages())
-                    .setFont(font)
-                    .setFontSize(8)
-                    .setFontColor(ColorConstants.GRAY)
-                    .setTextAlignment(TextAlignment.RIGHT)
-                    .setMarginTop(20));
-
-            document.close();
-            showAlert(Alert.AlertType.INFORMATION, "Success", "PDF exported successfully to events_report.pdf");
-        } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Export Error", "Failed to export PDF: " + e.getMessage());
+        } catch (MessagingException e) {
+            showAlert(Alert.AlertType.ERROR, "Email Error", "Failed to send email: " + e.getMessage());
         }
     }
+
 
     private void showAlert(Alert.AlertType type, String title, String content) {
         Alert alert = new Alert(type);
@@ -326,5 +288,22 @@ public class EventListController {
         alert.setContentText(content);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void afficherStats() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/fxml/StatsEvents.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Events Statistics");
+            stage.setScene(new Scene(root, 600, 500));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Email Error", "Failed to send email: " + e.getMessage());
+        }
     }
 }

@@ -49,7 +49,7 @@ public class ChatbotController {
         Events event;
         ServiceEventRegistration serviceEventRegistration = new ServiceEventRegistration();
         List<EventRegistration> eventRegistrations = serviceEventRegistration.getAll();
-        eventRegistrations=serviceEventRegistration.getByUserId(4);
+        eventRegistrations=serviceEventRegistration.getByUserId(1);
         String registration= "list of events :";
         for (EventRegistration eventRegistration : eventRegistrations) {
             event = eventRegistration.getEvent();
