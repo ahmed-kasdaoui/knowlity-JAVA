@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 
-<StackPane fx:id="root" prefHeight="634.0" prefWidth="817.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EventFormController">
+<StackPane fx:id="root" alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EventFormController">
     <stylesheets>
         <URL value="@/css/colors.css" />
         <URL value="@/css/skeleton.css" />
@@ -29,13 +29,13 @@
         <URL value="@/css/helpers.css" />
     </stylesheets>
     <children>
-        <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="508.0" prefWidth="665.0">
+        <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="Infinity" maxWidth="Infinity">
             <content>
-                <VBox alignment="CENTER" maxWidth="999.0" prefHeight="552.0" prefWidth="723.0" spacing="20" styleClass="get-in-touch">
+                <VBox alignment="CENTER" maxWidth="Infinity" spacing="20" styleClass="get-in-touch">
                     <padding>
                         <Insets bottom="50" left="20" right="20" top="50" />
                     </padding>
-                    <HBox prefHeight="516.0" prefWidth="719.0">
+                    <HBox alignment="CENTER_LEFT" maxWidth="Infinity">
                         <children>
                             <Button fx:id="backToEventsButton" contentDisplay="GRAPHIC_ONLY" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Back to Events">
                                 <styleClass>
@@ -52,7 +52,7 @@
                         </children>
                     </HBox>
                     <Label styleClass="h4" text="Create Event" />
-                    <GridPane fx:id="formGrid" hgap="10" prefHeight="542.0" prefWidth="909.0" styleClass="contact-form" vgap="10">
+                    <GridPane fx:id="formGrid" hgap="10" maxWidth="Infinity" styleClass="contact-form" vgap="10">
                         <columnConstraints>
                             <ColumnConstraints halignment="LEFT" percentWidth="50.0" />
                             <ColumnConstraints halignment="LEFT" percentWidth="50.0" />
@@ -61,14 +61,14 @@
                             <VBox alignment="CENTER_LEFT" GridPane.rowIndex="1">
                                 <children>
                                     <Label fx:id="titleLabel" text="Title" />
-                                    <TextField fx:id="titleField" promptText="Enter event title" />
+                                    <TextField fx:id="titleField" maxWidth="Infinity" promptText="Enter event title" />
                                     <Label fx:id="titleErrorLabel" managed="false" styleClass="Red" visible="false" />
                                 </children>
                             </VBox>
                             <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                 <children>
                                     <Label fx:id="descriptionLabel" text="Description" />
-                                    <TextArea fx:id="descriptionField" promptText="Enter event description" />
+                                    <TextArea fx:id="descriptionField" maxWidth="Infinity" promptText="Enter event description" />
                                     <Button fx:id="generateDescriptionButton" styleClass="btn" text="Generate AI Description" />
                                     <Label fx:id="descriptionErrorLabel" managed="false" styleClass="Red" visible="false" />
                                 </children>
@@ -76,63 +76,63 @@
                             <VBox GridPane.rowIndex="2">
                                 <children>
                                     <Label fx:id="startDateLabel" text="Start Date" />
-                                    <DatePicker fx:id="startDatePicker" promptText="Select start date" />
+                                    <DatePicker fx:id="startDatePicker" maxWidth="Infinity" promptText="Select start date" />
                                     <Label fx:id="startDateErrorLabel" managed="false" styleClass="Red" visible="false" />
                                 </children>
                             </VBox>
                             <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                 <children>
                                     <Label fx:id="endDateLabel" text="End Date" />
-                                    <DatePicker fx:id="endDatePicker" promptText="Select end date" />
+                                    <DatePicker fx:id="endDatePicker" maxWidth="Infinity" promptText="Select end date" />
                                     <Label fx:id="endDateErrorLabel" managed="false" styleClass="Red" visible="false" />
                                 </children>
                             </VBox>
                             <VBox alignment="CENTER_LEFT" GridPane.rowIndex="3">
                                 <children>
                                     <Label fx:id="typeLabel" text="Type" />
-                                    <ComboBox fx:id="typeCombo" promptText="Select type" />
+                                    <ComboBox fx:id="typeCombo" maxWidth="Infinity" promptText="Select type" />
                                     <Label fx:id="typeErrorLabel" managed="false" styleClass="Red" visible="false" />
                                 </children>
                             </VBox>
                             <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                 <children>
                                     <Label fx:id="maxParticipantsLabel" text="Max Participants" />
-                                    <TextField fx:id="maxParticipantsField" promptText="Enter max participants" />
+                                    <TextField fx:id="maxParticipantsField" maxWidth="Infinity" promptText="Enter max participants" />
                                     <Label fx:id="maxParticipantsErrorLabel" managed="false" styleClass="Red" visible="false" />
                                 </children>
                             </VBox>
                             <VBox alignment="CENTER_LEFT" GridPane.rowIndex="4">
                                 <children>
                                     <Label fx:id="seatsAvailableLabel" text="Seats Available" />
-                                    <TextField fx:id="seatsAvailableField" promptText="Enter seats available" />
+                                    <TextField fx:id="seatsAvailableField" maxWidth="Infinity" promptText="Enter seats available" />
                                     <Label fx:id="seatsAvailableErrorLabel" managed="false" styleClass="Red" visible="false" />
                                 </children>
                             </VBox>
                             <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                 <children>
                                     <Label fx:id="locationLabel" text="Location" />
-                                    <TextField fx:id="locationField" promptText="Enter event location" />
+                                    <TextField fx:id="locationField" maxWidth="Infinity" promptText="Enter event location" />
                                     <Label fx:id="locationErrorLabel" managed="false" styleClass="Red" visible="false" />
                                 </children>
                             </VBox>
                             <VBox alignment="CENTER_LEFT" GridPane.rowIndex="5">
                                 <children>
                                     <Label fx:id="categoryLabel" text="Category" />
-                                    <ComboBox fx:id="categoryCombo" promptText="Select category" />
+                                    <ComboBox fx:id="categoryCombo" maxWidth="Infinity" promptText="Select category" />
                                     <Label fx:id="categoryErrorLabel" managed="false" styleClass="Red" visible="false" />
                                 </children>
                             </VBox>
                             <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                 <children>
                                     <Label fx:id="latitudeLabel" text="Latitude" />
-                                    <TextField fx:id="latitudeField" promptText="Latitude" />
+                                    <TextField fx:id="latitudeField" maxWidth="Infinity" promptText="Latitude" />
                                     <Label fx:id="latitudeErrorLabel" managed="false" styleClass="Red" visible="false" />
                                 </children>
                             </VBox>
                             <VBox alignment="CENTER_LEFT" GridPane.rowIndex="6">
                                 <children>
                                     <Label fx:id="longitudeLabel" text="Longitude" />
-                                    <TextField fx:id="longitudeField" promptText="Longitude" />
+                                    <TextField fx:id="longitudeField" maxWidth="Infinity" promptText="Longitude" />
                                     <Label fx:id="longitudeErrorLabel" managed="false" styleClass="Red" visible="false" />
                                 </children>
                             </VBox>
