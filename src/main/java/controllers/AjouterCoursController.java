@@ -42,6 +42,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import org.vosk.LogLevel;
+import tn.knowlity.entity.User;
+import tn.knowlity.tools.UserSessionManager;
 
 public class AjouterCoursController {
 
@@ -95,6 +97,9 @@ public class AjouterCoursController {
     private volatile TargetDataLine currentLine;
     private volatile Model currentModel;
     private volatile Recognizer currentRecognizer;
+    private User user = UserSessionManager.getInstance().getCurrentUser();
+    private final int DEFAULT_USER_ID = user.getId();
+
 
     public AjouterCoursController() {
         this.serviceCours = new ServiceCours();
@@ -565,6 +570,7 @@ public class AjouterCoursController {
             // Create Cours
             Cours cours = new Cours();
             cours.setTitle(title);
+            cours.setEnseignant(user);
             cours.setDescription(description);
             cours.setUrlImage(imagePath);
             cours.setMatiere(matiere);

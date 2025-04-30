@@ -1,5 +1,6 @@
 package controllers;
 
+import com.esprit.knowlity.controller.teacher.TeacherController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -458,4 +459,20 @@ public class CourseDetailsController {
         }
     }
 
+    public void handleevaluation(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esprit/knowlity/view/teacher/teacher.fxml"));
+            Parent root = loader.load();
+            TeacherController controller = loader.getController();
+
+            controller.setCourse(course);
+
+
+
+            mainBox.getScene().setRoot(root);
+        } catch (IOException e) {
+            System.err.println("Failed to load EditChapitre.fxml: " + e.getMessage());
+            showAlert("Erreur", "Impossible de charger le formulaire d'ajout.", Alert.AlertType.ERROR);
+        }
+    }
 }

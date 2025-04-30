@@ -163,6 +163,6 @@
     </StackPane>
 
     <stylesheets>
-        <URL value="@/css/cours.css" />
+        <URL value="@css/cours.css" />
     </stylesheets>
 </AnchorPane>

@@ -20,6 +20,9 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import tn.esprit.models.Cours;
 import tn.esprit.services.ServiceCours;
+import javafx.scene.shape.Circle;
+import tn.knowlity.entity.User;
+import tn.knowlity.tools.UserSessionManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,10 +65,15 @@ public class ListeCoursController {
     @FXML
     private TextField searchField;
 
+    @FXML private Circle circle1, circle2, circle3, circle4, circle5, circle6;
+    @FXML private Circle circle7, circle8, circle9, circle10, circle11, circle12;
+
     private ServiceCours serviceCours = new ServiceCours();
     private int visibleCourses = 0;
     private final int COURSES_PER_LOAD = 6;
     private SequentialTransition cardsEntryAnimation;
+    private User user = UserSessionManager.getInstance().getCurrentUser();
+    private final int DEFAULT_USER_ID = user.getId();
 
     private List<Cours> allCourses = new ArrayList<>();
     private List<Cours> filteredCourses = new ArrayList<>();
@@ -83,7 +91,7 @@ public class ListeCoursController {
         animateHeader();
 
         // Initialiser les listes de cours
-        allCourses = serviceCours.getAll();
+        allCourses = serviceCours.getByEnsignant(user.getId());
         filteredCourses.addAll(allCourses);
 
         // Initialiser les matières dans le filterChoiceBox
@@ -100,6 +108,8 @@ public class ListeCoursController {
 
         // Charger les cours initiaux
         refreshCoursesGrid();
+
+        animateBackgroundCircles();
     }
 
     private void prepareMainContentAnimation() {
@@ -126,24 +136,25 @@ public class ListeCoursController {
     private void animateHeader() {
         // Trouver les éléments du header
         HBox headerBox = (HBox) mainBox.getChildren().get(0);
-        Label titleLabel = (Label) headerBox.getChildren().get(0);
+        StackPane titleContainer = (StackPane) headerBox.getChildren().get(0);
+        Label titleLabel = (Label) titleContainer.getChildren().get(0);
         Button createBtn = (Button) headerBox.getChildren().get(1);
 
         // Configurer l'état initial
-        titleLabel.setOpacity(0);
-        titleLabel.setTranslateY(-50);
+        titleContainer.setOpacity(0);
+        titleContainer.setTranslateY(-50);
         createBtn.setOpacity(0);
         createBtn.setTranslateY(-50);
 
         // Animation du titre
         Timeline titleAnim = new Timeline(
                 new KeyFrame(Duration.ZERO,
-                        new KeyValue(titleLabel.opacityProperty(), 0),
-                        new KeyValue(titleLabel.translateYProperty(), -50)
+                        new KeyValue(titleContainer.opacityProperty(), 0),
+                        new KeyValue(titleContainer.translateYProperty(), -50)
                 ),
                 new KeyFrame(Duration.millis(800),
-                        new KeyValue(titleLabel.opacityProperty(), 1, Interpolator.EASE_OUT),
-                        new KeyValue(titleLabel.translateYProperty(), 0, Interpolator.EASE_OUT)
+                        new KeyValue(titleContainer.opacityProperty(), 1, Interpolator.EASE_OUT),
+                        new KeyValue(titleContainer.translateYProperty(), 0, Interpolator.EASE_OUT)
                 )
         );
 
@@ -658,5 +669,31 @@ public class ListeCoursController {
             System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private void animateBackgroundCircles() {
+        createCircleTransition(circle1, 0, 0, 100, -50, 3);
+        createCircleTransition(circle2, 0, 0, -100, 50, 4);
+        createCircleTransition(circle3, 200, 0, 300, 100, 3);
+        createCircleTransition(circle4, 300, 0, 400, -75, 4);
+        createCircleTransition(circle5, -100, 0, 0, 50, 3);
+        createCircleTransition(circle6, 150, 0, 200, -50, 4);
+        createCircleTransition(circle7, 600, 0, 700, -50, 3);
+        createCircleTransition(circle8, 700, 0, 800, 100, 4);
+        createCircleTransition(circle9, 800, 0, 900, -75, 3);
+        createCircleTransition(circle10, 900, 0, 950, 50, 4);
+        createCircleTransition(circle11, 1000, 0, 1100, -50, 3);
+        createCircleTransition(circle12, 950, 0, 1050, 75, 4);
+    }
+
+    private void createCircleTransition(Circle circle, double fromX, double fromY, double toX, double toY, double seconds) {
+        TranslateTransition transition = new TranslateTransition(Duration.seconds(seconds), circle);
+        transition.setFromX(fromX);
+        transition.setFromY(fromY);
+        transition.setToX(toX);
+        transition.setToY(toY);
+        transition.setAutoReverse(true);
+        transition.setCycleCount(TranslateTransition.INDEFINITE);
+        transition.play();
     }
 }

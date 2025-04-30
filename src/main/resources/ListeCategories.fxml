@@ -9,7 +9,7 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="controllers.ListeCategoriesController"
-      stylesheets="@./css/categories.css"
+      stylesheets="@css/categories.css"
       spacing="20">
 
     <!-- Header Section -->

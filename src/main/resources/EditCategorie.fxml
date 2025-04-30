@@ -145,6 +145,6 @@
         <Button layoutY="2.0" mnemonicParsing="false" text="←" onAction="#RetourAction"/>
     </children>
     <stylesheets>
-        <URL value="@/styles/forms2.css" />
+        <URL value="@styles/forms2.css" />
     </stylesheets>
 </AnchorPane>

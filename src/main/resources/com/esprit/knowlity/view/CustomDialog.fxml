@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.text.Text?>
+<StackPane fx:id="rootPane" prefHeight="300.0" prefWidth="500.0" styleClass="custom-dialog-root" stylesheets="@../../../../style/customdialog.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esprit.knowlity.controller.CustomDialogController">
+    <VBox alignment="CENTER" spacing="25.0" styleClass="custom-dialog-vbox">
+        <ImageView fx:id="iconView" fitHeight="80.0" fitWidth="80.0" styleClass="custom-dialog-icon" />
+        <Label fx:id="titleLabel" styleClass="custom-dialog-title" />
+        <Text fx:id="messageLabel" styleClass="custom-dialog-message"/>
+        <Button fx:id="okButton" styleClass="custom-dialog-ok-button" text="OK" />
+    </VBox>
+</StackPane>

@@ -1,5 +1,9 @@
 package controllers;
 
+import jakarta.mail.*;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,8 +29,9 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
-import javax.mail.*;
-import javax.mail.internet.*;
+import tn.knowlity.entity.User;
+import tn.knowlity.tools.UserSessionManager;
+
 import java.awt.Desktop;
 import java.net.URI;
 import java.util.Properties;
@@ -63,9 +68,10 @@ public class CourseDetailsControllerEtudiant {
     private final ServiceCours serviceCours;
     private final ServiceInscription serviceInscription;
     private final ServiceFavoris serviceFavoris;
-    private static final int DEFAULT_USER_ID = 1;
-    private static final String GMAIL_USERNAME = "amennahali8@gmail.com";
-    private static final String GMAIL_PASSWORD = "vifntmdgfjgnqzen";
+    private User user = UserSessionManager.getInstance().getCurrentUser();
+    private final int DEFAULT_USER_ID = user.getId();
+    private static final String GMAIL_USERNAME = "chamseddinedoula7@gmail.com";
+    private static final String GMAIL_PASSWORD = "xlvmkpnbcrjbrysu";
 
     public CourseDetailsControllerEtudiant() {
         this.serviceCours = new ServiceCours();
@@ -81,6 +87,7 @@ public class CourseDetailsControllerEtudiant {
     }
 
     private void initializeUI() {
+
         if (course == null) {
             return;
         }
@@ -494,7 +501,7 @@ public class CourseDetailsControllerEtudiant {
             serviceInscription.inscrireEtudiant(DEFAULT_USER_ID, course.getId());
 
             // Envoyer l'email de confirmation
-            sendConfirmationEmail("chamseddinedoula7@gmail.com", course.getTitle());
+            sendConfirmationEmail(user.getEmail(), course.getTitle());
 
             // Mettre à jour l'interface
             updateEnrollButtonState();

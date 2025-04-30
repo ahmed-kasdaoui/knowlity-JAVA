@@ -165,6 +165,7 @@
 
 /* Section title styles */
 .section-title {
+
     -fx-font-size: 20px;
     -fx-font-weight: bold;
     -fx-text-fill: #2c3e50;

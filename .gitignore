@@ -11,7 +11,6 @@ target/
 *.iws
 *.iml
 *.ipr
-/models
 
 ### Eclipse ###
 .apt_generated
