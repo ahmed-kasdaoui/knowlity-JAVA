@@ -123,7 +123,7 @@ public class EventDetailsController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
 
         titleLabel.setText(event.getTitle());
-        categoryLabel.setText("Category: Event");
+        categoryLabel.setText(event.getCategory() != null ? event.getCategory() +" | "+ event.getType() : "N/A | "+event.getType() );
         dateLocationLabel.setText(event.getStartDate() != null ? event.getStartDate().format(formatter) + " | " + event.getLocation() : "TBD | " + event.getLocation());
         descriptionText.setText(event.getDescription());
         maxParticipantsLabel.setText(event.getMaxParticipants() != null ? event.getMaxParticipants() + "+ Seats" : "N/A");

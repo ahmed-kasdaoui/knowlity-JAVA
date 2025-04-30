@@ -1,10 +1,13 @@
 package controllers;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Tooltip;
+import javafx.scene.Node;
 import tn.esprit.services.ServiceEvents;
 import tn.esprit.models.Events;
 
@@ -34,13 +37,27 @@ public class StatsEventsController {
         seriesPlacesDisponibles.setName("Available Places");
 
         for (Events event : events) {
-            seriesMaxParticipants.getData().add(new XYChart.Data<>(event.getTitle().substring(0,5).concat("..."), event.getMaxParticipants()));
-            seriesPlacesDisponibles.getData().add(new XYChart.Data<>(event.getTitle().substring(0,5).concat("..."), event.getSeatsAvailable()));
+            String truncatedTitle = event.getTitle().substring(0, Math.min(5, event.getTitle().length())).concat("...");
+            seriesMaxParticipants.getData().add(new XYChart.Data<>(truncatedTitle, event.getMaxParticipants()));
+            seriesPlacesDisponibles.getData().add(new XYChart.Data<>(truncatedTitle, event.getSeatsAvailable()));
         }
 
         barChart.getData().addAll(seriesMaxParticipants, seriesPlacesDisponibles);
         barChart.setCategoryGap(20);
         barChart.setBarGap(10);
 
+        // Defer tooltip setup until the chart is rendered
+        Platform.runLater(() -> {
+            for (XYChart.Series<String, Number> series : barChart.getData()) {
+                for (XYChart.Data<String, Number> data : series.getData()) {
+                    Node node = data.getNode();
+                    if (node != null) {
+                        String fullTitle = events.get(barChart.getData().indexOf(series) * series.getData().size() + series.getData().indexOf(data)).getTitle();
+                        Tooltip tooltip = new Tooltip(fullTitle);
+                        Tooltip.install(node, tooltip);
+                    }
+                }
+            }
+        });
     }
 }

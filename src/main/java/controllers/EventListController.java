@@ -299,6 +299,7 @@ public class EventListController {
 
             Stage stage = new Stage();
             stage.setTitle("Events Statistics");
+            stage.setResizable(false);
             stage.setScene(new Scene(root, 600, 500));
             stage.show();
         } catch (IOException e) {

@@ -3,7 +3,11 @@
     Author     : Gleidson Neves da Silveira
     Colors for productivity
 */
-
+.tooltip {
+    -fx-font-size: 14px;
+    -fx-background-color: #333333;
+    -fx-text-fill: white;
+}
 .root {
 
     /* Bootstrap */
