@@ -7,14 +7,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="750" prefWidth="1200" style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #2b5876, #4e4376);" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esprit.knowlity.controller.student.EvaluationSelectController">
+<AnchorPane prefHeight="750" prefWidth="1200" style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #2b5876, #4e4376);" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esprit.knowlity.controller.student.EvaluationSelectController">
     <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <content>
             <VBox alignment="CENTER" minHeight="750" minWidth="1200" spacing="32.0" style="-fx-background-color: transparent;">
                 <Text style="-fx-font-size: 44px; -fx-fill: #ffffff; -fx-font-family: 'Segoe UI Black'; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, #185a9d, 2, 0.2, 0, 1); -fx-padding: 0 0 28 0;" text="Select Evaluation" />
-                <ScrollPane fx:id="evaluationScrollPane" fitToWidth="true" prefHeight="516.0" prefWidth="1200.0" style="-fx-background-color: transparent;">
+                <ScrollPane fx:id="evaluationScrollPane" fitToWidth="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="767.0" prefWidth="1431.0" style="-fx-background-color: transparent;">
                     <content>
-                        <VBox fx:id="evaluationCardContainer" alignment="TOP_CENTER" spacing="26" style="-fx-padding: 16 0 16 0;" />
+                        <VBox fx:id="evaluationCardContainer" alignment="TOP_CENTER" spacing="0" style="-fx-padding: 16 0 16 0;" />
                     </content>
                <VBox.margin>
                   <Insets right="25.0" />

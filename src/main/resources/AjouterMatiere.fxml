@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="root" prefHeight="841.0" prefWidth="800.0" styleClass="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterMatiereController">
+    <children>
+        <VBox fx:id="mainBox" alignment="CENTER" layoutX="50.0" layoutY="30.0" prefHeight="640.0" prefWidth="700.0" spacing="20.0" styleClass="glass-card" AnchorPane.bottomAnchor="51.0" AnchorPane.topAnchor="72.0">
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
+            <children>
+                <!-- Header -->
+                <HBox alignment="CENTER">
+                    <children>
+                        <Label styleClass="display-5" text="Créer une Matière">
+                            <font>
+                                <Font name="System Bold" size="32.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </HBox>
+
+                <!-- Form Grid -->
+                <GridPane hgap="20" styleClass="form-grid" vgap="15">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50.0" />
+                        <ColumnConstraints percentWidth="50.0" />
+                    </columnConstraints>
+
+                    <!-- Titre -->
+                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0">
+                        <Label styleClass="form-label" text="Titre *">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="titreField" promptText="Ex: Mathématiques" styleClass="form-control">
+                            <tooltip>
+                                <Tooltip styleClass="tooltip" text="3 à 255 caractères" />
+                            </tooltip>
+                        </TextField>
+                        <Label fx:id="titreError" managed="false" styleClass="invalid-feedback" visible="false" />
+                    </VBox>
+
+                    <!-- Categorie -->
+                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <Label styleClass="form-label" text="Catégorie *">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+                        <ComboBox fx:id="categorieComboBox" promptText="Sélectionnez" styleClass="form-control">
+                            <tooltip>
+                                <Tooltip styleClass="tooltip" text="Choisissez une catégorie" />
+                            </tooltip>
+                        </ComboBox>
+                        <Label fx:id="categorieError" managed="false" styleClass="invalid-feedback" visible="false" />
+                    </VBox>
+
+                    <!-- Prérequis -->
+                    <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Label styleClass="form-label" text="Prérequis *">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+                        <TextField fx:id="prerequisField" promptText="Ex: Algèbre de base" styleClass="form-control">
+                            <tooltip>
+                                <Tooltip styleClass="tooltip" text="Max 255 caractères" />
+                            </tooltip>
+                        </TextField>
+                        <Label fx:id="prerequisError" managed="false" styleClass="invalid-feedback" visible="false" />
+                    </VBox>
+
+                    <!-- Description -->
+                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                        <Label styleClass="form-label" text="Description *">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+                        <TextArea fx:id="descriptionField" prefHeight="100.0" promptText="Décrivez la matière" styleClass="form-control">
+                            <tooltip>
+                                <Tooltip styleClass="tooltip" text="10 à 255 caractères" />
+                            </tooltip>
+                        </TextArea>
+                        <Label fx:id="descriptionError" managed="false" styleClass="invalid-feedback" visible="false" />
+                    </VBox>
+
+                    <!-- Couleur du thème -->
+                    <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                        <Label styleClass="form-label" text="Couleur du thème *">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                        </Label>
+                        <ColorPicker fx:id="couleurThemePicker" styleClass="form-control">
+                            <tooltip>
+                                <Tooltip styleClass="tooltip" text="Choisissez une couleur (ex: #FF5733)" />
+                            </tooltip>
+                        </ColorPicker>
+                        <Label fx:id="couleurThemeError" managed="false" styleClass="invalid-feedback" visible="false" />
+                    </VBox>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
+                </GridPane>
+
+                <!-- Button -->
+                <Button fx:id="saveButton" onAction="#saveAction" styleClass="btn, btn-primary, btn-animated" text="Enregistrer">
+                    <font>
+                        <Font name="System Bold" size="16.0" />
+                    </font>
+                </Button>
+            </children>
+        </VBox>
+    </children>
+    <stylesheets>
+        <URL value="@styles/forms2.css" />
+    </stylesheets>
+</AnchorPane>

@@ -1,37 +1,29 @@
 package com.esprit.knowlity.controller.student;
 
-import com.esprit.knowlity.Service.CoursService;
 import com.esprit.knowlity.Service.EvaluationService;
-import com.esprit.knowlity.Model.Cours;
 import com.esprit.knowlity.Model.Evaluation;
+import controllers.CourseDetailsControllerEtudiant;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ListCell;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Text;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.paint.Color;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.Label;
+import tn.esprit.models.Cours;
+import tn.esprit.services.ServiceCours;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.io.IOException;
 import java.util.List;
 
 public class StudentController {
     @FXML private ListView<Cours> courseListView;
     @FXML private Button backButton;
+    private Cours cours;
 
-    private CoursService coursService = new CoursService();
+    private ServiceCours coursService = new ServiceCours();
     private EvaluationService evaluationService = new EvaluationService();
 
     @FXML
@@ -41,7 +33,7 @@ public class StudentController {
     }
 
     private void loadCoursesWithEvaluations() {
-        List<Cours> courses = coursService.readAll();
+        List<Cours> courses = coursService.getAll();
         courseListView.getItems().clear();
 
         for (Cours cours : courses) {
@@ -139,6 +131,7 @@ public class StudentController {
             Parent evalRoot = loader.load();
             EvaluationSelectController evalCtrl = loader.getController();
             List<Evaluation> evals = evaluationService.getEvaluationsByCoursId(cours.getId());
+            evalCtrl.setCourse(cours);
             evalCtrl.setEvaluations(evals);
             evalCtrl.setOnBack(event -> {
                 try {
@@ -151,40 +144,40 @@ public class StudentController {
                     ex.printStackTrace();
                 }
             });
-            evalCtrl.setListener((evaluation, event) -> {
-                openEvaluationForm(cours, evaluation, event);
+            evalCtrl.setOnBack(event -> {
+                try {
+                    FXMLLoader studentLoader = new FXMLLoader(getClass().getResource("/com/esprit/knowlity/view/student/student.fxml"));
+                    Parent studentRoot = studentLoader.load();
+                    backButton.getScene().setRoot(studentRoot);
+                } catch (IOException e) {
+                    System.err.println("Failed to load student.fxml: " + e.getMessage());
+                }
             });
-            Stage stage = (Stage) courseListView.getScene().getWindow();
-            stage.setScene(new Scene(evalRoot));
-            stage.setTitle("Select Evaluation for: " + cours.getTitle());
+            backButton.getScene().setRoot(evalRoot);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private void openEvaluationForm(Cours cours, Evaluation evaluation, javafx.event.ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esprit/knowlity/view/student/evaluation_form.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Evaluation: " + evaluation.getTitle());
-            EvaluationFormController controller = loader.getController();
-            controller.setCourse(cours);
-            controller.setEvaluation(evaluation);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+
 
     private void goBack() {
         try {
-            Stage stage = (Stage) backButton.getScene().getWindow();
-            Parent root = FXMLLoader.load(getClass().getResource("/com/esprit/knowlity/view/home.fxml"));
-            stage.setScene(new Scene(root));
-            stage.setTitle("Knowlity Home");
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CourseDetailsEtudiant.fxml"));
+            Parent root = loader.load();
+            CourseDetailsControllerEtudiant controller = loader.getController();
+            controller.setCourse(cours);
+            backButton.getScene().setRoot(root);
+        } catch (IOException e) {
+            System.err.println("Failed to load CourseDetails.fxml: " + e.getMessage());
         }
     }
-}
+
+    public void setCourse(Cours course) {
+         cours = course;
+        courseListView.getItems().clear();
+        List<Evaluation> evaluations = evaluationService.getEvaluationsByCoursId(course.getId());
+        if (!evaluations.isEmpty()) {
+            courseListView.getItems().add(course);
+        }
+    }}

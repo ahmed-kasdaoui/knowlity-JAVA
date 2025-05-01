@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<StackPane prefHeight="750" prefWidth="1200"
+           style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #2b5876, #4e4376);"
+           xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.esprit.knowlity.controller.student.ResultEvaluationController">
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;"
+                StackPane.alignment="CENTER">
+        <content>
+            <VBox alignment="TOP_CENTER" spacing="20">
+                <Text fx:id="titleText"
+                      style="-fx-font-size: 42px; -fx-fill: #fff; -fx-font-family: 'Segoe UI Black'; -fx-effect: dropshadow(gaussian, #185a9d, 2, 0.2, 0, 1); -fx-padding: 24 0 8 0;"/>
+                <Text fx:id="descText"
+                      style="-fx-font-size: 21px; -fx-fill: #e0e4e8; -fx-font-family: 'Segoe UI Semibold'; -fx-padding: 0 0 18 0;"
+                      textAlignment="CENTER" wrappingWidth="900"/>
+                
+                <!-- Score Summary Section -->
+                <HBox fx:id="scoreSummaryBox" alignment="CENTER" spacing="15.0"
+                      style="-fx-background-radius: 16; -fx-background-color: linear-gradient(to right, #43cea2, #185a9d); -fx-padding: 15 32 15 32; -fx-effect: dropshadow(gaussian, #43cea2, 6, 0.11, 0, 2);">
+                    <ImageView fx:id="scoreIconImageView" fitHeight="38.0" fitWidth="38.0"/>
+                    <Label fx:id="scoreSummaryLabel"
+                           style="-fx-font-size: 22px; -fx-text-fill: white; -fx-font-family: 'Segoe UI Semibold'; -fx-font-weight: bold;"/>
+                    <VBox.margin>
+                        <Insets bottom="20.0" left="250.0" right="250.0" top="10.0"/>
+                    </VBox.margin>
+                </HBox>
+
+                <HBox fx:id="badgeInlineBox" alignment="CENTER_LEFT" managed="false" spacing="12"
+                      style="-fx-background-radius: 12 12 0 0; -fx-background-color: linear-gradient(to right, #43cea2, #185a9d); -fx-padding: 8 18 8 18; -fx-effect: dropshadow(gaussian, #185a9d, 8, 0.13, 0, 2);"
+                      visible="false">
+                    <ImageView fx:id="badgeImage" fitWidth="80" fitHeight="80" preserveRatio="true"
+                           style="-fx-background-radius: 50; -fx-background-color: rgba(255,255,255,0.16); -fx-padding: 6 16 6 16;"/>
+                    <Label fx:id="badgeTitle"
+                           style="-fx-font-size: 18px; -fx-font-family: 'Segoe UI Black'; -fx-text-fill: white; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, #185a9d, 2, 0.13, 0, 1); -fx-padding: 0 8 0 0; -fx-letter-spacing: 1px; -fx-text-transform: uppercase;"/>
+                    <Button fx:id="exportPdfButton"
+                            style="-fx-background-color: white; -fx-text-fill: #185a9d; -fx-font-size: 13px; -fx-background-radius: 14; -fx-padding: 2 13 2 13; -fx-font-family: 'Segoe UI Semibold'; -fx-effect: dropshadow(gaussian, #43cea2, 2, 0.13, 0, 1); -fx-cursor: hand;"
+                            text="Export PDF"/>
+                    <ImageView fx:id="qrCodeImage" fitHeight="80.0" fitWidth="80.0" managed="false"
+                               style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 8; -fx-effect: dropshadow(gaussian, #185a9d55, 12, 0.18, 0, 2); border-radius: 16px;"
+                               visible="false"/>
+                </HBox>
+
+                <ScrollPane fitToWidth="true" maxHeight="500" style="-fx-background: White;">
+                    <VBox fx:id="resultsContainer" alignment="TOP_CENTER" spacing="10" style="-fx-padding: 6 32 6 32;"/>
+                </ScrollPane>
+
+                <Label fx:id="noResultLabel"
+                       style="-fx-font-size: 22px; -fx-text-fill: #ff512f; -fx-font-family: 'Segoe UI Semibold';"
+                       text="No results available for this evaluation yet." visible="false"/>
+
+                <Button fx:id="btnBack" onAction="#handleBackAction"
+                        style="-fx-background-color: linear-gradient(to right, #43cea2, #185a9d); -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 18; -fx-padding: 6 22 6 22; -fx-font-family: 'Segoe UI Semibold'; -fx-effect: dropshadow(gaussian, #185a9d, 2, 0.18, 0, 1);"
+                        text="Retour">
+                    <VBox.margin>
+                        <Insets bottom="16.0"/>
+                    </VBox.margin>
+                </Button>
+            </VBox>
+        </content>
+    </ScrollPane>
+</StackPane>

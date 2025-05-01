@@ -3,6 +3,7 @@ package com.esprit.knowlity.controller.student;
 import com.esprit.knowlity.Model.Question;
 import com.esprit.knowlity.Service.QuestionService;
 import com.esprit.knowlity.controller.CustomDialogController;
+import com.esprit.knowlity.controller.teacher.TeacherController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -11,6 +12,9 @@ import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import tn.esprit.services.ServiceCours;
+
+import java.io.IOException;
 
 public class QuestionFormController {
     @FXML private TextField titleField;
@@ -144,12 +148,16 @@ public class QuestionFormController {
 }
     private void goBack() {
         try {
-            Stage stage = (Stage) cancelButton.getScene().getWindow();
-            Parent root = FXMLLoader.load(getClass().getResource("/com/esprit/knowlity/view/teacher/teacher.fxml"));
-            stage.setScene(new Scene(root));
-            stage.setTitle("Teacher Back Office");
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esprit/knowlity/view/teacher/teacher.fxml"));
+            Parent root = loader.load();
+            TeacherController controller = loader.getController();
+
+            ServiceCours coursService = new ServiceCours();
+            controller.setCourse(coursService.getCoursById(evaluation.getCoursId()));
+           cancelButton.getScene().setRoot(root);
+
+        } catch (IOException e) {
+            System.err.println("Failed to load teacher.fxml: " + e.getMessage());
         }
     }
 }

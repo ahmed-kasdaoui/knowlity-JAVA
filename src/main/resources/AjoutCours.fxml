@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<StackPane style="-fx-background-color: #121212;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterCoursController">
+    <children>
+        <!-- Animated Background with Dynamic Shapes -->
+        <Pane fx:id="backgroundPane" mouseTransparent="true">
+            <Circle fx:id="circle1" centerX="50" centerY="200" fill="rgba(0,255,255,0.15)" radius="150" />
+            <Circle fx:id="circle2" centerX="100" centerY="400" fill="rgba(0,255,255,0.15)" radius="180" />
+            <Circle fx:id="circle3" centerX="250" centerY="300" fill="rgba(0,255,255,0.15)" radius="140" />
+            <Circle fx:id="circle4" centerX="350" centerY="150" fill="rgba(0,255,255,0.15)" radius="120" />
+            <Circle fx:id="circle5" centerX="200" centerY="500" fill="rgba(0,255,255,0.15)" radius="160" />
+            <Circle fx:id="circle6" centerX="50" centerY="350" fill="rgba(0,255,255,0.15)" radius="130" />
+            <Circle fx:id="circle7" centerX="650" centerY="200" fill="rgba(0,255,255,0.15)" radius="150" />
+            <Circle fx:id="circle8" centerX="750" centerY="400" fill="rgba(0,255,255,0.15)" radius="180" />
+            <Circle fx:id="circle9" centerX="850" centerY="250" fill="rgba(0,255,255,0.15)" radius="140" />
+            <Circle fx:id="circle10" centerX="925" centerY="150" fill="rgba(0,255,255,0.15)" radius="120" />
+            <Circle fx:id="circle11" centerX="800" centerY="300" fill="rgba(0,255,255,0.15)" radius="160" />
+            <Circle fx:id="circle12" centerX="950" centerY="450" fill="rgba(0,255,255,0.15)" radius="130" />
+        </Pane>
+
+        <AnchorPane fx:id="root" prefHeight="800.0" prefWidth="900.0" style="-fx-background-color: rgba(22,22,22,0.8);">
+            <children>
+                <!-- Top Navigation Bar -->
+                <HBox alignment="CENTER_LEFT" style="-fx-background-color: linear-gradient(to right, #00b4db, #0083b0); -fx-padding: 15px;" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+                    <ImageView fx:id="test" fitHeight="88.0" fitWidth="147.0" preserveRatio="true">
+                        <image>
+                            <Image url="@images/knowlity.png" />
+                        </image>
+                    </ImageView>
+                    <Label style="-fx-text-fill: WHITE; -fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 0 0 0 10;" text="KnowLity">
+                        <font>
+                            <Font size="24.0" />
+                        </font>
+                    </Label>
+
+                    <HBox alignment="CENTER" prefHeight="72.0" prefWidth="998.0" spacing="20" style="-fx-padding: 0 0 0 50;">
+                        <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Home" />
+                        <MenuButton style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Events">
+                            <items>
+                                <MenuItem text="Events test" />
+                                <MenuItem text="My Events" />
+                                <MenuItem text="My Reservation" />
+                            </items>
+                        </MenuButton>
+                        <MenuButton style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Courses">
+                            <items>
+                                <MenuItem text="View all courses" />
+                                <MenuItem text="View my courses" />
+                            </items>
+                        </MenuButton>
+                        <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Testimonials" />
+                        <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Contact Us" />
+                        <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Profile" />
+                        <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Logout" />
+                    </HBox>
+                </HBox>
+
+                <!-- Main Content -->
+                <VBox fx:id="mainBox" alignment="CENTER" spacing="20.0" styleClass="glass-card" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="169.0">
+                    <padding>
+                        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                    </padding>
+                    <children>
+                        <!-- Header -->
+                        <HBox alignment="CENTER">
+                            <children>
+                                <Label styleClass="display-5" text="📚 Créer un Nouveau Cours">
+                                    <font>
+                                        <Font name="System Bold" size="32.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </HBox>
+
+                        <!-- Form Grid -->
+                        <GridPane hgap="20" styleClass="form-grid" vgap="15">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50.0" />
+                                <ColumnConstraints percentWidth="50.0" />
+                            </columnConstraints>
+
+                            <!-- Title -->
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label styleClass="form-label" text="Titre *">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="titleField" promptText="Ex: Apprendre Symfony 6" styleClass="form-control">
+                                    <tooltip>
+                                        <Tooltip styleClass="tooltip" text="Titre descriptif (max 255 caractères)" />
+                                    </tooltip>
+                                </TextField>
+                            </VBox>
+
+                            <!-- Language -->
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label styleClass="form-label" text="Langue *">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+                                <ComboBox fx:id="langueComboBox" promptText="Sélectionnez une langue" styleClass="form-control">
+                                    <tooltip>
+                                        <Tooltip styleClass="tooltip" text="Choisissez la langue du cours" />
+                                    </tooltip>
+                                </ComboBox>
+                            </VBox>
+
+                            <!-- Description -->
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                                <Label styleClass="form-label" text="Description *">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+                                <TextArea fx:id="descriptionField" prefHeight="120.0" promptText="Décrivez le contenu du cours" style="-fx-background-color: rgba(255,255,255,0.1); -fx-border-color: rgba(255,255,255,0.2); -fx-border-radius: 5; -fx-text-fill: black; -fx-prompt-text-fill: darkgray;" styleClass="form-control">
+                                    <tooltip>
+                                        <Tooltip styleClass="tooltip" text="Description détaillée (max 255 caractères)" />
+                                    </tooltip>
+                                </TextArea>
+                            </VBox>
+
+                            <!-- Price -->
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                                <Label styleClass="form-label" text="Prix (TND) *">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="prixField" promptText="Ex: 50" styleClass="form-control">
+                                    <tooltip>
+                                        <Tooltip styleClass="tooltip" text="0 pour gratuit" />
+                                    </tooltip>
+                                </TextField>
+                            </VBox>
+
+                            <!-- Payment Link -->
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                <Label styleClass="form-label" text="Lien de paiement">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="lienDePaimentField" promptText="Ex: https://sandbox.knct.me/..." styleClass="form-control">
+                                    <tooltip>
+                                        <Tooltip styleClass="tooltip" text="Requis si prix &gt; 0 (max 255 caractères)" />
+                                    </tooltip>
+                                </TextField>
+                            </VBox>
+
+                            <!-- Matiere -->
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                                <Label styleClass="form-label" text="Matière *">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+                                <ComboBox fx:id="matiereComboBox" promptText="Sélectionnez une matière" styleClass="form-control">
+                                    <tooltip>
+                                        <Tooltip styleClass="tooltip" text="Choisissez une matière" />
+                                    </tooltip>
+                                </ComboBox>
+                            </VBox>
+
+                            <!-- Image Upload -->
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                <Label styleClass="form-label" text="Image *">
+                                    <font>
+                                        <Font size="16.0" />
+                                    </font>
+                                </Label>
+                                <HBox alignment="CENTER_LEFT" spacing="10">
+                                    <Button fx:id="uploadButton" onAction="#uploadButtonAction" styleClass="btn, btn-outline-primary" text="Choisir">
+                                        <graphic>
+                                            <Label styleClass="icon" text="📷" />
+                                        </graphic>
+                                        <tooltip>
+                                            <Tooltip styleClass="tooltip" text="JPG, PNG, WEBP (max 10 Mo)" />
+                                        </tooltip>
+                                    </Button>
+                                    <Label fx:id="fileLabel" styleClass="text-muted" text="Aucune image" />
+                                </HBox>
+                                <ImageView fx:id="imagePreview" fitHeight="100" fitWidth="150" managed="false" preserveRatio="true" styleClass="preview-image" visible="false" />
+                            </VBox>
+                            <rowConstraints>
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                            </rowConstraints>
+                        </GridPane>
+
+                        <!-- Submit Button -->
+                        <Button fx:id="submitButton" onAction="#ajouterCoursAction" styleClass="btn, btn-primary, w-100, btn-animated" text="Publier le Cours">
+                            <graphic>
+                                <Label styleClass="icon" text="🚀" />
+                            </graphic>
+                            <font>
+                                <Font name="System Bold" size="18.0" />
+                            </font>
+                        </Button>
+                    </children>
+                </VBox>
+
+                            <!-- Back Button -->
+                <Button layoutX="14.0" layoutY="118.0" mnemonicParsing="false" onAction="#retourAuxCours" style="-fx-background-color: rgba(255,255,255,0.1); -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 8 15; -fx-background-radius: 20; -fx-border-color: rgba(255,255,255,0.2); -fx-border-radius: 20; -fx-cursor: hand;" text="← Retour" AnchorPane.topAnchor="123.0" />
+            </children>
+            <stylesheets>
+                <URL value="@styles/forms.css" />
+            </stylesheets>
+        </AnchorPane>
+    </children>
+</StackPane>

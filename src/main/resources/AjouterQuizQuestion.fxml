@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefWidth="550.0" prefHeight="650.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21.0.2" fx:controller="controllers.AjouterQuizQuestionController">
+    <BorderPane AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <!-- En-tête avec titre -->
+        <top>
+            <HBox alignment="CENTER" style="-fx-background-color: #3B5998; -fx-padding: 15;">
+                <Label text="Plateforme d'Apprentissage" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: white;">
+                    <font>
+                        <Font name="Arial Rounded MT Bold" size="22.0" />
+                    </font>
+                </Label>
+            </HBox>
+        </top>
+
+        <center>
+            <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+                <VBox alignment="TOP_CENTER" spacing="25" style="-fx-padding: 25; -fx-background-color: #F5F7FA;">
+                    <!-- En-tête du formulaire -->
+                    <VBox alignment="CENTER" spacing="10" style="-fx-padding: 15; -fx-background-color: #FFFFFF; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+                        <Label text="Ajouter une Question" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #3B5998;">
+                            <font>
+                                <Font name="System Bold" size="26.0" />
+                            </font>
+                        </Label>
+                        <Label text="Créez une nouvelle question pour votre quiz" style="-fx-font-size: 14; -fx-text-fill: #666666;" />
+                    </VBox>
+
+                    <!-- Formulaire principal -->
+                    <VBox spacing="20" style="-fx-padding: 25; -fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+                        <!-- Quiz Associé -->
+                        <VBox spacing="8">
+                            <Label text="Quiz Associé" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #3B5998;">
+                                <graphic>
+                                    <Region style="-fx-background-color: #3B5998; -fx-min-width: 3; -fx-max-width: 3; -fx-min-height: 16; -fx-max-height: 16; -fx-background-radius: 2;" />
+                                </graphic>
+                            </Label>
+                            <ComboBox fx:id="quizComboBox" promptText="Sélectionnez le quiz parent" style="-fx-pref-width: 400; -fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: #F8F9FA; -fx-border-color: #DEE2E6; -fx-padding: 8; -fx-font-size: 14;" />
+                            <Label text="Quiz auquel cette question sera rattachée" style="-fx-font-size: 12; -fx-text-fill: #6C757D;" />
+                        </VBox>
+
+                        <!-- Type de question -->
+                        <VBox spacing="8">
+                            <Label text="Type de Question" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #3B5998;">
+                                <graphic>
+                                    <Region style="-fx-background-color: #3B5998; -fx-min-width: 3; -fx-max-width: 3; -fx-min-height: 16; -fx-max-height: 16; -fx-background-radius: 2;" />
+                                </graphic>
+                            </Label>
+                            <ComboBox fx:id="typeComboBox" promptText="Choisissez le type de question" style="-fx-pref-width: 400; -fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: #F8F9FA; -fx-border-color: #DEE2E6; -fx-padding: 8; -fx-font-size: 14;" />
+                            <Label text="QCM, Questions ouvertes, Vrai/Faux, etc." style="-fx-font-size: 12; -fx-text-fill: #6C757D;" />
+                        </VBox>
+
+                        <!-- Texte de la Question -->
+                        <VBox spacing="8">
+                            <Label text="Énoncé de la Question" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #3B5998;">
+                                <graphic>
+                                    <Region style="-fx-background-color: #3B5998; -fx-min-width: 3; -fx-max-width: 3; -fx-min-height: 16; -fx-max-height: 16; -fx-background-radius: 2;" />
+                                </graphic>
+                            </Label>
+                            <TextArea fx:id="texteField" promptText="Rédigez votre question ici. Soyez clair et précis." style="-fx-pref-width: 400; -fx-pref-height: 120; -fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: #F8F9FA; -fx-border-color: #DEE2E6; -fx-padding: 10; -fx-font-size: 14;" wrapText="true" />
+                            <Label text="L'énoncé doit être compréhensible et sans ambiguïté" style="-fx-font-size: 12; -fx-text-fill: #6C757D;" />
+                        </VBox>
+
+                        <!-- Paramètres de la question -->
+                        <HBox spacing="20">
+                            <!-- Points -->
+                            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                <Label text="Points Attribués" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #3B5998;">
+                                    <graphic>
+                                        <Region style="-fx-background-color: #3B5998; -fx-min-width: 3; -fx-max-width: 3; -fx-min-height: 16; -fx-max-height: 16; -fx-background-radius: 2;" />
+                                    </graphic>
+                                </Label>
+                                <TextField fx:id="pointsField" promptText="Ex: 10" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: #F8F9FA; -fx-border-color: #DEE2E6; -fx-padding: 10; -fx-font-size: 14;" />
+                                <Label text="Valeur de cette question dans le quiz" style="-fx-font-size: 12; -fx-text-fill: #6C757D;" />
+                            </VBox>
+
+                            <!-- Ordre -->
+                            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                <Label text="Ordre d'Apparition" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #3B5998;">
+                                    <graphic>
+                                        <Region style="-fx-background-color: #3B5998; -fx-min-width: 3; -fx-max-width: 3; -fx-min-height: 16; -fx-max-height: 16; -fx-background-radius: 2;" />
+                                    </graphic>
+                                </Label>
+                                <TextField fx:id="ordreField" promptText="Ex: 1" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: #F8F9FA; -fx-border-color: #DEE2E6; -fx-padding: 10; -fx-font-size: 14;" />
+                                <Label text="Position dans la séquence du quiz" style="-fx-font-size: 12; -fx-text-fill: #6C757D;" />
+                            </VBox>
+                        </HBox>
+
+                        <!-- Options pédagogiques -->
+                        <VBox spacing="8">
+                            <Label text="Options Pédagogiques" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #3B5998;">
+                                <graphic>
+                                    <Region style="-fx-background-color: #3B5998; -fx-min-width: 3; -fx-max-width: 3; -fx-min-height: 16; -fx-max-height: 16; -fx-background-radius: 2;" />
+                                </graphic>
+                            </Label>
+                            <HBox spacing="15">
+                                <CheckBox text="Afficher feedback immédiat" style="-fx-font-size: 14; -fx-text-fill: #555555;" />
+                                <CheckBox text="Question obligatoire" style="-fx-font-size: 14; -fx-text-fill: #555555;" />
+                            </HBox>
+                            <HBox spacing="15">
+                                <CheckBox text="Permettre plusieurs essais" style="-fx-font-size: 14; -fx-text-fill: #555555;" />
+                                <CheckBox text="Afficher la solution" style="-fx-font-size: 14; -fx-text-fill: #555555;" />
+                            </HBox>
+                        </VBox>
+                    </VBox>
+
+                    <!-- Boutons d'action -->
+                    <HBox alignment="CENTER" spacing="20">
+                        <Button onAction="#cancel" text="Annuler" style="-fx-background-color: #F8F9FA; -fx-text-fill: #6C757D; -fx-font-size: 14; -fx-font-weight: bold; -fx-pref-width: 140; -fx-pref-height: 45; -fx-background-radius: 5; -fx-border-color: #CED4DA; -fx-border-radius: 5; -fx-cursor: hand;">
+                            <graphic>
+                                <Region style="-fx-background-color: #6C757D; -fx-min-width: 16; -fx-max-width: 16; -fx-min-height: 16; -fx-max-height: 16; -fx-shape: 'M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z';" />
+                            </graphic>
+                        </Button>
+                        <Button onAction="#saveQuestion" text="Ajouter la Question" style="-fx-background-color: #3B5998; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-pref-width: 200; -fx-pref-height: 45; -fx-background-radius: 5; -fx-cursor: hand;">
+                            <graphic>
+                                <Region style="-fx-background-color: white; -fx-min-width: 16; -fx-max-width: 16; -fx-min-height: 16; -fx-max-height: 16; -fx-shape: 'M9,16.2L4.8,12l-1.4,1.4L9,19L21,7l-1.4-1.4L9,16.2z';" />
+                            </graphic>
+                        </Button>
+                    </HBox>
+
+                    <!-- Conseils d'utilisation -->
+                    <VBox alignment="CENTER" spacing="5" style="-fx-padding: 15; -fx-background-color: #E9F0FD; -fx-background-radius: 10; -fx-border-color: #CEDFF2; -fx-border-radius: 10;">
+                        <Label text="Conseils pour créer des questions efficaces" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #3B5998;" />
+                        <Label text="• Formulez des questions claires et non ambiguës" style="-fx-font-size: 12; -fx-text-fill: #333333;" />
+                        <Label text="• Pour les QCM, prévoyez des options de réponse plausibles" style="-fx-font-size: 12; -fx-text-fill: #333333;" />
+                        <Label text="• Utilisez différents niveaux de difficulté (connaissance, application, analyse)" style="-fx-font-size: 12; -fx-text-fill: #333333;" />
+                        <Label text="• Préparez des commentaires utiles pour chaque réponse" style="-fx-font-size: 12; -fx-text-fill: #333333;" />
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+        </center>
+    </BorderPane>
+</AnchorPane>

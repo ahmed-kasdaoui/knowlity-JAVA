@@ -60,8 +60,18 @@ public class QuestionService {
     }
 
     public void deleteQuestion(int questionId) {
-        String query = "DELETE FROM question WHERE id = ?";
-        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+        // First delete all responses related to this question
+        String deleteResponsesQuery = "DELETE FROM reponse WHERE question_id = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(deleteResponsesQuery)) {
+            pstmt.setInt(1, questionId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Now delete the question
+        String deleteQuestionQuery = "DELETE FROM question WHERE id = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(deleteQuestionQuery)) {
             pstmt.setInt(1, questionId);
             pstmt.executeUpdate();
         } catch (SQLException e) {

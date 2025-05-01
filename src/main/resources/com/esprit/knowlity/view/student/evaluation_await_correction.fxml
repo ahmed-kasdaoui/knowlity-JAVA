@@ -21,7 +21,7 @@
                 </ImageView>
                 <Label style="-fx-font-size: 19px; -fx-font-family: 'Segoe UI Semibold';" text="You have completed all evaluation questions." wrapText="true" />
                 <Label style="-fx-font-size: 19px; -fx-text-fill: #43cea2; -fx-font-family: 'Segoe UI Semibold';" text="Please wait while your teacher reviews your answers and assigns your grade." wrapText="true" />
-                <Button fx:id="backToCoursesButton" style="-fx-background-radius: 20; -fx-background-color: linear-gradient(to right, #ff512f, #dd2476); -fx-text-fill: white; -fx-font-size: 17px; -fx-font-family: 'Segoe UI Semibold'; -fx-padding: 10 38; -fx-effect: dropshadow(gaussian, #ff512f88, 4, 0.15, 0, 1); -fx-cursor: hand;" text="Back to Courses" />
+                <Button fx:id="backToCoursesButton" style="-fx-background-radius: 20; -fx-background-color: linear-gradient(to right, #ff512f, #dd2476); -fx-text-fill: white; -fx-font-size: 17px; -fx-font-family: 'Segoe UI Semibold'; -fx-padding: 10 38; -fx-effect: dropshadow(gaussian, #ff512f88, 4, 0.15, 0, 1); -fx-cursor: hand;" text="Back to Evaluations" />
                 <StackPane.margin>
                     <Insets bottom="50.0" top="50.0" />
                 </StackPane.margin>

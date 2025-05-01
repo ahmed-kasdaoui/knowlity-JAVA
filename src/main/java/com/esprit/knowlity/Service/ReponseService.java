@@ -15,15 +15,16 @@ public class ReponseService {
     }
 
     public void addReponse(Reponse reponse) {
-        String query = "INSERT INTO reponse (question_id, evaluation_id, text, user_id, start_time, submit_time, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO reponse (question_id, evaluation_id, text, user_id, note, start_time, submit_time, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, reponse.getQuestionId());
             pstmt.setInt(2, reponse.getEvaluationId());
             pstmt.setString(3, reponse.getText());
             pstmt.setInt(4, reponse.getUserId());
-            pstmt.setTimestamp(5, reponse.getStartTime());
-            pstmt.setTimestamp(6, reponse.getSubmitTime());
-            pstmt.setString(7, reponse.getStatus());
+            pstmt.setObject(5, reponse.getNote(), java.sql.Types.INTEGER);
+            pstmt.setTimestamp(6, reponse.getStartTime());
+            pstmt.setTimestamp(7, reponse.getSubmitTime());
+            pstmt.setString(8, reponse.getStatus());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

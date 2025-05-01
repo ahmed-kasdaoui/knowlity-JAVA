@@ -8,6 +8,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EvaluationService {
+    /**
+     * Returns the Evaluation object with the specified id, or null if not found.
+     */
+    public Evaluation getEvaluationById(int id) {
+        String query = "SELECT * FROM evaluation WHERE id = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new Evaluation(
+                    rs.getInt("id"),
+                    rs.getInt("cours_id"),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getInt("max_score"),
+                    rs.getTimestamp("create_at"),
+                    rs.getTimestamp("deadline"),
+                    rs.getInt("badge_threshold"),
+                    rs.getString("badge_image"),
+                    rs.getString("badge_title")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    // ... existing code ...
+    /**
+     * Returns the id of the most recently inserted evaluation with the given title.
+     * If there are multiple with the same title, returns the one with the highest id.
+     */
+    public int getLastInsertedEvaluationIdByTitle(String title) {
+        String query = "SELECT id FROM evaluation WHERE title = ? ORDER BY id DESC LIMIT 1";
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, title);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // Not found
+    }
     private Connection conn;
 
     public EvaluationService() {
@@ -145,6 +190,33 @@ public class EvaluationService {
             e.printStackTrace();
         }
         return evaluations;
+    }
+    
+    /**
+     * Retrieves the evaluation notes for a specific evaluation and user.
+     * 
+     * @param evaluationId The ID of the evaluation
+     * @param userId The ID of the user
+     * @return List of evaluation notes, or an empty list if no notes found
+     */
+    public List<String> getEvaluationNotes(int evaluationId, int userId) {
+        List<String> notes = new ArrayList<>();
+        String query = "SELECT note FROM reponse WHERE evaluation_id = ? AND user_id = ? AND note IS NOT NULL";
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, evaluationId);
+            pstmt.setInt(2, userId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                String note = rs.getString("note");
+                if (note != null && !note.trim().isEmpty()) {
+                    notes.add(note);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving evaluation notes: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return notes;
     }
     
 }

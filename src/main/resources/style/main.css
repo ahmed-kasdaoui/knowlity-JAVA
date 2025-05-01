@@ -1,4 +1,29 @@
 /* main.css - Modern, animated, beautiful UI for Knowlity */
+
+/* Beautiful ComboBox emoji popup styling */
+.emoji-combo-box .list-cell {
+    -fx-font-size: 22px;
+    -fx-alignment: center;
+    -fx-background-color: #fff;
+    -fx-text-fill: #222;
+    -fx-padding: 6 0 6 0;
+    -fx-cursor: hand;
+    -fx-background-radius: 6;
+    -fx-transition: all 0.18s cubic-bezier(.4,2,.6,1);
+}
+.emoji-combo-box .list-cell:hover {
+    -fx-background-color: linear-gradient(to right, #e0f7fa, #b2ebf2);
+    -fx-text-fill: #185a9d;
+    -fx-scale-x: 1.08;
+    -fx-scale-y: 1.08;
+}
+.emoji-combo-box .list-cell:selected {
+    -fx-background-color: linear-gradient(to right, #4fc3f7, #0288d1);
+    -fx-text-fill: #fff;
+    -fx-scale-x: 1.08;
+    -fx-scale-y: 1.08;
+}
+
 .background-gradient {
     -fx-background-color: linear-gradient(to bottom right, #4f8cff, #e9e9ff);
 }

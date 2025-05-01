@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import java.net.URL?>
+
+<?import java.lang.String?>
+<VBox fx:id="navBar" prefHeight="700.0" prefWidth="200.0" spacing="20" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.NavBarController">
+    <children>
+        <HBox alignment="CENTER" spacing="12">
+            <Label text="EduPlatform" style="-fx-text-fill: #ECF0F1; -fx-font-size: 20; -fx-font-family: 'Arial'; -fx-font-weight: bold;" />
+        </HBox>
+        <Label fx:id="userNameLabel" text="Welcome, User" style="-fx-text-fill: #ECF0F1; -fx-font-size: 14px; -fx-font-family: 'Arial'; -fx-font-weight: bold; -fx-background-color: rgba(52, 152, 219, 0.2); -fx-padding: 5 10 5 10; -fx-background-radius: 5;" />
+        <Separator style="-fx-background-color: #34495E; -fx-pref-height: 1; -fx-opacity: 0.5;" />
+        <VBox alignment="CENTER_LEFT" prefWidth="200" spacing="15">
+            <Button fx:id="coursesBtn" text="Courses" onAction="#navigateToCourses" style="-fx-background-color: transparent; -fx-text-fill: #ECF0F1; -fx-font-size: 15px; -fx-font-family: 'Arial'; -fx-pref-width: 180px; -fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 10 15 10 15; -fx-alignment: CENTER_LEFT; -fx-content-display: LEFT; -fx-graphic-text-gap: 10;">
+                <graphic>
+                    <ImageView fitHeight="30.0" fitWidth="30.0">
+                        <Image />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="profileBtn" text="Profile" onAction="#navigateToProfile" style="-fx-background-color: transparent; -fx-text-fill: #ECF0F1; -fx-font-size: 15px; -fx-font-family: 'Arial'; -fx-pref-width: 180px; -fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 10 15 10 15; -fx-alignment: CENTER_LEFT; -fx-content-display: LEFT; -fx-graphic-text-gap: 10;">
+                <graphic>
+                    <ImageView fitHeight="30.0" fitWidth="30.0">
+                        <Image  />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="evaluationsBtn" text="Evaluations" onAction="#navigateToEvaluations" style="-fx-background-color: transparent; -fx-text-fill: #ECF0F1; -fx-font-size: 15px; -fx-font-family: 'Arial'; -fx-pref-width: 180px; -fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 10 15 10 15; -fx-alignment: CENTER_LEFT; -fx-content-display: LEFT; -fx-graphic-text-gap: 10;">
+                <graphic>
+                    <ImageView fitHeight="30.0" fitWidth="30.0">
+                        <Image  />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="questionsBtn" text="Questions" onAction="#navigateToQuestions" style="-fx-background-color: transparent; -fx-text-fill: #ECF0F1; -fx-font-size: 15px; -fx-font-family: 'Arial'; -fx-pref-width: 180px; -fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 10 15 10 15; -fx-alignment: CENTER_LEFT; -fx-content-display: LEFT; -fx-graphic-text-gap: 10;">
+                <graphic>
+                    <ImageView fitHeight="30.0" fitWidth="30.0">
+                        <Image  />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="resultsBtn" text="Results" onAction="#navigateToResults" style="-fx-background-color: transparent; -fx-text-fill: #ECF0F1; -fx-font-size: 15px; -fx-font-family: 'Arial'; -fx-pref-width: 180px; -fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 10 15 10 15; -fx-alignment: CENTER_LEFT; -fx-content-display: LEFT; -fx-graphic-text-gap: 10;">
+                <graphic>
+                    <ImageView fitHeight="30.0" fitWidth="30.0">
+                        <Image  />
+                    </ImageView>
+                </graphic>
+            </Button>
+        </VBox>
+        <Region VBox.vgrow="ALWAYS" />
+        <Button fx:id="logoutBtn" text="Logout" onAction="#logout" style="-fx-background-color: #E74C3C; -fx-text-fill: #ECF0F1; -fx-font-size: 15px; -fx-font-family: 'Arial'; -fx-pref-width: 180px; -fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 10 15 10 15; -fx-alignment: CENTER_LEFT; -fx-content-display: LEFT; -fx-graphic-text-gap: 10;">
+            <graphic>
+                <ImageView fitHeight="30.0" fitWidth="30.0">
+                    <Image />
+                </ImageView>
+            </graphic>
+        </Button>
+    </children>
+    <stylesheets>
+        <URL value="@navbarBack.css" />
+        <String fx:id="inlineCss">
+            <![CDATA[
+                #navBar {
+                    -fx-background-color: linear-gradient(to bottom, #2C3E50, #1A252F);
+                    -fx-padding: 25;
+                    -fx-alignment: center;
+                }
+                .nav-button:hover {
+                    -fx-background-color: rgba(52, 152, 219, 0.2);
+                    -fx-text-fill: #3498DB;
+                    -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.5), 10, 0.3, 0, 0);
+                }
+                .nav-button:pressed {
+                    -fx-background-color: rgba(52, 152, 219, 0.4);
+                }
+                .logout-button:hover {
+                    -fx-background-color: #C0392B;
+                    -fx-effect: dropshadow(gaussian, rgba(231, 76, 60, 0.5), 10, 0.3, 0, 0);
+                }
+                .logout-button:pressed {
+                    -fx-background-color: #A93226;
+                }
+            ]]>
+        </String>
+    </stylesheets>
+</VBox>
