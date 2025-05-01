@@ -8,7 +8,7 @@ public class HelloController {
     private Label welcomeText;
 
     @FXML
-    protected void onHelloButtonClick1() {
+    protected void onHelloButtonClick() {
         welcomeText.setText("Welcome to JavaFX Application!");
     }
 }
