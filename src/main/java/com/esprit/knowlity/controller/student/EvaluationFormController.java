@@ -1,6 +1,5 @@
 package com.esprit.knowlity.controller.student;
 
-import com.esprit.knowlity.Model.Cours;
 import com.esprit.knowlity.Model.Evaluation;
 import com.esprit.knowlity.Model.Question;
 import com.esprit.knowlity.Model.Reponse;
@@ -9,6 +8,8 @@ import com.esprit.knowlity.Service.QuestionService;
 import com.esprit.knowlity.Service.ReponseService;
 import com.esprit.knowlity.Utils.Snippet.CodeSnippetView;
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -16,22 +17,29 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.util.Duration;
-import javafx.scene.web.WebView;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import com.esprit.knowlity.Utils.BadWordsFilter;
+import tn.esprit.models.Cours;
+import tn.esprit.services.ServiceCours;
 import tn.knowlity.entity.User;
 import tn.knowlity.tools.UserSessionManager;
+
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 public class EvaluationFormController {
     @FXML
@@ -83,10 +91,14 @@ public class EvaluationFormController {
     private Map<Integer, String> answersMap = new HashMap<>();
 
     private User user = UserSessionManager.getInstance().getCurrentUser();
-    private final int DEFAULT_USER_ID = user.getId();
-    private final String DEFAULT_USER_EMAIL = user.getEmail();
-    private final String DEFAULT_USER_NAME = user.getNom();
+    private final int DEFAULT_USER_ID = user != null ? user.getId() : -1;
+    private final String DEFAULT_USER_EMAIL = user != null ? user.getEmail() : "";
+    private final String DEFAULT_USER_NAME = user != null ? user.getNom() : "";
+    private static final String GMAIL_USERNAME = "chamseddinedoula7@gmail.com";
+    private static final String GMAIL_PASSWORD = "xlvmkpnbcrjbrysu";
 
+    private MediaPlayer backgroundMusicPlayer;
+    private static final String BACKGROUND_MUSIC_PATH = "/music/soft_background.mp3";
 
     public void setCourse(Cours course) {
         this.course = course;
@@ -94,6 +106,11 @@ public class EvaluationFormController {
 
     public void setEvaluation(Evaluation evaluation) {
         this.evaluation = evaluation;
+        // Retrieve the course based on the evaluation's course ID
+        if (evaluation != null && evaluation.getCoursId() > 0) {
+            ServiceCours serviceCours = new ServiceCours();
+            this.course = serviceCours.getCoursById(evaluation.getCoursId());
+        }
         loadQuestions();
     }
 
@@ -255,6 +272,17 @@ public class EvaluationFormController {
 
     @FXML
     public void initialize() {
+        // Start background music
+        try {
+            Media backgroundMusic = new Media(getClass().getResource(BACKGROUND_MUSIC_PATH).toExternalForm());
+            backgroundMusicPlayer = new MediaPlayer(backgroundMusic);
+            backgroundMusicPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop continuously
+            backgroundMusicPlayer.setVolume(0.2); // Set initial volume to 20%
+            backgroundMusicPlayer.play();
+        } catch (Exception e) {
+            System.err.println("Impossible de charger la musique de fond: " + e.getMessage());
+        }
+
         // Add real-time bad words filter
         answerTextArea.textProperty().addListener((obs, oldText, newText) -> {
             String filtered = BadWordsFilter.filterBadWords(newText);
@@ -269,55 +297,40 @@ public class EvaluationFormController {
             }
         });
         prevButton.setOnAction(e -> {
-            // Save answer before moving
             answersMap.put(questions.get(currentIndex).getId(), answerTextArea.getText());
             if (currentIndex > 0) showQuestion(currentIndex - 1);
         });
         nextButton.setOnAction(e -> {
-            // Save answer before moving
             answersMap.put(questions.get(currentIndex).getId(), answerTextArea.getText());
             if (currentIndex < questions.size() - 1) showQuestion(currentIndex + 1);
         });
-        submitButton.setOnAction(e -> {
-            String answer = answerTextArea.getText();
-            if (answer == null || answer.trim().isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Empty Response");
-                alert.setHeaderText(null);
-                alert.setContentText("Please type your answer before submitting.");
-                alert.showAndWait();
-                return;
-            }
-            submitAnswers();
-        });
-        // Back button logic
-        backButton.setOnAction(ev -> {
-            Stage stage = (Stage) backButton.getScene().getWindow();
-            try {
-                Parent root = FXMLLoader.load(getClass().getResource("/com/esprit/knowlity/view/student/student.fxml"));
-                stage.setScene(new Scene(root));
-                stage.setTitle("Student Dashboard");
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
+        submitButton.setOnAction(e -> submitAnswers());
+        backButton.setOnAction(e -> handleBackAction());
+    }
+
+    private void stopBackgroundMusic() {
+        if (backgroundMusicPlayer != null) {
+            backgroundMusicPlayer.stop();
+            backgroundMusicPlayer.dispose();
+        }
     }
 
     private void submitAnswers() {
+        stopBackgroundMusic(); // Stop music when submitting
         updateProgressDisplay();
         // Save current answer before submitting
-        if (!questions.isEmpty()) {
-            Question q = questions.get(currentIndex);
-            answersMap.put(q.getId(), BadWordsFilter.filterBadWords(answerTextArea.getText()));
+        if (currentIndex >= 0 && currentIndex < questions.size()) {
+            Question currentQ = questions.get(currentIndex);
+            answersMap.put(currentQ.getId(), answerTextArea.getText());
         }
         // Save all answers to DB
         for (Question q : questions) {
             String answer = answersMap.getOrDefault(q.getId(), "");
             if (!answer.trim().isEmpty()) {
                 String filtered = BadWordsFilter.filterBadWords(answer);
-                boolean hasBadWord = filtered.contains("****");
+                boolean hasBadWord = filtered.contains("**");
                 Reponse r = new Reponse();
-                r.setNote(0);
+                //r.setNote(0);
                 r.setSubmitTime(new java.sql.Timestamp(System.currentTimeMillis()));
                 r.setQuestionId(q.getId());
                 r.setEvaluationId(evaluation.getId());
@@ -332,6 +345,7 @@ public class EvaluationFormController {
                             String teacherEmail = "amennahali8@gmail.com";
                             String studentEmail = DEFAULT_USER_EMAIL;
                             String studentName = DEFAULT_USER_NAME;
+                            String studentPrenom = user != null ? user.getPrenom() : "";
                             String evalName = evaluation.getTitle();
 
                             System.out.println("Student Email: " + studentEmail);
@@ -340,12 +354,43 @@ public class EvaluationFormController {
                             String questionTitle = q.getTitle();
                             // Email to teacher
                             String teacherSubject = "[Knowlity] Inappropriate Answer Detected";
-                            String teacherHtml = com.esprit.knowlity.Utils.MailUtil.getTeacherHtmlEmail(studentName, evalName, questionTitle, answer);
-                            com.esprit.knowlity.Utils.MailUtil.sendHtmlMail(teacherEmail, teacherSubject, teacherHtml);
-                            // Email to student
+                            System.out.println("Course object: " + course);
+                            String courseName = course != null ? course.getTitle() : "Unknown Course";
+                            System.out.println("Course Name: " + courseName);
+                            String teacherHtml = com.esprit.knowlity.Utils.MailUtil.getTeacherHtmlEmail(studentName, studentPrenom, courseName, evalName, questionTitle, answer);
+
+                            // Configuration SMTP
+                            Properties props = new Properties();
+                            props.put("mail.smtp.host", "smtp.gmail.com");
+                            props.put("mail.smtp.port", "587");
+                            props.put("mail.smtp.auth", "true");
+                            props.put("mail.smtp.starttls.enable", "true");
+
+                            Session session = Session.getInstance(props, new Authenticator() {
+                                @Override
+                                protected PasswordAuthentication getPasswordAuthentication() {
+                                    return new PasswordAuthentication(GMAIL_USERNAME, GMAIL_PASSWORD);
+                                }
+                            });
+
+                            // Envoi de l'email au professeur
+                            Message teacherMessage = new MimeMessage(session);
+                            teacherMessage.setFrom(new InternetAddress(GMAIL_USERNAME));
+                            teacherMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(teacherEmail));
+                            teacherMessage.setSubject(teacherSubject);
+                            teacherMessage.setContent(teacherHtml, "text/html; charset=utf-8");
+                            Transport.send(teacherMessage);
+
+                            // Envoi de l'email à l'étudiant
                             String studentSubject = "[Knowlity] Inappropriate Answer Detected";
-                            String studentHtml = com.esprit.knowlity.Utils.MailUtil.getStudentHtmlEmail(studentName, evalName, questionTitle, filtered);
-                            com.esprit.knowlity.Utils.MailUtil.sendHtmlMail(studentEmail, studentSubject, studentHtml);
+                            String studentHtml = com.esprit.knowlity.Utils.MailUtil.getStudentHtmlEmail(studentName, studentPrenom, courseName, evalName, questionTitle, filtered);
+                            Message studentMessage = new MimeMessage(session);
+                            studentMessage.setFrom(new InternetAddress(GMAIL_USERNAME));
+                            studentMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(studentEmail));
+                            studentMessage.setSubject(studentSubject);
+                            studentMessage.setContent(studentHtml, "text/html; charset=utf-8");
+                            Transport.send(studentMessage);
+
                             return null;
                         }
                     };
@@ -370,35 +415,57 @@ public class EvaluationFormController {
                 reponseService.addReponse(r);
             }
         }
-        // Animate and show review
-        FadeTransition ft = new FadeTransition(Duration.millis(500), submitButton);
-        ft.setFromValue(1.0);
-        ft.setToValue(0.0);
-        ft.setOnFinished(evt -> openAwaitCorrectionPage());
-        ft.play();
-    }
 
+        // Show success message
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Succès");
+        alert.setHeaderText(null);
+        alert.setContentText("Vos réponses ont été soumises avec succès !");
+        alert.showAndWait();
 
-    private void openAwaitCorrectionPage() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esprit/knowlity/view/student/evaluation_await_correction.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esprit/knowlity/view/student/evaluation_select.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) answerTextArea.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Awaiting Correction");
-            // Wire up the back button
-            EvaluationAwaitCorrectionController controller = loader.getController();
-            controller.backToCoursesButton.setOnAction(ev -> {
-                try {
-                    Parent courseRoot = FXMLLoader.load(getClass().getResource("/com/esprit/knowlity/view/student/student.fxml"));
-                    stage.setScene(new Scene(courseRoot));
-                    stage.setTitle("Course List");
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
+
+            // Obtenir le contrôleur et initialiser les données
+            EvaluationSelectController controller = loader.getController();
+
+            // Récupérer les évaluations pour le cours actuel
+            if (evaluation != null) {
+                EvaluationService evaluationService = new EvaluationService();
+                ServiceCours serviceCours = new ServiceCours();
+
+                // Récupérer le cours et les évaluations
+                Cours cours = serviceCours.getCoursById(evaluation.getCoursId());
+                List<Evaluation> evals = evaluationService.getEvaluationsByCoursId(evaluation.getCoursId());
+
+                // Configurer le contrôleur
+                controller.setCourse(cours);
+                controller.setEvaluations(evals);
+
+                // Configurer le bouton retour du EvaluationSelectController
+                controller.setOnBack(event -> {
+                    try {
+                        FXMLLoader studentLoader = new FXMLLoader(getClass().getResource("/com/esprit/knowlity/view/student/student.fxml"));
+                        Parent studentRoot = studentLoader.load();
+                        StudentController studentController = studentLoader.getController();
+                        studentController.setCourse(cours);
+                        submitButton.getScene().setRoot(studentRoot);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        showErrorDialog("Erreur de navigation",
+                                "Impossible de retourner à l'écran principal: " + e.getMessage());
+                    }
+                });
+            }
+
+            // Changer la scène
+            submitButton.getScene().setRoot(root);
+
         } catch (Exception ex) {
             ex.printStackTrace();
+            showErrorDialog("Erreur de navigation",
+                    "Impossible de retourner à la page précédente: " + ex.getMessage());
         }
     }
 
@@ -441,5 +508,70 @@ public class EvaluationFormController {
             progressBar.setProgress(progress);
             progressLabel.setText("Question " + (currentIndex + 1) + " of " + questions.size() + " (" + (int) (progress * 100) + "% )");
         }
+    }
+
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void handleBackAction() {
+        stopBackgroundMusic(); // Stop music when going back
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esprit/knowlity/view/student/evaluation_select.fxml"));
+            Parent root = loader.load();
+
+            // Obtenir le contrôleur et initialiser les données
+            EvaluationSelectController controller = loader.getController();
+
+            // Récupérer les évaluations pour le cours actuel
+            if (evaluation != null) {
+                EvaluationService evaluationService = new EvaluationService();
+                ServiceCours serviceCours = new ServiceCours();
+
+                // Récupérer le cours et les évaluations
+                Cours cours = serviceCours.getCoursById(evaluation.getCoursId());
+                List<Evaluation> evals = evaluationService.getEvaluationsByCoursId(evaluation.getCoursId());
+
+                // Configurer le contrôleur
+                controller.setCourse(cours);
+                controller.setEvaluations(evals);
+
+                // Configurer le bouton retour du EvaluationSelectController
+                controller.setOnBack(event -> {
+                    try {
+                        FXMLLoader studentLoader = new FXMLLoader(getClass().getResource("/com/esprit/knowlity/view/student/student.fxml"));
+                        Parent studentRoot = studentLoader.load();
+                        StudentController studentController = studentLoader.getController();
+                        studentController.setCourse(cours);
+                        backButton.getScene().setRoot(studentRoot);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        showErrorDialog("Erreur de navigation",
+                                "Impossible de retourner à l'écran principal: " + e.getMessage());
+                    }
+                });
+            }
+
+            // Changer la scène
+            backButton.getScene().setRoot(root);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showErrorDialog("Erreur de navigation",
+                    "Impossible de retourner à la page précédente: " + ex.getMessage());
+        }
+    }
+
+    private void showErrorDialog(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

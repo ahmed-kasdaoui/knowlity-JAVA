@@ -60,4 +60,19 @@ public class ServiceFavoris {
         }
         return coursIds;
     }
+
+    public int getNombreFavoris(int coursId) {
+        String query = "SELECT COUNT(*) FROM cours_etudiants_favoris WHERE cours_id = ?";
+        try (PreparedStatement pst = connection.prepareStatement(query)) {
+            pst.setInt(1, coursId);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error counting favorites: " + e.getMessage());
+        }
+        return 0;
+    }
 } 

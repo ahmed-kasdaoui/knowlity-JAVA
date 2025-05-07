@@ -3,7 +3,6 @@ package com.esprit.knowlity.controller.teacher;
 import com.esprit.knowlity.Model.Evaluation;
 import com.esprit.knowlity.Model.Question;
 import com.esprit.knowlity.Model.Reponse;
-import com.esprit.knowlity.Service.CoursService;
 import com.esprit.knowlity.Service.EvaluationService;
 import com.esprit.knowlity.Service.QuestionService;
 import com.esprit.knowlity.Service.ReponseService;
@@ -16,7 +15,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
+import tn.esprit.services.ServiceCours;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -52,7 +53,7 @@ public class StatisticsController {
     private Evaluation evaluation;
     private final ReponseService reponseService = new ReponseService();
     private final QuestionService questionService = new QuestionService();
-    private final CoursService coursService = new CoursService();
+    private final ServiceCours coursService = new ServiceCours();
     private final EvaluationService evaluationService = new EvaluationService();
     @FXML
     private javafx.scene.control.ListView<String> rankingListView;
@@ -72,11 +73,16 @@ public class StatisticsController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esprit/knowlity/view/teacher/teacher.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) backButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Teacher Back Office");
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            TeacherController controller = loader.getController();
+            ServiceCours coursService = new ServiceCours();
+
+            controller.setCourse(coursService.getCoursById(evaluation.getCoursId()));
+
+
+
+            backButton.getScene().setRoot(root);
+        } catch (IOException e1) {
+            System.err.println("Failed to load EditChapitre.fxml: " + e1.getMessage());
         }
     }
 

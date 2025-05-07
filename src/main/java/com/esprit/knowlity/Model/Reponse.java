@@ -1,7 +1,5 @@
 package com.esprit.knowlity.Model;
 
-
-
 import java.sql.Timestamp;
 
 public class Reponse {
@@ -17,15 +15,19 @@ public class Reponse {
     private String commentaire;
     private String status;
     private Timestamp correctedAt;
+    private boolean isCorrect;
+    private boolean plagiatSuspect;
 
     public Reponse() {
         // Default constructor
+        this.plagiatSuspect = false; // Valeur par défaut
     }
 
     // Constructor
     public Reponse(int id, Integer questionId, Integer evaluationId, Integer resultatId, String text,
                    Integer userId, Integer note, Timestamp startTime, Timestamp submitTime,
-                   String commentaire, String status, Timestamp correctedAt) {
+                   String commentaire, String status, Timestamp correctedAt, boolean isCorrect,
+                   boolean plagiatSuspect) {
         this.id = id;
         this.questionId = questionId;
         this.evaluationId = evaluationId;
@@ -38,6 +40,8 @@ public class Reponse {
         this.commentaire = commentaire;
         this.status = status;
         this.correctedAt = correctedAt;
+        this.isCorrect = isCorrect;
+        this.plagiatSuspect = plagiatSuspect;
     }
 
     // Getters and Setters
@@ -65,11 +69,18 @@ public class Reponse {
     public void setStatus(String status) { this.status = status; }
     public Timestamp getCorrectedAt() { return correctedAt; }
     public void setCorrectedAt(Timestamp correctedAt) { this.correctedAt = correctedAt; }
+    public boolean isCorrect() { return isCorrect; }
+    public void setCorrect(boolean correct) { isCorrect = correct; }
+    public boolean isPlagiatSuspect() {
+        return plagiatSuspect;
+    }
+    public void setPlagiatSuspect(boolean plagiatSuspect) {
+        this.plagiatSuspect = plagiatSuspect;
+    }
 
     @Override
     public String toString() {
         String textPreview = text != null && text.length() > 25 ? text.substring(0, 25) + "..." : text;
         return "User " + userId + " | Q" + questionId + ": " + (textPreview != null ? textPreview : "[No Answer]");
     }
-
 }

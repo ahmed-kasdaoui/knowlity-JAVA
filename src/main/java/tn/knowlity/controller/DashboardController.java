@@ -40,8 +40,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import tn.knowlity.entity.User;
 import tn.knowlity.service.userService;
-import java.io.File;
-import java.io.IOException;
+
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -254,16 +254,10 @@ public class DashboardController {
             }
         });
 
-        // Affichage de l'image de l'utilisateur connecté
         if (UserSessionManager.getInstance().isLoggedIn()) {
             User user = userService.recherparid(UserSessionManager.getInstance().getCurrentUser().getId());
             String imagePath = user.getImage();
-            Image image = new Image(imagePath);
-            imageView.setImage(image);
-
-            Circle clipCircle = new Circle(imageView.getFitWidth() / 2, imageView.getFitHeight() / 2,
-                    Math.min(imageView.getFitWidth(), imageView.getFitHeight()) / 2);
-            imageView.setClip(clipCircle);
+            loadImage(imageView, imagePath);
         } else {
             System.out.println("rahou mahouch connecte");
         }
@@ -383,13 +377,45 @@ public class DashboardController {
             private final Button updateButton = new Button("\uD83D\uDD04");
             private final Button supprimerButton = new Button("❌");
             private final Button BannerButton = new Button("\uD83D\uDEAB");
-            private final HBox pane = new HBox(10, supprimerButton);
+            private final HBox pane = new HBox(10, supprimerButton,BannerButton,updateButton);
 
             {
                 supprimerButton.setOnAction(event -> {
                     User user = getTableView().getItems().get(getIndex());
                     System.out.println(user.getEmail());
                     supprimerUtilisateur(user);
+                });
+                BannerButton.setOnAction(event -> {
+                    User user = getTableView().getItems().get(getIndex());
+                    System.out.println(user);
+                    System.out.println(user.getEmail());
+                    banneruser(user);
+                    List<User> users = null;
+                    try {
+                        users = userService.afficherdetailsuser();
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    ObservableList<User> observableUsers = FXCollections.observableArrayList(users);
+                    tableView.setItems(observableUsers);
+
+
+                });
+                updateButton.setOnAction(event -> {
+                    User user = getTableView().getItems().get(getIndex());
+                    System.out.println(user);
+                    System.out.println(user.getEmail());
+                    unbanneruser(user);
+                    List<User> users = null;
+                    try {
+                        users = userService.afficherdetailsuser();
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    ObservableList<User> observableUsers = FXCollections.observableArrayList(users);
+                    tableView.setItems(observableUsers);
+
+
                 });
             }
 
@@ -434,7 +460,30 @@ public class DashboardController {
 
 
 
+    private void unbanneruser(User user) {
+        try {
 
+            userService.unbannneruser(user);
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+    }
+
+    private void banneruser(User user) {
+        try {
+
+
+            userService.bannneruser(user);
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+    }
 
     private void animateBackgroundCircles() {
         // Left side circles (x from 0 to 400)
@@ -693,6 +742,55 @@ public class DashboardController {
         }
         String imagePathInput = imagePathLabel.getText();
 
+        // Only process image if one was selected
+        if (imagePathInput != null && !imagePathInput.equals("Aucune image Séléectionné")) {
+            try {
+                Path sourcePath = Paths.get(imagePathInput);
+                
+                // Verify source file exists
+                if (!Files.exists(sourcePath)) {
+                    showError("L'image source n'existe pas", errorMessageLabel);
+                    return;
+                }
+
+                // Create destination directory if it doesn't exist
+                Path destinationFolder = Paths.get("src/main/resources/images");
+                if (!Files.exists(destinationFolder)) {
+                    Files.createDirectories(destinationFolder);
+                }
+
+                // Generate unique filename
+                String fileName = sourcePath.getFileName().toString();
+                Path destinationPath = destinationFolder.resolve(fileName);
+
+                // Handle duplicate filenames
+                int counter = 1;
+                while (Files.exists(destinationPath)) {
+                    String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
+                    String fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+                    destinationPath = destinationFolder.resolve(fileNameWithoutExtension + "_" + counter + fileExtension);
+                    counter++;
+                }
+
+                // Copy file with error handling
+                try {
+                    Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+                    imagePathInput = destinationPath.toString(); // Update path to new location
+                    System.out.println("Image déplacée avec succès vers : " + destinationPath);
+                } catch (IOException e) {
+                    showError("Erreur lors de la copie de l'image: " + e.getMessage(), errorMessageLabel);
+                    e.printStackTrace();
+                    return;
+                }
+            } catch (Exception e) {
+                showError("Erreur lors du traitement de l'image: " + e.getMessage(), errorMessageLabel);
+                e.printStackTrace();
+                return;
+            }
+        }
+
+        System.out.println("Continuing with user creation...");
+
         String[] roles = new String[]{"Etudiant"};
         RadioButton selectedRadioButton = (RadioButton) roleGroup.getSelectedToggle();
         if (selectedRadioButton != null) {
@@ -708,31 +806,7 @@ public class DashboardController {
             showError("selectionnez Roles",rolesError);
         }
 
-        Path sourcePath = Paths.get(imagePathInput);
-
-        // Créer le dossier ressources/images s'il n'existe pas
-        Path destinationFolder = Paths.get("src/main/resources/images");
-        Files.createDirectories(destinationFolder);
-
-        // Générer un nom de fichier unique pour éviter les écrasements
-        String fileName = sourcePath.getFileName().toString();
-        Path destinationPath = destinationFolder.resolve(fileName);
-
-        // Gérer les fichiers en double
-        int counter = 1;
-        while (Files.exists(destinationPath)) {
-            String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
-            String fileExtension = fileName.substring(fileName.lastIndexOf('.'));
-            destinationPath = destinationFolder.resolve(fileNameWithoutExtension + "_" + counter + fileExtension);
-            counter++;
-        }
-
-        // Copier le fichier (avec remplacement si nécessaire)
-        Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
-
-
-
-        System.out.println("Image déplacée avec succès vers : " + destinationPath);
+        System.out.println("Image path: " + imagePathInput);
         if (compteur ==0) {
             int phoneInput = Integer.parseInt(numTelephone.getText());
             User user = new User(prenomInput, emailInput,dateNaissanceInput, phoneInput,passwordInput,imagePathInput,"homme",localisationInput, confirmPasswordInput, 0,"math",roles,nomInput);
@@ -839,6 +913,29 @@ public class DashboardController {
         navbarController.changeScene("/Benevolat/Association/affichageBack.fxml", currentStage);
     }
 
+    private void loadImage(ImageView imageView, String imagePath) {
+        String path = imagePath != null && !imagePath.isEmpty() ? imagePath.trim() : "/images/user_placeholder.png";
+        if (path != null && !path.isEmpty()) {
+            path = path.substring(path.lastIndexOf("\\") + 1); // Handles backslashes
+            path = path.substring(path.lastIndexOf("/") + 1);  // Handles forward slashes
+        }
+
+        if (!path.startsWith("/images/") && !path.equals("/images/user_placeholder.png")) {
+            path = "/images/" + path;
+        }
+
+        try {
+            InputStream stream = getClass().getResourceAsStream(path);
+            if (stream == null) {
+                System.err.println("Image not found: " + path);
+                stream = getClass().getResourceAsStream("/images/user_placeholder.png");
+            }
+            imageView.setImage(new Image(stream));
+        } catch (Exception e) {
+            System.err.println("Error loading image: " + path + ". Error: " + e.getMessage());
+            imageView.setImage(new Image(getClass().getResourceAsStream("/images/user_placeholder.png")));
+        }
+    }
 
 
 

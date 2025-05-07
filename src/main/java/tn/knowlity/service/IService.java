@@ -17,4 +17,5 @@ public interface IService {
     public void ajouterverificationcode(String verifcode,String email) throws SQLException;
     public void modifierpassword(String password,String confirmpassword,String mail) throws SQLException;
     public User recherparemail(String email) throws SQLException;
+    public void bannneruser(User user) throws SQLException;
 }

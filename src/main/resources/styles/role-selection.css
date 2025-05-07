@@ -1,0 +1,114 @@
+.root {
+    -fx-background-color: linear-gradient(to right bottom, #6A11CB, #2575FC);
+    background: linear-gradient(to right bottom, #6A11CB, #2575FC);
+    background-color: #6A11CB;
+}
+
+.role-selection-container {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    background-color: rgba(255, 255, 255, 0.95);
+    -fx-background-radius: 20;
+    border-radius: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 5);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.welcome-text {
+    -fx-font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', sans-serif;
+    -fx-font-size: 42px;
+    font-size: 42px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+    -fx-fill: #2C3E50;
+    color: #2C3E50;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 0, 1);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.select-role-text {
+    -fx-font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', sans-serif;
+    -fx-font-size: 22px;
+    font-size: 22px;
+    -fx-fill: #7F8C8D;
+    color: #7F8C8D;
+}
+
+.role-card {
+    -fx-background-color: white;
+    background-color: white;
+    -fx-background-radius: 20;
+    border-radius: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    -fx-cursor: hand;
+    cursor: pointer;
+    -fx-padding: 35 45;
+    padding: 35px 45px;
+    -fx-min-width: 250;
+    min-width: 250px;
+    -fx-max-width: 250;
+    max-width: 250px;
+    -fx-alignment: center;
+    text-align: center;
+    -fx-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+.role-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 5);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    -fx-translate-y: -3;
+    transform: translateY(-3px);
+    -fx-background-color: linear-gradient(to bottom, white, #f8f9fa);
+    background: linear-gradient(to bottom, white, #f8f9fa);
+}
+
+.role-icon {
+    -fx-font-size: 52px;
+    font-size: 52px;
+}
+
+.role-title {
+    -fx-font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', sans-serif;
+    -fx-font-size: 26px;
+    font-size: 26px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+    -fx-fill: #2C3E50;
+    color: #2C3E50;
+}
+
+.role-description {
+    -fx-font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', sans-serif;
+    -fx-font-size: 16px;
+    font-size: 16px;
+    -fx-fill: #7F8C8D;
+    color: #7F8C8D;
+    -fx-text-alignment: center;
+    text-align: center;
+}
+
+/* Flèche de navigation */
+.role-arrow {
+    -fx-icon-color: #2C3E50;
+    color: #2C3E50;
+    -fx-icon-size: 16;
+    font-size: 16px;
+    -fx-opacity: 0;
+    opacity: 0;
+    -fx-translate-x: -10;
+    transform: translateX(-10px);
+    -fx-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+.role-card:hover .role-arrow {
+    -fx-opacity: 1;
+    opacity: 1;
+    -fx-translate-x: 0;
+    transform: translateX(0);
+}

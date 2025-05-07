@@ -3,6 +3,7 @@ package tn.knowlity.controller;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.services.oauth2.model.Userinfo;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,6 +14,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import tn.knowlity.entity.User;
+import tn.knowlity.service.GoogleAuthExample;
 import tn.knowlity.service.userService;
 import tn.knowlity.tools.GoogleOAuthUtil;
 import tn.knowlity.tools.UserSessionManager;
@@ -23,7 +25,9 @@ import java.net.URI;
 import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -78,6 +82,11 @@ public class LoginPageController {
         navbarController.changeScene("/user/inscriptionEtudiant.fxml", currentStage);
     }
 
+
+    private Map<String, Integer> failedAttempts = new HashMap<>();
+
+    int compteur = 0;
+
     @FXML
     public void signin(ActionEvent event) {
         String emailInput = email.getText();
@@ -85,20 +94,38 @@ public class LoginPageController {
 
         try {
             User user = userService.Authentification(emailInput, passwordInput);
+            User user1 = userService.recherparemail(emailInput);
+            if(user1!=null){
+                if(user1.getBanned()==1){
+                    showError(" Utilisateur banni.");
+                    return;
+                }
+            }
             if (user != null) {
                 UserSessionManager.getInstance().setCurrentUser(user);
                 LOGGER.info("User authenticated via email/password: " + emailInput);
-
-                String file = "/ListeCours.fxml";
+                String file = "/User/backUser.fxml";
                 String[] userRoles = user.getRoles();
                 List<String> roles = Arrays.asList(userRoles);
                 if (roles.contains("Enseignant") || roles.contains("Etudiant")) {
-                    file = "/ListeCoursEtudiant.fxml";
+                    if (roles.contains("Enseignant")) {file="/ListeCours.fxml";}
+                    else if (roles.contains("Etudiant"))file = "/ListeCoursEtudiant.fxml";
+                    else file="/User/backUser.fxml";
                 }
 
                 Stage currentStage = (Stage) email.getScene().getWindow();
                 navbarController.changeScene(file, currentStage);
             } else {
+                showError("Email ou pass Incorrecte");
+                failedAttempts.put(emailInput, failedAttempts.getOrDefault(emailInput, 0) + 1);
+
+                if (failedAttempts.get(emailInput) >= 3) {
+
+                    User userban= userService.recherparemail(emailInput);
+                    userService.bannneruser(userban);
+                    showError("Trop de tentatives incorrectes. Utilisateur banni.");
+                    return;
+                }
                 LOGGER.warning("Authentication failed for email: " + emailInput);
                 showError("Email ou mot de passe incorrect.");
             }
@@ -111,87 +138,26 @@ public class LoginPageController {
         }
     }
 
-    @FXML
-    public void signInWithGoogle(ActionEvent event) {
-        googleSignInButton.setDisable(true);
-        try {
-            String authUrl = GoogleOAuthUtil.getAuthorizationUrl();
-            Desktop.getDesktop().browse(new URI(authUrl));
-            LOGGER.info("Opened Google authorization URL for login");
+    public void authgoolee() throws IOException {
+        GoogleAuthExample googleAuthExample = new GoogleAuthExample();
+        Stage stage = new Stage();
 
-            new Thread(() -> {
-                try {
-                    Credential credential = GoogleOAuthUtil.authorize();
-                    Userinfo userInfo = GoogleOAuthUtil.getUserInfo(credential);
-                    User user = userService.authenticateWithGoogle(userInfo.getId());
+        googleAuthExample.test(stage, success -> {
+            System.out.println(success); // true ou false après authentification
 
-                    if (user == null) {
-                        User newUser = new User();
-                        newUser.setGoogle_id(userInfo.getId());
-                        newUser.setEmail(userInfo.getEmail());
-                        newUser.setNom(userInfo.getFamilyName() != null ? userInfo.getFamilyName() : "");
-                        newUser.setPrenom(userInfo.getGivenName() != null ? userInfo.getGivenName() : "");
-                        newUser.setImage(userInfo.getPicture() != null ? userInfo.getPicture() : "");
-                        UserSessionManager.getInstance().setCurrentUser(newUser);
-
-                        LOGGER.info("New Google user, redirecting to role selection: " + userInfo.getEmail());
-                        javafx.application.Platform.runLater(() -> {
-                            try {
-                                Stage currentStage = (Stage) email.getScene().getWindow();
-                                navbarController.changeScene("/user/choice.fxml", currentStage);
-                            } catch (IOException e) {
-                                LOGGER.log(Level.SEVERE, "Error redirecting to role selection", e);
-                                showError("Erreur lors de la redirection: " + e.getMessage());
-                            }
-                        });
-                    } else {
-                        UserSessionManager.getInstance().setCurrentUser(user);
-                        LOGGER.info("Existing Google user authenticated: " + userInfo.getEmail());
-
-                        String file = "/User/backUser.fxml";
-                        String[] roles = user.getRoles();
-                        List<String> roleList = Arrays.asList(roles);
-                        if (roleList.contains("Enseignant") || roleList.contains("Etudiant")) {
-                            file = "/ListeCoursEtudiant.fxml";
-                        }
-
-                        String finalFile = file;
-                        javafx.application.Platform.runLater(() -> {
-                            try {
-                                Stage currentStage = (Stage) email.getScene().getWindow();
-                                navbarController.changeScene(finalFile, currentStage);
-                            } catch (IOException e) {
-                                LOGGER.log(Level.SEVERE, "Error redirecting to dashboard", e);
-                                showError("Erreur lors de la redirection: " + e.getMessage());
-                            }
-                        });
+            if (success) {
+                Platform.runLater(() -> {
+                    try {
+                        Stage currentStage = (Stage) circle1.getScene().getWindow();
+                        navbarController.changeScene("/ListeCoursEtudiant.fxml", currentStage);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, "IO error during Google authentication", e);
-                    javafx.application.Platform.runLater(() -> showError("Erreur réseau lors de l'authentification Google. Veuillez réessayer."));
-                } catch (GeneralSecurityException e) {
-                    LOGGER.log(Level.SEVERE, "Security error during Google authentication", e);
-                    javafx.application.Platform.runLater(() -> showError("Erreur de sécurité lors de l'authentification Google."));
-                } catch (Exception e) {
-                    LOGGER.log(Level.SEVERE, "Unexpected error during Google authentication", e);
-                    javafx.application.Platform.runLater(() -> showError("Erreur inattendue lors de l'authentification Google."));
-                } finally {
-                    javafx.application.Platform.runLater(() -> googleSignInButton.setDisable(false));
-                }
-            }).start();
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error initiating Google authentication", e);
-            showError("Impossible de lancer l'authentification Google. Veuillez réessayer.");
-            googleSignInButton.setDisable(false);
-        } catch (GeneralSecurityException e) {
-            LOGGER.log(Level.SEVERE, "Security error initiating Google authentication", e);
-            showError("Erreur de sécurité lors de l'authentification Google.");
-            googleSignInButton.setDisable(false);
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Unexpected error initiating Google authentication", e);
-            showError("Erreur inattendue. Veuillez réessayer.");
-            googleSignInButton.setDisable(false);
-        }
+                });
+            } else {
+                System.out.println("Authentication failed, stay on page.");
+            }
+        });
     }
 
     private void showError(String message) {

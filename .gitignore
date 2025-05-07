@@ -2,7 +2,11 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
+.env
+*.secret
+/target/
+.idea/
+*.iml
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml

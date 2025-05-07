@@ -3,6 +3,7 @@ package com.esprit.knowlity.controller.student;
 import com.esprit.knowlity.Model.Evaluation;
 import com.esprit.knowlity.Model.Question;
 import com.esprit.knowlity.Model.Reponse;
+import com.esprit.knowlity.Service.EvaluationService;
 import com.esprit.knowlity.Service.QuestionService;
 import com.esprit.knowlity.Service.ReponseService;
 import com.google.zxing.BarcodeFormat;
@@ -15,11 +16,11 @@ import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.*;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -30,6 +31,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import com.esprit.knowlity.Utils.UploadcareUtil;
+import tn.esprit.models.Cours;
+import tn.esprit.services.ServiceCours;
 import tn.knowlity.entity.User;
 import tn.knowlity.tools.UserSessionManager;
 
@@ -62,7 +65,7 @@ public class ResultEvaluationController implements Initializable {
     @FXML
     private HBox badgeInlineBox;
     @FXML
-    private Label badgeImage;
+    private ImageView badgeImage;
     @FXML
     private Label badgeTitle;
     @FXML
@@ -78,9 +81,11 @@ public class ResultEvaluationController implements Initializable {
     private User user = UserSessionManager.getInstance().getCurrentUser();
     private final int DEFAULT_USER_ID = user.getId();
 
-
     private final ReponseService reponseService = new ReponseService();
     private final QuestionService questionService = new QuestionService();
+
+    @FXML
+    private Button btnBack;
 
     public void setEvaluation(Evaluation evaluation) {
         this.evaluation = evaluation;
@@ -89,18 +94,59 @@ public class ResultEvaluationController implements Initializable {
     }
 
     @FXML
-    private Button backButton;
-
-    public void setBackCallback(Runnable backCallback) {
-        this.backCallback = backCallback;
-        backButton.setOnAction(e -> {
-            if (this.backCallback != null) {
-                this.backCallback.run();
-            } else {
-                javafx.stage.Stage stage = (javafx.stage.Stage) backButton.getScene().getWindow();
-                stage.close();
+    private void handleBackAction() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esprit/knowlity/view/student/evaluation_select.fxml"));
+            Parent root = loader.load();
+            
+            // Obtenir le contrôleur et initialiser les données
+            EvaluationSelectController controller = loader.getController();
+            
+            // Récupérer les évaluations pour le cours actuel
+            if (evaluation != null) {
+                EvaluationService evaluationService = new EvaluationService();
+                ServiceCours serviceCours = new ServiceCours();
+                
+                // Récupérer le cours et les évaluations
+                Cours cours = serviceCours.getCoursById(evaluation.getCoursId());
+                List<Evaluation> evals = evaluationService.getEvaluationsByCoursId(evaluation.getCoursId());
+                
+                // Configurer le contrôleur
+                controller.setCourse(cours);
+                controller.setEvaluations(evals);
+                
+                // Configurer le bouton retour du EvaluationSelectController
+                controller.setOnBack(event -> {
+                    try {
+                        FXMLLoader studentLoader = new FXMLLoader(getClass().getResource("/com/esprit/knowlity/view/student/student.fxml"));
+                        Parent studentRoot = studentLoader.load();
+                        StudentController studentController = studentLoader.getController();
+                        studentController.setCourse(cours);
+                        btnBack.getScene().setRoot(studentRoot);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        showErrorDialog("Erreur de navigation", 
+                            "Impossible de retourner à l'écran principal: " + e.getMessage());
+                    }
+                });
             }
-        });
+            
+            // Changer la scène
+            btnBack.getScene().setRoot(root);
+            
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showErrorDialog("Erreur de navigation", 
+                "Impossible de retourner à la page précédente: " + ex.getMessage());
+        }
+    }
+
+    private void showErrorDialog(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @Override
@@ -194,6 +240,9 @@ public class ResultEvaluationController implements Initializable {
     }
 
     private void generatePdf(File file, String certId) throws Exception {
+        // Student details
+        String studentNom = user.getNom();
+        String studentPrenom = user.getPrenom();
         Document document = new Document(new Rectangle(800, 600), 36, 36, 36, 36);
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
         document.open();
@@ -216,41 +265,58 @@ public class ResultEvaluationController implements Initializable {
         cb.showTextAligned(Element.ALIGN_CENTER, "Knowlity", 400, 300, 45);
         cb.endText();
         cb.restoreState();
-        Paragraph header = new Paragraph("Certificate of Achievement\n\n", new Font(Font.HELVETICA, 32, Font.BOLD, new java.awt.Color(67, 206, 162)));
-        header.setAlignment(Element.ALIGN_CENTER);
-        document.add(header);
-        String userName = "the student"; // TODO: Replace with actual user name if available
+        Paragraph certPara = new Paragraph("Certificat de Réussite", new Font(Font.HELVETICA, 32, Font.BOLD, new java.awt.Color(67, 206, 162)));
+        certPara.setAlignment(Element.ALIGN_CENTER);
+        document.add(certPara);
+
+        // Add extra spacing
+        document.add(new Paragraph(" ")); // Empty paragraph for extra vertical space
+        document.add(new Paragraph(" ")); // Another empty paragraph
+
+        String userName = studentNom + " " + studentPrenom;
         String evalTitle = evaluation != null ? evaluation.getTitle() : "[Evaluation]";
         Paragraph congrats = new Paragraph("This is to certify that " + userName + "\n\nhas successfully passed the evaluation of " + evalTitle, new Font(Font.HELVETICA, 20, Font.BOLD, new java.awt.Color(24, 90, 157)));
         congrats.setAlignment(Element.ALIGN_CENTER);
         congrats.setSpacingAfter(18);
         document.add(congrats);
         String badgeName = badgeTitle.getText();
-        String badgeImg = badgeImage.getText();
+        String badgeImg = badgeImage.getImage() != null ? badgeImage.getImage().getUrl() : null;
         Paragraph badgeHeader = new Paragraph("Badge Awarded", new Font(Font.HELVETICA, 19, Font.BOLD, new java.awt.Color(67, 206, 162)));
         badgeHeader.setAlignment(Element.ALIGN_CENTER);
         badgeHeader.setSpacingBefore(8);
         document.add(badgeHeader);
+        System.out.println("Badge Image Path: " + badgeImg);
         if (badgeImg != null && !badgeImg.isEmpty()) {
-            Font emojiFont;
-            try {
-                java.io.InputStream fontStream = getClass().getResourceAsStream("/fonts/Symbola.ttf");
-                if (fontStream != null) {
-                    byte[] fontBytes = fontStream.readAllBytes();
-                    fontStream.close();
-                    BaseFont symbolaBase = BaseFont.createFont(
-                            "Symbola.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, false, fontBytes, null
-                    );
-                    emojiFont = new Font(symbolaBase, 40);
-                } else {
-                    emojiFont = new Font(Font.HELVETICA, 40);
-                }
-            } catch (Exception ex) {
-                emojiFont = new Font(Font.HELVETICA, 40);
+            // Extract filename from the URL or path
+            String fileName;
+            if (badgeImg.startsWith("file:")) {
+                fileName = badgeImg.substring(badgeImg.lastIndexOf('/') + 1);
+            } else {
+                fileName = badgeImg;
             }
-            Paragraph badgeImgPara = new Paragraph(badgeImg, emojiFont);
-            badgeImgPara.setAlignment(Element.ALIGN_CENTER);
-            document.add(badgeImgPara);
+            
+            // Create a new image from the badge image path
+            File badgeImageFile = new File("C:\\xampp\\htdocs\\knowlity\\" + fileName);
+            System.out.println("Badge Image Filename: " + fileName);
+            System.out.println("Badge Image File: " + badgeImageFile.getAbsolutePath());
+            System.out.println("Badge Image File Exists: " + badgeImageFile.exists());
+            
+            if (badgeImageFile.exists()) {
+                try {
+                    com.lowagie.text.Image badgeImgInstance = com.lowagie.text.Image.getInstance(badgeImageFile.getAbsolutePath());
+                    badgeImgInstance.setAlignment(Element.ALIGN_CENTER);
+                    badgeImgInstance.scaleToFit(80, 80); // Adjust size as needed
+                    document.add(badgeImgInstance);
+                    System.out.println("Badge Image Added Successfully");
+                } catch (Exception e) {
+                    System.err.println("Error adding badge image: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            } else {
+                System.err.println("Badge image file does not exist");
+            }
+        } else {
+            System.out.println("No badge image path provided");
         }
         Paragraph badgeNamePara = new Paragraph(badgeName, new Font(Font.HELVETICA, 22, Font.BOLD, new java.awt.Color(24, 90, 157)));
         badgeNamePara.setAlignment(Element.ALIGN_CENTER);
@@ -270,18 +336,20 @@ public class ResultEvaluationController implements Initializable {
     }
 
     private void generateCorrectionPdf(File file, List<Question> questions, List<Reponse> reponses, int totalScore, int maxScore) throws Exception {
+        // Student details
+        String studentNom = user.getNom();
+        String studentPrenom = user.getPrenom();
+        String studentEmail = user.getEmail();
         Document document = new Document(new Rectangle(800, 700), 36, 36, 36, 36);
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
         document.open();
 
         // Header Bar with color and logo
         PdfContentByte cb = writer.getDirectContentUnder();
-        // Draw a smaller green header bar just for the logo
         float headerBarHeight = 50f;
         cb.setColorFill(new java.awt.Color(67, 206, 162));
-        cb.rectangle(0, 700 - headerBarHeight, 800, headerBarHeight); // top bar
+        cb.rectangle(0, 700 - headerBarHeight, 800, headerBarHeight);
         cb.fill();
-        // Center the logo in the header bar
         try {
             java.io.InputStream logoStream = getClass().getResourceAsStream("/images/logo.png");
             if (logoStream != null) {
@@ -293,11 +361,20 @@ public class ResultEvaluationController implements Initializable {
                 logo.setAbsolutePosition(logoX, logoY);
                 logo.scaleToFit(logoWidth, logoHeight);
                 document.add(logo);
+
+            // Knowlity Watermark
+            cb.beginText();
+            BaseFont baseFont = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.EMBEDDED);
+            cb.setColorStroke(new java.awt.Color(200, 200, 200, 50)); // Light gray with transparency
+            cb.setFontAndSize(baseFont, 80);
+            cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_STROKE);
+            cb.showTextAligned(Element.ALIGN_CENTER, "Knowlity", 400, 300, 45);
+            cb.endText();
             }
         } catch (Exception ignored) {
         }
 
-        // Title clearly below the green bar
+        // Title
         Font titleFont = new Font(Font.HELVETICA, 32, Font.BOLD, new java.awt.Color(78, 67, 118));
         Paragraph title = new Paragraph("Correction de l'évaluation", titleFont);
         title.setAlignment(Element.ALIGN_CENTER);
@@ -312,12 +389,43 @@ public class ResultEvaluationController implements Initializable {
         evalTitle.setSpacingAfter(2);
         document.add(evalTitle);
 
-        // Score with trophy icon
-        Font scoreFont = new Font(Font.HELVETICA, 24, Font.BOLD, new java.awt.Color(67, 206, 162));
-        Paragraph scorePara = new Paragraph("Note: " + totalScore + " / " + maxScore + "  \uD83C\uDFC6", scoreFont); // Trophy emoji
+        // Student details in a styled card
+        PdfPTable studentTable = new PdfPTable(1);
+        studentTable.setWidthPercentage(60);
+        studentTable.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        PdfPCell studentCell = new PdfPCell();
+        studentCell.setBorderColor(new java.awt.Color(67, 206, 162));
+        studentCell.setBorderWidth(1f);
+        studentCell.setPadding(15);
+        studentCell.setBackgroundColor(new java.awt.Color(245, 249, 252));
+
+        // Name and Prenom
+        Font nameFont = new Font(Font.HELVETICA, 18, Font.BOLD, new java.awt.Color(24, 90, 157));
+        Paragraph namePara = new Paragraph(studentPrenom + " " + studentNom, nameFont);
+        namePara.setAlignment(Element.ALIGN_CENTER);
+        namePara.setSpacingAfter(8);
+        studentCell.addElement(namePara);
+
+        // Email
+        Font emailFont = new Font(Font.HELVETICA, 14, Font.ITALIC, new java.awt.Color(120, 120, 120));
+        Paragraph emailPara = new Paragraph(studentEmail, emailFont);
+        emailPara.setAlignment(Element.ALIGN_CENTER);
+        emailPara.setSpacingAfter(8);
+        studentCell.addElement(emailPara);
+
+        // Score with trophy icon (moved inside the student card)
+        Font scoreFont = new Font(Font.HELVETICA, 16, Font.BOLD, new java.awt.Color(67, 206, 162));
+        Paragraph scorePara = new Paragraph("Note: " + totalScore + " / " + maxScore + "  \uD83C\uDFC6", scoreFont);
         scorePara.setAlignment(Element.ALIGN_CENTER);
         scorePara.setSpacingAfter(8);
-        document.add(scorePara);
+        studentCell.addElement(scorePara);
+
+        studentTable.addCell(studentCell);
+        studentTable.setSpacingBefore(15);
+        studentTable.setSpacingAfter(10); // Reduced spacing to minimize the gap
+
+        document.add(studentTable);
 
         // Questions/Answers as cards
         Font qFont = new Font(Font.HELVETICA, 15, Font.BOLD, new java.awt.Color(78, 67, 118));
@@ -326,27 +434,23 @@ public class ResultEvaluationController implements Initializable {
         Font commentFont = new Font(Font.HELVETICA, 12, Font.ITALIC, new java.awt.Color(255, 81, 47));
 
         for (Question q : questions) {
-            // Card background
             com.lowagie.text.pdf.PdfPTable card = new com.lowagie.text.pdf.PdfPTable(1);
-            card.setWidthPercentage(90); // Reduce width for margin
+            card.setWidthPercentage(90);
             card.setHorizontalAlignment(com.lowagie.text.Element.ALIGN_CENTER);
             com.lowagie.text.pdf.PdfPCell cell = new com.lowagie.text.pdf.PdfPCell();
             cell.setBorderColor(new java.awt.Color(67, 206, 162));
             cell.setBorderWidth(1.5f);
             cell.setPadding(12);
-            cell.setBackgroundColor(new java.awt.Color(255, 255, 255, 240)); // Slightly translucent
+            cell.setBackgroundColor(new java.awt.Color(255, 255, 255, 240));
 
-            // Question title
             Paragraph qPara = new Paragraph("Q: " + q.getTitle(), qFont);
             qPara.setSpacingAfter(2);
             cell.addElement(qPara);
 
-            // Question enonce
             Paragraph enonce = new Paragraph(q.getEnonce(), new Font(Font.HELVETICA, 12, Font.ITALIC, new java.awt.Color(120, 120, 120)));
             enonce.setSpacingAfter(2);
             cell.addElement(enonce);
 
-            // Answer and note
             Reponse r = reponses.stream().filter(resp -> resp.getQuestionId() == q.getId()).findFirst().orElse(null);
             if (r != null) {
                 String answerText = (r.getText() != null && !r.getText().isEmpty()) ? r.getText() : "[Aucune réponse]";
@@ -369,9 +473,9 @@ public class ResultEvaluationController implements Initializable {
                 cell.addElement(notePara);
             }
             card.addCell(cell);
-            document.add(com.lowagie.text.Chunk.NEWLINE); // Extra space above
+            document.add(com.lowagie.text.Chunk.NEWLINE);
             document.add(card);
-            document.add(com.lowagie.text.Chunk.NEWLINE); // Extra space below
+            document.add(com.lowagie.text.Chunk.NEWLINE);
         }
 
         // Footer
@@ -396,9 +500,13 @@ public class ResultEvaluationController implements Initializable {
     }
 
     private void generateBadWordPdf(File file) throws Exception {
+        // Student details
+        String studentNom = user.getNom();
+        String studentPrenom = user.getPrenom();
         Document document = new Document(new Rectangle(800, 700), 36, 36, 36, 36);
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
         document.open();
+
         // Header Bar
         PdfContentByte cb = writer.getDirectContentUnder();
         // Watermark
@@ -442,6 +550,13 @@ public class ResultEvaluationController implements Initializable {
         title.setSpacingBefore(12);
         document.add(title);
 
+        // --- Student Name ---
+        Font studentFont = new Font(Font.HELVETICA, 20, Font.NORMAL, new java.awt.Color(78, 67, 118));
+        Paragraph studentName = new Paragraph(studentPrenom + " " + studentNom, studentFont);
+        studentName.setAlignment(Element.ALIGN_CENTER);
+        studentName.setSpacingAfter(12);
+        document.add(studentName);
+
         // --- Main Message ---
         Font msgFont = new Font(Font.HELVETICA, 20, Font.BOLD, new java.awt.Color(78, 67, 118));
         String evalName = evaluation != null ? evaluation.getTitle() : "[Nom de l'évaluation]";
@@ -475,6 +590,7 @@ public class ResultEvaluationController implements Initializable {
         datePara.setAlignment(Element.ALIGN_CENTER);
         datePara.setSpacingBefore(10);
         document.add(datePara);
+
         document.close();
     }
 
@@ -591,7 +707,15 @@ public class ResultEvaluationController implements Initializable {
         }
         // --- Badge & QR code logic ---
         if (allCorrected && evaluation.getBadgeThreshold() != null && evaluation.getBadgeImage() != null) {
-            badgeImage.setText(evaluation.getBadgeImage());
+            // Set badge image
+            File badgeImageFile = new File("C:\\xampp\\htdocs\\knowlity\\" + evaluation.getBadgeImage());
+            if (badgeImageFile.exists()) {
+                badgeImage.setImage(new Image(badgeImageFile.toURI().toString()));
+                badgeImage.setFitWidth(80);
+                badgeImage.setFitHeight(80);
+                badgeImage.setPreserveRatio(true);
+            }
+            
             badgeTitle.setText(evaluation.getBadgeTitle() != null ? evaluation.getBadgeTitle() : "Badge");
             badgeInlineBox.setVisible(true);
             badgeInlineBox.setManaged(true);

@@ -1,9 +1,12 @@
 package controllers;
 
+import com.esprit.knowlity.controller.student.StudentController;
 import jakarta.mail.*;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,6 +36,7 @@ import tn.knowlity.entity.User;
 import tn.knowlity.tools.UserSessionManager;
 
 import java.awt.Desktop;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Properties;
 
@@ -87,7 +91,6 @@ public class CourseDetailsControllerEtudiant {
     }
 
     private void initializeUI() {
-
         if (course == null) {
             return;
         }
@@ -122,7 +125,10 @@ public class CourseDetailsControllerEtudiant {
         // Set other details
         prixLabel.setText(course.getPrix() + " DT");
         langueLabel.setText(course.getLangue());
-        favoritesLabel.setText("0"); // Default value since favorites are not implemented
+        
+        // Set favorites count
+        int favoritesCount = serviceFavoris.getNombreFavoris(course.getId());
+        favoritesLabel.setText(String.valueOf(favoritesCount));
 
         // Load course image with modern design
         try {
@@ -140,31 +146,61 @@ public class CourseDetailsControllerEtudiant {
             }
         }
 
-        // Load teacher image
-        try {
-            // Essayer de charger l'image depuis le dossier Uploads si disponible
-            File teacherAvatarFile = new File("Uploads/teacher-avatar.png");
-            if (teacherAvatarFile.exists()) {
-                Image teacherImg = new Image(teacherAvatarFile.toURI().toString());
-                teacherImage.setImage(teacherImg);
-            } else {
-                // Si pas d'image, masquer l'ImageView
-                teacherImage.setVisible(false);
-                teacherImage.setManaged(false);
-            }
-        } catch (Exception e) {
-            System.err.println("Error loading teacher avatar: " + e.getMessage());
-            // En cas d'erreur, masquer l'ImageView
-            teacherImage.setVisible(false);
-            teacherImage.setManaged(false);
+        // Set teacher information
+        if (course.getEnseignant() != null) {
+            String teacherName = course.getEnseignant().getPrenom() + " " + course.getEnseignant().getNom();
+            teacherEmail.setText(teacherName);
+        } else {
+            teacherEmail.setText("Enseignant non assigné");
         }
 
-        // Set teacher email (temporarily disabled as we don't have access to teacher info)
-        teacherEmail.setText("Enseignant");
+        // Load teacher image
+        loadImage(teacherImage,course.getEnseignant().getImage());
+
+        // Vérifier si l'utilisateur est inscrit
+        boolean isEnrolled = serviceInscription.estInscrit(DEFAULT_USER_ID, course.getId());
+
+        // Supprimer les anciens boutons d'action s'ils existent
+        mainBox.getChildren().removeIf(node -> node instanceof HBox && node.getId() != null && node.getId().equals("actionButtonsContainer"));
+
+        // Si l'utilisateur est inscrit, ajouter les boutons d'évaluation et de quiz
+        if (isEnrolled) {
+            // Créer les boutons
+            Button evaluationButton = new Button("Passer l'évaluation");
+            evaluationButton.setOnAction(this::handleListeEvaluationsAction);
+            evaluationButton.getStyleClass().addAll("action-button", "evaluation-button");
+            evaluationButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 5;");
+
+            Button quizButton = new Button("Passer les quiz");
+            quizButton.setOnAction(this::handleListeQuizAction);
+            quizButton.getStyleClass().addAll("action-button", "quiz-button");
+            quizButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 5;");
+
+            // Créer une HBox pour les boutons
+            HBox actionButtons = new HBox(20); // 20 pixels d'espacement
+            actionButtons.setId("actionButtonsContainer");
+            actionButtons.setAlignment(Pos.CENTER);
+            actionButtons.setPadding(new Insets(20, 0, 20, 0));
+            actionButtons.getChildren().addAll(evaluationButton, quizButton);
+
+            // Ajouter la HBox après la description du cours
+            int descriptionIndex = mainBox.getChildren().indexOf(descriptionLabel);
+            if (descriptionIndex >= 0) {
+                mainBox.getChildren().add(descriptionIndex + 1, actionButtons);
+            } else {
+                mainBox.getChildren().add(actionButtons);
+            }
+        }
 
         // Load chapters only if enrolled
-        if (serviceInscription.estInscrit(DEFAULT_USER_ID, course.getId())) {
+        if (isEnrolled) {
             loadChapters();
+        } else {
+            chaptersContainer.getChildren().clear();
+            Label notEnrolledLabel = new Label("Inscrivez-vous pour accéder au contenu du cours");
+            notEnrolledLabel.getStyleClass().add("not-enrolled-message");
+            notEnrolledLabel.setStyle("-fx-text-fill: #666; -fx-font-size: 16px; -fx-padding: 20;");
+            chaptersContainer.getChildren().add(notEnrolledLabel);
         }
     }
 
@@ -590,4 +626,68 @@ public class CourseDetailsControllerEtudiant {
         backButton.setOnMouseEntered(e -> backButton.setStyle("-fx-background-color: #e0e0e0; -fx-border-color: #bbb; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-cursor: hand;"));
         backButton.setOnMouseExited(e -> backButton.setStyle("-fx-background-color: #f0f0f0; -fx-border-color: #ccc; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-cursor: hand;"));
     }
+
+    public void handleListeEvaluationsAction(ActionEvent actionEvent) {
+        try {
+            if (course == null) {
+                System.err.println("No course selected for listing evaluations");
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esprit/knowlity/view/student/student.fxml"));
+            Parent root = loader.load();
+            StudentController controller = loader.getController();
+            controller.setCourse(course);
+            mainBox.getScene().setRoot(root);
+        } catch (IOException e) {
+            System.err.println("Failed to load EditCours.fxml: " + e.getMessage());
+        }
+    }
+
+    public void handleListeQuizAction(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListQuizEtudiant.fxml"));
+            Parent root = loader.load();
+            
+            ListQuizEtudiantController controller = loader.getController();
+            controller.setCourse(course);
+            
+            Stage stage = new Stage();
+            stage.setTitle("Liste des Quiz");
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Erreur de chargement");
+            alert.setContentText("Impossible de charger la liste des quiz : " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    private void loadImage(ImageView imageView, String imagePath) {
+        String path = imagePath != null && !imagePath.isEmpty() ? imagePath.trim() : "/images/placeholder.png";
+        if (path != null && !path.isEmpty()) {
+            path = path.substring(path.lastIndexOf("\\") + 1); // Handles backslashes
+            path = path.substring(path.lastIndexOf("/") + 1);  // Handles forward slashes
+        }
+
+        if (!path.startsWith("/images/") && !path.equals("/images/placeholder.png")) {
+            path = "/images/" + path;
+        }
+
+        try {
+            InputStream stream = getClass().getResourceAsStream(path);
+            if (stream == null) {
+                System.err.println("Image not found: " + path);
+                stream = getClass().getResourceAsStream("/images/placeholder.png");
+            }
+            imageView.setImage(new Image(stream));
+        } catch (Exception e) {
+            System.err.println("Error loading image: " + path + ". Error: " + e.getMessage());
+            imageView.setImage(new Image(getClass().getResourceAsStream("/images/placeholder.png")));
+        }
+    }
+
 }

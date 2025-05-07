@@ -22,9 +22,11 @@ import tn.esprit.services.ServiceChapitre;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class CourseDetailsController {
+    public Label teacherLbael;
     @FXML private AnchorPane root;
     @FXML private VBox mainBox;
     @FXML private Button backButton;
@@ -36,6 +38,7 @@ public class CourseDetailsController {
     @FXML private Label dureeLabel;
     @FXML private Label prixLabel;
     @FXML private Label langueLabel;
+    @FXML private Label nbr_chapitre;
     @FXML private VBox paymentBox;
     @FXML private Label paymentLink;
     @FXML private Label descriptionLabel;
@@ -68,17 +71,48 @@ public class CourseDetailsController {
         courseTitle.setText(course.getTitle() != null ? course.getTitle() : "No Title");
         matiereBadge.setText(course.getMatiere() != null && course.getMatiere().getTitre() != null ? course.getMatiere().getTitre() : "Unknown");
         categorieBadge.setText(course.getMatiere() != null && course.getMatiere().getCategorie() != null ? course.getMatiere().getCategorie().getName() : "Unknown");
-        dureeLabel.setText( "6 heures");
+
+        // Calculate total duration and number of chapters
+        List<Chapitre> chapitres = serviceCours.getChapitres(course);
+        int totalDuration = chapitres.stream()
+                .mapToInt(Chapitre::getDureeEstimee)
+                .sum();
+        dureeLabel.setText(totalDuration + " minutes");
+
+        // Update number of chapters
+        teacherLbael.setText(course.getEnseignant().getNom()+" "+course.getEnseignant().getPrenom());
+        nbr_chapitre.setText(String.valueOf(chapitres.size()));
+
         prixLabel.setText(course.getPrix() == 0 ? "Gratuit" : course.getPrix() + " DT");
+
         Label langueGraphic = new Label(course.getLangue() != null ? course.getLangue().toUpperCase() : "UNKNOWN");
         langueGraphic.getStyleClass().addAll("badge", "bg-info");
         langueLabel.setGraphic(langueGraphic);
+
         descriptionLabel.setText(course.getDescription() != null ? course.getDescription() : "No Description");
-        favoritesLabel.setText("Ce cours est dans les favoris de 5 étudiant(s)");
+
+        // Get actual favorites count
+        try {
+            int favCount = serviceCours.getAllFavoris(course.getId()).size();
+            favoritesLabel.setText("Ce cours est dans les favoris de " + favCount + " étudiant(s)");
+        } catch (Exception e) {
+            System.err.println("Failed to get favorites count: " + e.getMessage());
+            favoritesLabel.setText("Ce cours est dans les favoris de 0 étudiant(s)");
+        }
 
         // Course image
         try {
-            courseImage.setImage(new Image("file:Uploads/" + (course.getUrlImage() != null ? course.getUrlImage() : "default_course.jpg")));
+            String imagePath = course.getUrlImage();
+            if (imagePath != null && !imagePath.isEmpty()) {
+                File imageFile = new File("Uploads/" + imagePath);
+                if (imageFile.exists()) {
+                    courseImage.setImage(new Image(imageFile.toURI().toString()));
+                } else {
+                    courseImage.setImage(new Image("file:Uploads/default_course.jpg"));
+                }
+            } else {
+                courseImage.setImage(new Image("file:Uploads/default_course.jpg"));
+            }
         } catch (Exception e) {
             System.err.println("Failed to load course image: " + e.getMessage());
             courseImage.setImage(new Image("file:Uploads/default_course.jpg"));
@@ -95,17 +129,39 @@ public class CourseDetailsController {
         }
 
         // Teacher details
-        teacherEmail.setText("chamseddine.doula@example.com");
-        try {
+        if (course.getEnseignant() != null) {
+            teacherEmail.setText(course.getEnseignant().getEmail());
+            loadImage(teacherImage,course.getEnseignant().getImage());
+        } else {
+            teacherEmail.setText("Information enseignant non disponible");
             teacherImage.setImage(new Image("file:Uploads/teacher-placeholder.jpg"));
-        } catch (Exception e) {
-            System.err.println("Failed to load teacher image: " + e.getMessage());
         }
 
         // Populate chapters
-        List<Chapitre> chapitres = serviceCours.getChapitres(course);
-        System.out.println(chapitres);
         populateGrid(chaptersGrid, chapitres);
+    }
+    private void loadImage(ImageView imageView, String imagePath) {
+        String path = imagePath != null && !imagePath.isEmpty() ? imagePath.trim() : "/images/placeholder.png";
+        if (path != null && !path.isEmpty()) {
+            path = path.substring(path.lastIndexOf("\\") + 1); // Handles backslashes
+            path = path.substring(path.lastIndexOf("/") + 1);  // Handles forward slashes
+        }
+
+        if (!path.startsWith("/images/") && !path.equals("/images/placeholder.png")) {
+            path = "/images/" + path;
+        }
+
+        try {
+            InputStream stream = getClass().getResourceAsStream(path);
+            if (stream == null) {
+                System.err.println("Image not found: " + path);
+                stream = getClass().getResourceAsStream("/images/placeholder.png");
+            }
+            imageView.setImage(new Image(stream));
+        } catch (Exception e) {
+            System.err.println("Error loading image: " + path + ". Error: " + e.getMessage());
+            imageView.setImage(new Image(getClass().getResourceAsStream("/images/placeholder.png")));
+        }
     }
 
     private void populateGrid(GridPane grid, List<Chapitre> chapitres) {
@@ -153,7 +209,7 @@ public class CourseDetailsController {
         HBox header = new HBox();
         header.getStyleClass().add("header-row");
         header.setAlignment(Pos.CENTER_LEFT);
-        
+
         Label order = new Label("Chapitre " + chapitre.getChapOrder());
         order.getStyleClass().add("chapter-badge");
         header.getChildren().add(order);
@@ -169,7 +225,7 @@ public class CourseDetailsController {
         // Chapter info
         VBox infoBox = new VBox(5);
         infoBox.getStyleClass().add("chapter-info");
-        
+
         // Duration info
         HBox durationBox = new HBox(5);
         durationBox.setAlignment(Pos.CENTER_LEFT);
@@ -464,6 +520,23 @@ public class CourseDetailsController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esprit/knowlity/view/teacher/teacher.fxml"));
             Parent root = loader.load();
             TeacherController controller = loader.getController();
+
+            controller.setCourse(course);
+
+
+
+            mainBox.getScene().setRoot(root);
+        } catch (IOException e) {
+            System.err.println("Failed to load EditChapitre.fxml: " + e.getMessage());
+            showAlert("Erreur", "Impossible de charger le formulaire d'ajout.", Alert.AlertType.ERROR);
+        }
+    }
+
+    public void handleQuiz(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ListQuiz.fxml"));
+            Parent root = loader.load();
+            ListQuizController controller = loader.getController();
 
             controller.setCourse(course);
 

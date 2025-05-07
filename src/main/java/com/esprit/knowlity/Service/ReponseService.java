@@ -15,7 +15,7 @@ public class ReponseService {
     }
 
     public void addReponse(Reponse reponse) {
-        String query = "INSERT INTO reponse (question_id, evaluation_id, text, user_id, note, start_time, submit_time, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO reponse (question_id, evaluation_id, text, user_id, note, start_time, submit_time, status, is_correct, plagiat_suspect) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, reponse.getQuestionId());
             pstmt.setInt(2, reponse.getEvaluationId());
@@ -25,6 +25,8 @@ public class ReponseService {
             pstmt.setTimestamp(6, reponse.getStartTime());
             pstmt.setTimestamp(7, reponse.getSubmitTime());
             pstmt.setString(8, reponse.getStatus());
+            pstmt.setBoolean(9, reponse.isCorrect());
+            pstmt.setBoolean(10, reponse.isPlagiatSuspect());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,7 +53,9 @@ public class ReponseService {
                         rs.getTimestamp("submit_time"),
                         rs.getString("commentaire"),
                         rs.getString("status"),
-                        rs.getTimestamp("corrected_at")
+                        rs.getTimestamp("corrected_at"),
+                        rs.getBoolean("is_correct"),
+                        rs.getBoolean("plagiat_suspect")
                 );
                 reponses.add(r);
             }
@@ -83,18 +87,20 @@ public class ReponseService {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Reponse r = new Reponse(
-                        rs.getInt("id"),
-                        rs.getInt("question_id"),
-                        rs.getInt("evaluation_id"),
-                        rs.getInt("resultat_id"),
-                        rs.getString("text"),
-                        rs.getInt("user_id"),
-                        rs.getInt("note"),
-                        rs.getTimestamp("start_time"),
-                        rs.getTimestamp("submit_time"),
-                        rs.getString("commentaire"),
-                        rs.getString("status"),
-                        rs.getTimestamp("corrected_at")
+                    rs.getInt("id"),
+                    rs.getInt("question_id"),
+                    rs.getInt("evaluation_id"),
+                    rs.getInt("resultat_id"),
+                    rs.getString("text"),
+                    rs.getInt("user_id"),
+                    rs.getInt("note"),
+                    rs.getTimestamp("start_time"),
+                    rs.getTimestamp("submit_time"),
+                    rs.getString("commentaire"),
+                    rs.getString("status"),
+                    rs.getTimestamp("corrected_at"),
+                    rs.getBoolean("is_correct"),
+                    rs.getBoolean("plagiat_suspect")
                 );
                 reponses.add(r);
             }
@@ -138,7 +144,9 @@ public class ReponseService {
                     rs.getTimestamp("submit_time"),
                     rs.getString("commentaire"),
                     rs.getString("status"),
-                    rs.getTimestamp("corrected_at")
+                    rs.getTimestamp("corrected_at"),
+                    rs.getBoolean("is_correct"),
+                    rs.getBoolean("plagiat_suspect")
                 );
             }
         } catch (SQLException e) {

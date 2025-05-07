@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+
+<VBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="view.BlogListController"
+      stylesheets="/styles/blog-list.css"
+      spacing="20">
+    
+    <children>
+        <!-- En-tête avec la barre de navigation -->
+        <fx:include source="Navbar.fxml"/>
+        
+        <!-- En-tête de la page -->
+        <VBox styleClass="header">
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <VBox spacing="5">
+                    <Label text="Blogs" styleClass="page-title"/>
+                    <Label text="Découvrez les derniers articles de notre communauté" 
+                           styleClass="page-subtitle"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="newBlogButton" styleClass="action-button" text="Nouveau Blog">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="PLUS" fill="WHITE"/>
+                    </graphic>
+                </Button>
+            </HBox>
+            
+            <!-- Barre de recherche -->
+            <HBox spacing="10" alignment="CENTER_LEFT" VBox.vgrow="NEVER">
+                <VBox styleClass="search-container" HBox.hgrow="ALWAYS">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <FontAwesomeIconView glyphName="SEARCH" styleClass="search-icon"/>
+                        <TextField fx:id="searchField" promptText="Rechercher un article..." 
+                                 styleClass="search-box" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <!-- Contenu principal -->
+        <ScrollPane fx:id="scrollPane" fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="content-pane">
+            <GridPane fx:id="blogContainer" hgap="20" vgap="20">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+            </GridPane>
+        </ScrollPane>
+    </children>
+    
+    <padding>
+        <Insets bottom="20"/>
+    </padding>
+</VBox>

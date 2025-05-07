@@ -12,11 +12,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import tn.esprit.services.ServiceCours;
 
+import java.io.IOException;
 import java.util.List;
 
 public class CorrectionController {
@@ -62,8 +64,35 @@ public class CorrectionController {
             });
         }
 
+        // Check if there are no answers and set a placeholder if needed
+        if (answers.isEmpty()) {
+            // Create a custom placeholder node for no responses
+            javafx.scene.layout.VBox placeholderBox = new javafx.scene.layout.VBox(10);
+            placeholderBox.setAlignment(javafx.geometry.Pos.CENTER);
+            
+            // Create an icon using the nodata image
+            javafx.scene.image.Image noDataImage = new javafx.scene.image.Image(getClass().getResourceAsStream("/images/nodata.png"));
+            javafx.scene.image.ImageView iconImageView = new javafx.scene.image.ImageView(noDataImage);
+            iconImageView.setFitWidth(120);
+            iconImageView.setFitHeight(120);
+            iconImageView.setPreserveRatio(true);
+            
+            // Create a message label
+            javafx.scene.control.Label messageLabel = new javafx.scene.control.Label("Aucune réponse pour le moment");
+            messageLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #666;");
+            
+            javafx.scene.control.Label subMessageLabel = new javafx.scene.control.Label("Les étudiants n'ont pas encore soumis de réponses");
+            subMessageLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #999;");
+            
+            placeholderBox.getChildren().addAll(iconImageView, messageLabel, subMessageLabel);
+            
+            // Set the placeholder for the ListView
+            answerListView.setPlaceholder(placeholderBox);
+        }
+        
         answerListView.getItems().clear();
         answerListView.getItems().addAll(answers);
+        
         // Fade transition for smooth update
         javafx.animation.FadeTransition ft = new javafx.animation.FadeTransition(javafx.util.Duration.millis(350), answerListView);
         ft.setFromValue(0.0);
@@ -79,11 +108,11 @@ public class CorrectionController {
                 } else {
                     Question question = questionService.getQuestionById(item.getQuestionId());
                     String questionText = question != null ? question.getEnonce() : "[Question introuvable]";
-                    String baseText = "User " + item.getUserId() + " | Q " + questionText;
+                    String baseText = "Etudiant N° " + item.getUserId() + " | Q " + questionText;
                     String submitTimeStr = item.getSubmitTime() != null ?
                             new java.text.SimpleDateFormat("dd MMM yyyy, HH:mm").format(item.getSubmitTime()) : "No submit time";
                     String maxNoteStr = question != null ? " | Max: " + question.getPoint() + " pts" : "";
-        String display = baseText + "\nSubmitted: " + submitTimeStr + maxNoteStr;
+                    String display = baseText + "\nSubmitted: " + submitTimeStr + maxNoteStr;
                     if (item.getText() != null && item.getText().contains("****")) {
                         setText(display + "  [Inappropriate Answer Detected]");
                         setStyle("-fx-background-color: #ffe5e5; -fx-text-fill: #d32f2f; -fx-font-weight: bold;");
@@ -171,12 +200,17 @@ public class CorrectionController {
 
     private void goBack() {
         try {
-            Stage stage = (Stage) backButton.getScene().getWindow();
-            Parent root = FXMLLoader.load(getClass().getResource("/com/esprit/knowlity/view/teacher/teacher.fxml"));
-            stage.setScene(new Scene(root));
-            stage.setTitle("Teacher Back Office");
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esprit/knowlity/view/teacher/teacher.fxml"));
+            Parent root = loader.load();
+            TeacherController controller = loader.getController();
+            ServiceCours coursService = new ServiceCours();
+
+            controller.setCourse(coursService.getCoursById(evaluation.getCoursId()));
+
+
+            backButton.getScene().setRoot(root);
+        } catch (IOException e1) {
+            System.err.println("Failed to load EditChapitre.fxml: " + e1.getMessage());
         }
     }
 }

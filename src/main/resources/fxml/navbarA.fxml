@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<VBox prefHeight="752.0" prefWidth="140.0" style="-fx-pref-width: 250px; -fx-background-color: white; -fx-border-color: grey; -fx-max-width: 250px;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.navbarA">
+    <children>
+        <ImageView fx:id="test" fitHeight="158.0" fitWidth="135.0">
+            <image>
+                <Image url="@../images/knowlity.png" />
+            </image>
+            <VBox.margin>
+                <Insets bottom="20.0" left="50.0" right="20.0" top="40.0" />
+            </VBox.margin>
+        </ImageView>
+        <StackPane />
+        <VBox spacing="10" style="-fx-padding: 0 20px;">
+            <children>
+                <Button onAction="#user" style="-fx-background-color: rgba(0,0,0,0); -fx-text-fill: linear-gradient(to right, #00FFFF, #008B8B); -fx-font-size: 18px; -fx-font-weight: bold; -fx-font-family: 'Arial'; -fx-alignment: center-left; -fx-pref-width: 210px; -fx-padding: 12px;" text="User" />
+                <Button onAction="#category" style="-fx-background-color: transparent; -fx-text-fill: linear-gradient(to right, #00FFFF, #008B8B); -fx-font-size: 18px; -fx-font-weight: bold; -fx-font-family: 'Arial'; -fx-alignment: center-left; -fx-pref-width: 210px; -fx-padding: 12px;" text="Categories" />
+                <Button onAction="#matiere" style="-fx-background-color: transparent; -fx-text-fill: linear-gradient(to right, #00FFFF, #008B8B); -fx-font-size: 18px; -fx-font-weight: bold; -fx-font-family: 'Arial'; -fx-alignment: center-left; -fx-pref-width: 210px; -fx-padding: 12px;" text="Matieres" />
+                <Button onAction="#blog" style="-fx-background-color: transparent; -fx-text-fill: linear-gradient(to right, #00FFFF, #008B8B); -fx-font-size: 18px; -fx-font-weight: bold; -fx-font-family: 'Arial'; -fx-alignment: center-left; -fx-pref-width: 210px; -fx-padding: 12px;" text="Blog" />
+            <Button layoutX="30.0" layoutY="122.0" onAction="#event" style="-fx-background-color: transparent; -fx-text-fill: linear-gradient(to right, #00FFFF, #008B8B); -fx-font-size: 18px; -fx-font-weight: bold; -fx-font-family: 'Arial'; -fx-alignment: center-left; -fx-pref-width: 210px; -fx-padding: 12px;" text="Event" />
+            </children>
+        </VBox>
+        <Button fx:id="logout" onAction="#logout" prefHeight="26.0" prefWidth="204.0" style="-fx-background-color: linear-gradient(to right, #00FFFF, #008B8B);                -fx-background-radius: 50px;                -fx-text-fill: white;                -fx-font-weight: bold;                -fx-font-size: 20px;" text="LOGOUT">
+            <graphic>
+                <StackPane>
+                    <children>
+                        <Circle fx:id="googleCircle" fill="#FFFFFF" radius="20" stroke="#00FFFF" strokeWidth="2" />
+                        <Label fx:id="googleLabel" style="-fx-font-size: 24px;                           -fx-text-fill: #00FFFF;                           -fx-font-weight: bold;" text="🔓" />
+                    </children>
+                </StackPane>
+            </graphic>
+            <effect>
+                <DropShadow color="#008B8B" offsetX="3" offsetY="3" radius="25" spread="0.4" />
+            </effect>
+            <VBox.margin>
+                <Insets bottom="15.0" left="20.0" top="130.0" />
+            </VBox.margin>
+        </Button>
+    </children>
+</VBox>

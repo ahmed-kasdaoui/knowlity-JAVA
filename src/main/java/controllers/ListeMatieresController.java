@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import tn.esprit.models.Matiere;
@@ -327,12 +328,15 @@ public class ListeMatieresController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterMatiere.fxml"));
             Scene scene = new Scene(loader.load(), 800, 800);
 
-            Stage stage = (Stage) matieresFlowPane.getScene().getWindow();
+            // Create a new stage for the create action
+            Stage stage = new Stage();
             stage.setScene(scene);
+            stage.setResizable(false); // Set resizable before showing
             stage.setTitle("Ajouter une Matière");
-            stage.show();
+            stage.initModality(Modality.APPLICATION_MODAL); // Make it modal to block main window
+            stage.showAndWait(); // Use showAndWait for modal dialogs
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Impossible d'ouvrir le formulaire d'ajout", e.getMessage());
         }
@@ -346,9 +350,13 @@ public class ListeMatieresController {
             DetailsMatiereController controller = loader.getController();
             controller.setMatiere(matiere);
 
-            Stage stage = (Stage) matieresFlowPane.getScene().getWindow();
+            // Create a new stage for the details action
+            Stage stage = new Stage();
             stage.setScene(scene);
+            stage.setResizable(false); // Set resizable before showing
             stage.setTitle("Détails de la Matière: " + matiere.getTitre());
+            stage.initModality(Modality.APPLICATION_MODAL); // Make it modal
+            stage.showAndWait(); // Use showAndWait for modal dialogs
         } catch (IOException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'afficher les détails",
@@ -364,9 +372,13 @@ public class ListeMatieresController {
             EditMatiereController controller = loader.getController();
             controller.setMatiere(matiere);
 
-            Stage stage = (Stage) matieresFlowPane.getScene().getWindow();
+            // Create a new stage for the edit action
+            Stage stage = new Stage();
             stage.setScene(scene);
+            stage.setResizable(false); // Set resizable before showing
+            stage.initModality(Modality.APPLICATION_MODAL); // Make it modal
             stage.setTitle("Modifier une Matière");
+            stage.showAndWait(); // Use showAndWait for modal dialogs
         } catch (IOException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur",
@@ -415,6 +427,7 @@ public class ListeMatieresController {
             // Get the current stage from a known node
             Stage stage = (Stage) matieresFlowPane.getScene().getWindow();
             stage.setScene(scene);
+            stage.setResizable(false); // Ensure main window remains non-resizable
             stage.show();
         } catch (IOException e) {
             System.err.println("Error loading " + fxmlPath + ": " + e.getMessage());

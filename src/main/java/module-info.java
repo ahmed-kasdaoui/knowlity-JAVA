@@ -42,10 +42,12 @@ module com.example.demo{
     requires java.desktop;
     requires java.prefs;
 
+
     // OPEN / EXPORT declarations
     opens com.example.demo to javafx.fxml;
     opens controllers to javafx.fxml;
     opens tn.knowlity.controller to javafx.fxml;
+    opens tn.knowlity.entity to javafx.base;
     opens com.esprit.knowlity.Model to javafx.base;
     opens com.esprit.knowlity.view.student to javafx.fxml;
     opens com.esprit.knowlity.view.teacher to javafx.fxml;
@@ -53,9 +55,11 @@ module com.example.demo{
     opens com.esprit.knowlity.controller.teacher to javafx.fxml;
     opens com.esprit.knowlity.controller to javafx.fxml;
     opens com.esprit.knowlity.Utils.Snippet to javafx.fxml;
+    opens view to javafx.fxml, javafx.graphics, javafx.base;
 
     exports com.example.demo;
     exports controllers;
     exports tn.knowlity.controller;
     exports com.esprit.knowlity;
+    exports view;
 }

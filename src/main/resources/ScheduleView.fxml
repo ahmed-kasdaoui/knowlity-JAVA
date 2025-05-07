@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.effect.DropShadow?>
+
+<VBox fx:id="root" spacing="20" style="-fx-background-color: linear-gradient(to right, #f7f9fc, #ebf5ff); -fx-padding: 30;"
+      xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" 
+      fx:controller="controllers.ScheduleController">
+
+    <!-- Header Section -->
+    <VBox alignment="CENTER" spacing="10">
+        <padding>
+            <Insets top="20" bottom="20"/>
+        </padding>
+        <Label fx:id="titleLabel" text="Monthly Course Schedule" 
+               style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2563eb;"/>
+        <Label text="View and manage your monthly course planning" 
+               style="-fx-font-size: 16px; -fx-text-fill: #64748b;"/>
+    </VBox>
+
+    <!-- Main Content Area -->
+    <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;">
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+        <VBox fx:id="scheduleContainer" spacing="15" style="-fx-background-color: transparent;">
+            <!-- Week Card Template -->
+            <VBox styleClass="week-card" style="-fx-background-color: white; 
+                                               -fx-background-radius: 12; 
+                                               -fx-padding: 20;">
+                <effect>
+                    <DropShadow color="#00000022" radius="10" spread="0.1"/>
+                </effect>
+
+                <!-- Week Header -->
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <padding>
+                        <Insets bottom="15"/>
+                    </padding>
+                    <Label text="Week 1" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2563eb;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="Total: 7 hours" style="-fx-font-size: 14px; -fx-text-fill: #64748b;"/>
+                </HBox>
+
+                <!-- Progress Bar -->
+                <ProgressBar progress="0.7" style="-fx-pref-width: 100%; 
+                                                 -fx-accent: #2563eb; 
+                                                 -fx-control-inner-background: #e2e8f0;">
+                    <VBox.margin>
+                        <Insets bottom="15"/>
+                    </VBox.margin>
+                </ProgressBar>
+
+                <!-- Course List -->
+                <VBox spacing="8">
+                    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 12; -fx-background-color: #f1f5f9; -fx-background-radius: 8;">
+                        <Label text="• Introduction to Java" style="-fx-text-fill: #1e293b;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="3 hours" style="-fx-text-fill: #64748b;"/>
+                    </HBox>
+                    
+                    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 12; -fx-background-color: #f1f5f9; -fx-background-radius: 8;">
+                        <Label text="• Web Development" style="-fx-text-fill: #1e293b;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="2 hours" style="-fx-text-fill: #64748b;"/>
+                    </HBox>
+                    
+                    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 12; -fx-background-color: #f1f5f9; -fx-background-radius: 8;">
+                        <Label text="• Database Design" style="-fx-text-fill: #1e293b;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="2 hours" style="-fx-text-fill: #64748b;"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+
+            <!-- Additional Week Cards will be added programmatically -->
+        </VBox>
+    </ScrollPane>
+
+    <!-- Status Bar -->
+    <HBox spacing="10" style="-fx-padding: 10; -fx-background-color: #f8fafc; -fx-background-radius: 8;">
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+        <Label text="Last Updated:" style="-fx-text-fill: #64748b;"/>
+        <Label fx:id="lastUpdateLabel" text="Today" style="-fx-text-fill: #2563eb;"/>
+    </HBox>
+
+</VBox>

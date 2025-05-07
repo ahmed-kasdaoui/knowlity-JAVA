@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="view.CreatorProfileController"
+      stylesheets="@../styles/creator-profile.css"
+      spacing="20"
+      styleClass="creator-profile">
+      
+    <padding>
+        <Insets top="30" right="40" bottom="30" left="40"/>
+    </padding>
+
+    <!-- Header avec bouton retour -->
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Button fx:id="backButton" styleClass="back-button" onAction="#handleBack">
+            <graphic>
+                <FontIcon iconLiteral="fas-arrow-left"/>
+            </graphic>
+            <tooltip>
+                <Tooltip text="Retour"/>
+            </tooltip>
+        </Button>
+    </HBox>
+
+    <!-- Profil du créateur -->
+    <VBox styleClass="profile-container" spacing="30">
+        <!-- En-tête du profil -->
+        <VBox styleClass="profile-header" alignment="CENTER" spacing="20">
+            <StackPane styleClass="profile-image-container">
+                <ImageView fx:id="creatorImage" fitWidth="150" fitHeight="150" preserveRatio="true" 
+                          styleClass="profile-image"/>
+            </StackPane>
+            <Label fx:id="nameLabel" styleClass="profile-name"/>
+        </VBox>
+
+        <!-- Informations détaillées -->
+        <VBox spacing="25">
+            <!-- Section Profil -->
+            <VBox styleClass="info-section">
+                <Label text="À propos" styleClass="section-title"/>
+                <Label fx:id="profileLabel" styleClass="profile-text" wrapText="true"/>
+            </VBox>
+
+            <!-- Section Réalisations -->
+            <VBox styleClass="info-section">
+                <Label text="Réalisations" styleClass="section-title"/>
+                <Label fx:id="achievementsLabel" styleClass="achievements-text" wrapText="true"/>
+            </VBox>
+
+            <!-- Section Informations -->
+            <VBox styleClass="info-section">
+                <Label text="Détails" styleClass="section-title"/>
+                <GridPane vgap="15" hgap="30">
+                    <padding>
+                        <Insets top="10"/>
+                    </padding>
+                    
+                    <Label text="Date de création" styleClass="info-label" 
+                           GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Label fx:id="createdAtLabel" styleClass="info-value" 
+                           GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    
+                    <Label text="Dernière modification" styleClass="info-label" 
+                           GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Label fx:id="updatedAtLabel" styleClass="info-value" 
+                           GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                </GridPane>
+            </VBox>
+        </VBox>
+    </VBox>
+</VBox>

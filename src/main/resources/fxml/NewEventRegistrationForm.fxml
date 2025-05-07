@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<?import java.lang.String?>
+
+<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.NewEventRegistrationFormController">
+    <stylesheets>
+        <URL value="@../css/colors.css" />
+        <URL value="@../css/bootstrap.css" />
+        <URL value="@../css/dash.css" />
+        <URL value="@../css/drawer.css" />
+        <URL value="@../css/skeleton.css" />
+        <URL value="@../css/typographic.css" />
+        <URL value="@../css/immersive_scroll.css" />
+        <URL value="@../css/shapes.css" />
+    </stylesheets>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <top>
+        <fx:include source="../fxml/Navbar.fxml" />
+    </top>
+    <center>
+        <StackPane alignment="CENTER">
+            <children>
+                <ScrollPane fitToWidth="true" fitToHeight="true" maxWidth="600.0" styleClass="scroll-pane">
+                    <content>
+                        <VBox alignment="CENTER" spacing="20.0" maxWidth="600.0" styleClass="content-container">
+                            <padding>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                            </padding>
+                            <children>
+                                <Text text="Event Registration Form">
+                                    <styleClass>
+                                        <String fx:value="h4" />
+                                        <String fx:value="text-bold" />
+                                    </styleClass>
+                                </Text>
+                                <GridPane fx:id="formGrid" hgap="10" vgap="10" maxWidth="600.0" alignment="CENTER">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="100" />
+                                    </columnConstraints>
+                                    <children>
+                                        <Label text="Full Name:" styleClass="h4" GridPane.rowIndex="0"/>
+                                        <TextField fx:id="nameField" maxWidth="Infinity" promptText="Enter your name" styleClass="form-control" GridPane.rowIndex="1"/>
+                                        <Label fx:id="nameErrorLabel" styleClass="text-danger" visible="false" managed="false" GridPane.rowIndex="2"/>
+                                        <Label text="City you're coming from:" styleClass="h4" GridPane.rowIndex="3"/>
+                                        <TextField fx:id="comingFromField" maxWidth="Infinity" promptText="City name" styleClass="form-control" GridPane.rowIndex="4"/>
+                                        <Label fx:id="comingFromErrorLabel" styleClass="text-danger" visible="false" managed="false" GridPane.rowIndex="5"/>
+                                        <Label text="How many places do you want to reserve? (1-5)" styleClass="h4" GridPane.rowIndex="6"/>
+                                        <TextField fx:id="placesReservedField" maxWidth="Infinity" promptText="1 to 5" styleClass="form-control" GridPane.rowIndex="7"/>
+                                        <Label fx:id="placesReservedErrorLabel" styleClass="text-danger" visible="false" managed="false" GridPane.rowIndex="8"/>
+                                        <Label text="Do you need disabled parking?" styleClass="h4" GridPane.rowIndex="9"/>
+                                        <CheckBox fx:id="disabledParkingCheckBox" text="Yes, I need disabled parking" styleClass="form-control" GridPane.rowIndex="10"/>
+                                        <Label fx:id="disabledParkingErrorLabel" styleClass="text-danger" visible="false" managed="false" GridPane.rowIndex="11"/>
+                                        <CheckBox fx:id="agreeTermsCheckBox" text="I agree to the terms and conditions" styleClass="form-control" GridPane.rowIndex="12"/>
+                                        <Label fx:id="agreeTermsErrorLabel" styleClass="text-danger" visible="false" managed="false" GridPane.rowIndex="13"/>
+                                    </children>
+                                </GridPane>
+                                <HBox spacing="10" alignment="CENTER">
+                                    <children>
+                                        <Button fx:id="submitButton" text="Submit" styleClass="btn-primary"/>
+                                    </children>
+                                </HBox>
+                                <VBox fx:id="successMessage" alignment="CENTER" visible="false" managed="false" spacing="10">
+                                    <children>
+                                        <Label text="Registration submitted successfully!" styleClass="h4"/>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </children>
+        </StackPane>
+    </center>
+</BorderPane>

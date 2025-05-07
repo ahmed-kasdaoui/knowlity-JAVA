@@ -192,4 +192,31 @@ public class EvaluationService {
         return evaluations;
     }
     
+    /**
+     * Retrieves the evaluation notes for a specific evaluation and user.
+     * 
+     * @param evaluationId The ID of the evaluation
+     * @param userId The ID of the user
+     * @return List of evaluation notes, or an empty list if no notes found
+     */
+    public List<String> getEvaluationNotes(int evaluationId, int userId) {
+        List<String> notes = new ArrayList<>();
+        String query = "SELECT note FROM reponse WHERE evaluation_id = ? AND user_id = ? AND note IS NOT NULL";
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, evaluationId);
+            pstmt.setInt(2, userId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                String note = rs.getString("note");
+                if (note != null && !note.trim().isEmpty()) {
+                    notes.add(note);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving evaluation notes: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return notes;
+    }
+    
 }

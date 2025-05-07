@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
+
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EventDetailsController">
+    <top>
+        <fx:include source="Navbar.fxml"/>
+    </top>
+   <center>
+      <StackPane style="-fx-background-color: white;">
+          <children>
+              <!-- Background Pane with Decorative Circles -->
+              <Pane fx:id="backgroundPane" mouseTransparent="true">
+                  <Circle fx:id="circle1" centerX="50" centerY="200" fill="rgba(0,255,255,0.15)" radius="150" />
+                  <Circle fx:id="circle2" centerX="100" centerY="400" fill="rgba(0,255,255,0.15)" radius="180" />
+                  <Circle fx:id="circle3" centerX="250" centerY="300" fill="rgba(0,255,255,0.15)" radius="140" />
+                  <Circle fx:id="circle4" centerX="350" centerY="150" fill="rgba(0,255,255,0.15)" radius="120" />
+                  <Circle fx:id="circle5" centerX="200" centerY="500" fill="rgba(0,255,255,0.15)" radius="160" />
+                  <Circle fx:id="circle6" centerX="50" centerY="350" fill="rgba(0,255,255,0.15)" radius="130" />
+                  <Circle fx:id="circle7" centerX="650" centerY="200" fill="rgba(0,255,255,0.15)" radius="150" />
+                  <Circle fx:id="circle8" centerX="750" centerY="400" fill="rgba(0,255,255,0.15)" radius="180" />
+                  <Circle fx:id="circle9" centerX="850" centerY="250" fill="rgba(0,255,255,0.15)" radius="140" />
+                  <Circle fx:id="circle10" centerX="925" centerY="150" fill="rgba(0,255,255,0.15)" radius="120" />
+                  <Circle fx:id="circle11" centerX="800" centerY="300" fill="rgba(0,255,255,0.15)" radius="160" />
+                  <Circle fx:id="circle12" centerX="950" centerY="450" fill="rgba(0,255,255,0.15)" radius="130" />
+              </Pane>
+              <!-- Main AnchorPane -->
+              <AnchorPane fx:id="root" prefHeight="800.0" prefWidth="1180.0" style="-fx-background-color: white;">
+                  <children>
+                      <!-- Scrollable Content -->
+                      <ScrollPane fitToWidth="true" prefHeight="800.0" prefWidth="1180.0" style="-fx-background-color: white;" styleClass="scroll-pane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <content>
+                              <VBox fx:id="mainBox" alignment="TOP_CENTER" spacing="20.0" style="-fx-background-color: white;" styleClass="container" VBox.vgrow="ALWAYS">
+                                  <padding>
+                                      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                  </padding>
+                                  <children>
+                                      <!-- Header Section -->
+                                      <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-background-color: #f3f7ff;" styleClass="header">
+                                          <children>
+                                              <Label fx:id="titleLabel" styleClass="display-4" text="Event Title">
+                                                  <font>
+                                                      <Font name="System Bold" size="36.0" />
+                                                  </font>
+                                                  <style>-fx-text-fill: #91f2ff;</style>
+                                                  <HBox.margin>
+                                                      <Insets left="26.0" />
+                                                  </HBox.margin>
+                                                  <effect>
+                                                      <DropShadow color="#00b4db" radius="5" spread="0.2" />
+                                                  </effect>
+                                              </Label>
+                                              <HBox HBox.hgrow="ALWAYS" />
+                                              <Button fx:id="backButton" style="-fx-background-color: #00b4db; -fx-text-fill: #ffffff; -fx-font-size: 16px; -fx-background-radius: 10; -fx-padding: 10 20;" text="Back">
+                                                  <graphic>
+                                                      <Label style="-fx-text-fill: #ffffff;" text="←" />
+                                                  </graphic>
+                                                  <effect>
+                                                      <DropShadow color="#00b4db" radius="10" spread="0.2" />
+                                                  </effect>
+                                              </Button>
+                                          </children>
+                                      </HBox>
+                                      <!-- Main Event Card -->
+                                      <VBox style="-fx-background-color: #f3f7ff; -fx-border-color: #d0e4ff; -fx-border-width: 1; -fx-border-radius: 10;" styleClass="card, card-hero, shadow-lg">
+                                          <HBox>
+                                              <!-- Image Section with Overlay -->
+                                              <VBox styleClass="image-container">
+                                                  <ImageView fx:id="eventImage" fitHeight="236.0" fitWidth="500.0" preserveRatio="true">
+                                          <styleClass>
+                                             <String fx:value="object-fit-cover" />
+                                             <String fx:value="image-container" />
+                                          </styleClass>
+                                       </ImageView>
+                                                  <VBox>
+                                                      <children>
+                                                          <!-- Organizer Section -->
+                                                          <VBox style="-fx-background-color: #e6f0fa; -fx-border-color: #d0e4ff; -fx-border-width: 1; -fx-border-radius: 10;" styleClass="card, card-inner">
+                                                              <VBox spacing="10.0" styleClass="card-body">
+                                                                  <Label styleClass="section-title" text="Event Organizer">
+                                                                      <graphic>
+                                                                          <Label styleClass="icon" text="👨‍💼" />
+                                                                      </graphic>
+                                                                      <style>-fx-text-fill: #ffffff;</style>
+                                                                      <effect>
+                                                                          <DropShadow color="#00b4db" radius="5" spread="0.2" />
+                                                                      </effect>
+                                                                  </Label>
+                                                                  <HBox spacing="15.0">
+                                                                      <ImageView fx:id="organizerImage" fitHeight="60.0" fitWidth="60.0" preserveRatio="true" styleClass="rounded-circle, shadow-sm, border" />
+                                                                      <VBox>
+                                                                          <Label fx:id="userNameLabel" styleClass="teacher-name" text="Organizer Name" />
+                                                                          <Label fx:id="organizerMail" styleClass="text-muted" text="organizer@example.com" />
+                                                                      </VBox>
+                                                                  </HBox>
+                                                              </VBox>
+                                                          </VBox>
+                                                      </children>
+                                                  </VBox>
+                                       <HBox>
+                                          <VBox.margin>
+                                             <Insets top="10.0" />
+                                          </VBox.margin>
+                                          <children>
+                                                        <!-- Reserve Button -->
+                                                        <Button fx:id="reserveButton" alignment="CENTER" prefHeight="46.0" prefWidth="91.0" style="-fx-background-color: #00b4db; -fx-text-fill: #ffffff; -fx-font-size: 16px; -fx-background-radius: 10; -fx-padding: 10 20;" text="Reserve" textAlignment="CENTER">
+                                                            <graphic>
+                                                                <Label style="-fx-text-fill: #ffffff;" text="Reserve" />
+                                                            </graphic>
+                                                            <effect>
+                                                                <DropShadow color="#00b4db" radius="10" spread="0.2" />
+                                                            </effect>
+                                                        </Button>
+                                          </children>
+                                       </HBox>
+                                              </VBox>
+                                              <!-- Content Section -->
+                                              <VBox spacing="15.0" styleClass="card-body">
+                                                  <HBox spacing="10.0">
+                                                      <Label fx:id="categoryLabel" style="-fx-background-color: #00b4db; -fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-background-radius: 10; -fx-padding: 7;" text="Category">
+                                                          <effect>
+                                                              <DropShadow color="#00b4db" radius="5" spread="0.2" />
+                                                          </effect>
+                                                      </Label>
+                                                  </HBox>
+                                                  <!-- Stats Section -->
+                                                  <GridPane hgap="20" style="-fx-background-color: #e6f0fa; -fx-border-color: #d0e4ff; -fx-border-width: 1; -fx-border-radius: 10;" vgap="10">
+                                                      <columnConstraints>
+                                                          <ColumnConstraints percentWidth="33.33" />
+                                                          <ColumnConstraints percentWidth="33.33" />
+                                                          <ColumnConstraints percentWidth="33.33" />
+                                                      </columnConstraints>
+                                                      <children>
+                                                          <VBox alignment="CENTER" GridPane.columnIndex="0">
+                                                              <Label fx:id="maxParticipantsLabel" style="-fx-text-fill: #00b4db;" styleClass="stat-value" text="100+" />
+                                                              <Label styleClass="text-muted" text="Max Participants" />
+                                                          </VBox>
+                                                          <VBox alignment="CENTER" GridPane.columnIndex="1">
+                                                              <Label fx:id="seatsAvailableLabel" style="-fx-text-fill: #00b4db;" styleClass="stat-value" text="50" />
+                                                              <Label styleClass="text-muted" text="Seats Available" />
+                                                          </VBox>
+                                                          <VBox alignment="CENTER" GridPane.columnIndex="2">
+                                                              <Label fx:id="durationLabel" style="-fx-text-fill: #00b4db;" styleClass="stat-value" text="1 Day" />
+                                                              <Label styleClass="text-muted" text="Duration" />
+                                                          </VBox>
+                                                          <VBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                                              <Label fx:id="dateLocationLabel" style="-fx-text-fill: #00b4db;" styleClass="stat-label" text="Date | Location" />
+                                                          </VBox>
+                                                          <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                              <Label fx:id="timerLabel" style="-fx-text-fill: #00b4db;" styleClass="stat-label" text="Countdown: ..." />
+                                                          </VBox>
+                                                      </children>
+                                                      <rowConstraints>
+                                                          <RowConstraints />
+                                                          <RowConstraints />
+                                                      </rowConstraints>
+                                                  </GridPane>
+                                                  <!-- Description Section -->
+                                                  <VBox spacing="8.0">
+                                                      <Label styleClass="section-title" text="About the Event">
+                                                          <graphic>
+                                                              <Label styleClass="icon" text="📄" />
+                                                          </graphic>
+                                                          <style>-fx-text-fill: #ffffff;</style>
+                                                          <effect>
+                                                              <DropShadow color="#00b4db" radius="5" spread="0.2" />
+                                                          </effect>
+                                                      </Label>
+                                                      <Label fx:id="descriptionText" styleClass="text-muted" text="About The Event" wrapText="true" />
+                                                  </VBox>
+                                              </VBox>
+                                          </HBox>
+                                      </VBox>
+                                      <!-- Map Section -->
+                                      <VBox spacing="15.0">
+                                          <Label styleClass="section-title, h2, mb-4" text="Event Location">
+                                              <graphic>
+                                                  <Label styleClass="icon, me-2" text="🗺️" />
+                                              </graphic>
+                                              <style>-fx-text-fill: #91f2ff;</style>
+                                              <effect>
+                                                  <DropShadow color="#00b4db" radius="5" spread="0.2" />
+                                              </effect>
+                                          </Label>
+                                          <VBox style="-fx-background-color: #e6f0fa; -fx-border-color: #d0e4ff; -fx-border-width: 1; -fx-border-radius: 10;" styleClass="card, shadow-lg">
+                                              <WebView fx:id="mapView" minHeight="400.0" prefHeight="400.0" prefWidth="-1" VBox.vgrow="ALWAYS" />
+                                          </VBox>
+                                      </VBox>
+                                  </children>
+                              </VBox>
+                          </content>
+                      </ScrollPane>
+                  </children>
+                  <stylesheets>
+                      <URL value="@../styles/course-details.css" />
+      
+      
+                  </stylesheets>
+              </AnchorPane>
+          </children>
+      </StackPane>
+   </center>
+</BorderPane>

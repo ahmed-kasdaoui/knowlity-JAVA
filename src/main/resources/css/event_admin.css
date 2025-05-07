@@ -1,0 +1,208 @@
+/* Section */
+.form-section {
+    -fx-min-width: 600;
+    -fx-max-width: 80%;
+    -fx-alignment: center;
+    -fx-padding: 20;
+    -fx-background-color: #f4f4f9;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 6, 0, 0, 4);
+}
+
+/* Title */
+.title {
+    -fx-text-alignment: center;
+    -fx-font-size: 24px;
+    -fx-text-fill: #333333;
+    -fx-padding: 0 0 20 0;
+}
+
+/* Subtitle */
+.subtitle {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 0 0 10 0;
+}
+
+/* Step Indicator */
+.step {
+    -fx-font-size: 14px;
+    -fx-text-fill: #999999;
+    -fx-padding: 5 10;
+    -fx-background-color: #e0e0e0;
+    -fx-background-radius: 15;
+}
+
+.step.active {
+    -fx-background-color: #28a745;
+    -fx-text-fill: #ffffff;
+}
+
+.step.finish {
+    -fx-background-color: #218838;
+    -fx-text-fill: #ffffff;
+}
+
+/* Form Table */
+.form-table {
+    -fx-hgap: 10;
+    -fx-vgap: 10;
+}
+
+/* Input Fields */
+.input-text {
+    -fx-pref-width: 300;
+    -fx-pref-height: 36;
+    -fx-border-width: 1;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5;
+    -fx-background-color: #ffffff;
+    -fx-font-size: 16px;
+}
+
+.input-text:focused {
+    -fx-border-color: #007bff;
+}
+
+/* ComboBox and DatePicker */
+.combo-box.input-text,
+.date-picker.input-text {
+    -fx-pref-width: 300;
+    -fx-pref-height: 36;
+    -fx-border-width: 1;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5;
+    -fx-background-color: #ffffff;
+    -fx-font-size: 16px;
+}
+
+/* TextArea */
+.text-area.input-text {
+    -fx-pref-width: 300;
+    -fx-pref-height: 100;
+    -fx-border-width: 1;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5;
+    -fx-background-color: #ffffff;
+    -fx-font-size: 16px;
+}
+
+/* Labels */
+.label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 0 0 5 0;
+    -fx-wrap-text: true;
+    -fx-min-width: 150;
+}
+
+/* Floating Labels */
+.label.floating {
+    -fx-translate-y: -24;
+    -fx-font-size: 12px;
+}
+
+/* Value Labels */
+.value-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333;
+    -fx-padding: 0 0 5 0;
+    -fx-wrap-text: true;
+}
+
+/* Link Labels */
+.link-label {
+    -fx-text-fill: #007bff;
+    -fx-cursor: hand;
+}
+
+.link-label:hover {
+    -fx-underline: true;
+}
+
+/* Error Labels */
+.form-errors {
+    -fx-text-fill: #ff0000;
+    -fx-font-size: 12px;
+    -fx-padding: 2 0 0 0;
+    -fx-wrap-text: true;
+}
+
+/* Buttons */
+.submit-btn {
+    -fx-background-color: #28a745;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-padding: 5 10;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-cursor: hand;
+}
+
+.submit-btn:hover {
+    -fx-background-color: #218838;
+}
+
+.reset-btn {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-padding: 5 10;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-cursor: hand;
+}
+
+.reset-btn:hover {
+    -fx-background-color: #c82333;
+}
+/* event_admin.css */
+
+.table-view .column-header,
+.table-view .column-header-background .filler {
+    -fx-background-color: #6622CC;
+}
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER_LEFT;
+}
+.table-view .cell {
+    -fx-cell-size: 35;
+    -fx-alignment: center-left;
+    -fx-background-color: #29292D;
+    -fx-border-color: #29292D;
+    -fx-text-fill: lightgray;
+    -fx-alignment: CENTER_LEFT;
+}
+.table-row-cell:selected {
+    -fx-background-color: whitesmoke;
+    -fx-text-background-color: #6622CC;
+}
+
+/* scroll bar starts here */
+
+/* The increment and decrement button CSS class of scrollbar */
+.table-view .increment-button, .table-view .decrement-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 2em;
+}
+
+/* The main scrollbar **track** CSS class */
+.table-view .scroll-bar:horizontal .track,
+.table-view .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+    -fx-border-color: derive(#6622CC, 80%);
+    -fx-background-radius: 2em;
+    -fx-border-radius: 2em;
+}
+
+/* The main scrollbar **thumb** CSS class which we drag every time (movable) */
+.table-view .scroll-bar:horizontal .thumb,
+.table-view .scroll-bar:vertical .thumb {
+    -fx-background-color: derive(#6622CC, 90%);
+    -fx-background-insets: 2, 0, 0;
+    -fx-background-radius: 2em;
+}

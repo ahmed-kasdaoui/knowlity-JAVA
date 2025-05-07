@@ -7,205 +7,171 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
-<StackPane fx:controller="controllers.ListeCoursController" style="-fx-background-color: #121212;" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1">
-    <children>
-        <!-- Animated Background with Dynamic Shapes -->
-        <Pane fx:id="backgroundPane" mouseTransparent="true">
-            <!-- Left side circles with larger sizes and varied placements -->
-            <Circle fx:id="circle1" centerX="50" centerY="200" fill="rgba(0,255,255,0.15)" radius="150" />
-            <Circle fx:id="circle2" centerX="100" centerY="400" fill="rgba(0,255,255,0.15)" radius="180" />
-            <Circle fx:id="circle3" centerX="250" centerY="300" fill="rgba(0,255,255,0.15)" radius="140" />
-            <Circle fx:id="circle4" centerX="350" centerY="150" fill="rgba(0,255,255,0.15)" radius="120" />
-            <Circle fx:id="circle5" centerX="200" centerY="500" fill="rgba(0,255,255,0.15)" radius="160" />
-            <Circle fx:id="circle6" centerX="50" centerY="350" fill="rgba(0,255,255,0.15)" radius="130" />
-
-            <!-- Right side circles with larger sizes and creative placements -->
-            <Circle fx:id="circle7" centerX="650" centerY="200" fill="rgba(0,255,255,0.15)" radius="150" />
-            <Circle fx:id="circle8" centerX="750" centerY="400" fill="rgba(0,255,255,0.15)" radius="180" />
-            <Circle fx:id="circle9" centerX="850" centerY="250" fill="rgba(0,255,255,0.15)" radius="140" />
-            <Circle fx:id="circle10" centerX="925" centerY="150" fill="rgba(0,255,255,0.15)" radius="120" />
-            <Circle fx:id="circle11" centerX="800" centerY="300" fill="rgba(0,255,255,0.15)" radius="160" />
-            <Circle fx:id="circle12" centerX="950" centerY="450" fill="rgba(0,255,255,0.15)" radius="130" />
-        </Pane>
-
-        <AnchorPane fx:id="root" prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: rgba(22,22,22,0.8);" styleClass="root">
-    <children>
-        <!-- Top Navigation Bar -->
-                <HBox alignment="CENTER_LEFT" style="-fx-background-color: linear-gradient(to right, #00b4db, #0083b0); -fx-padding: 15px;" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
-                    <ImageView fx:id="test" fitHeight="88.0" fitWidth="147.0" preserveRatio="true">
-                        <image>
-                            <Image url="@images/knowlity.png" />
-                        </image>
-                    </ImageView>
-                    <Text fill="WHITE" fontSmoothingType="LCD" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 0 0 0 10;" text="KnowLity" />
-
-                    <HBox alignment="CENTER" prefHeight="72.0" prefWidth="998.0" spacing="20" style="-fx-padding: 0 0 0 50;">
-                        <!-- Menu Items -->
-                        <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Home" />
-
-                        <!-- Events Menu -->
-                        <MenuButton style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Events">
-                            <items>
-                                <MenuItem text="Events test" />
-                                <MenuItem text="My Events" />
-                                <MenuItem text="My Reservation" />
-                            </items>
-                        </MenuButton>
-
-                        <!-- Courses Menu -->
-                        <MenuButton style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Courses">
-                    <items>
-                                <MenuItem text="View all courses" />
-                                <MenuItem text="View my courses" />
-                    </items>
-                </MenuButton>
-
-                        <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Testimonials" />
-                        <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Contact Us" />
-                        <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Profile" />
-                        <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Logout" />
-            </HBox>
-        </HBox>
-
-        <!-- Main Content Section -->
-        <VBox fx:id="mainBox" alignment="TOP_CENTER" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="140.0">
-            <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-            </padding>
-            <children>
-                <!-- Header -->
-                <HBox alignment="CENTER_LEFT" spacing="20.0">
-                    <children>
-                                <StackPane>
-                                    <Label styleClass="display-5" text="Vos Cours" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: default; -fx-font-size: 36px; -fx-padding: 10;" mouseTransparent="true">
-                                        <effect>
-                                            <DropShadow color="#00b4db" radius="5" spread="0.2" />
-                                        </effect>
-                        </Label>
-                                </StackPane>
-                                <Button fx:id="createButton" onAction="#createAction" style="-fx-background-color: #00b4db; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 10; -fx-padding: 10 20;" text="Créer un nouveau cours">
-                            <graphic>
-                                        <Label style="-fx-text-fill: white; -fx-font-size: 18px;" text="+" />
-                            </graphic>
-                                    <effect>
-                                        <DropShadow color="#00b4db" radius="10" spread="0.2" />
-                                    </effect>
-                        </Button>
-                    </children>
-                </HBox>
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ListeCoursController">
+   <left>
+       <fx:include source="fxml/navbarE.fxml" />
+   </left>
+    <center>
+      <StackPane style="-fx-background-color: #121212;">
+          <children>
+              <!-- Animated Background with Dynamic Shapes -->
+              <Pane fx:id="backgroundPane" mouseTransparent="true">
+                  <!-- Left side circles with larger sizes and varied placements -->
+                  <Circle fx:id="circle1" centerX="200.0" centerY="200" fill="rgba(0,255,255,0.15)" radius="150" />
+                  <Circle fx:id="circle2" centerX="250.0" centerY="400" fill="rgba(0,255,255,0.15)" radius="180" />
+                  <Circle fx:id="circle3" centerX="250" centerY="300" fill="rgba(0,255,255,0.15)" radius="140" />
+                  <Circle fx:id="circle4" centerX="350" centerY="150" fill="rgba(0,255,255,0.15)" radius="120" />
+                  <Circle fx:id="circle5" centerX="200" centerY="500" fill="rgba(0,255,255,0.15)" radius="160" />
+                  <Circle fx:id="circle6" centerX="500.0" centerY="350" fill="rgba(0,255,255,0.15)" radius="130" />
       
-                <!-- Search, Filter, and Sort Section -->
-                <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 15; -fx-background-color: #f3f7ff; -fx-border-radius: 10; -fx-border-color: #d0e4ff; -fx-border-width: 1;">
-                    <TextField fx:id="searchField" prefHeight="48.0" prefWidth="400.0" promptText="🔍 Rechercher un cours..." style="-fx-font-size: 16px; -fx-background-radius: 12; -fx-border-color: #b3d1f5; -fx-border-radius: 12; -fx-padding: 8; -fx-background-color: rgba(255, 255, 255, 0.8);">
-                        <HBox.margin>
-                            <Insets left="103.0" />
-                        </HBox.margin>
-                    </TextField>
-
-                    <ChoiceBox fx:id="filterChoiceBox" prefWidth="200.0" style="-fx-font-size: 16px; -fx-background-radius: 12; -fx-border-color: #8dbbff; -fx-border-width: 1; -fx-background-color: rgba(255, 255, 255, 0.8); -fx-padding: 8;">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList">
-                                        <String fx:value="Sélectionnez une catégorie" />
-                                <String fx:value="Mathématiques" />
-                                <String fx:value="Physique" />
-                                <String fx:value="Informatique" />
-                                <String fx:value="Langues" />
-                            </FXCollections>
-                        </items>
-                    </ChoiceBox>
-
-                    <ChoiceBox fx:id="sortChoiceBox" prefWidth="200.0" style="-fx-font-size: 16px; -fx-background-radius: 12; -fx-border-color: #8dbbff; -fx-border-width: 1; -fx-background-color: rgba(255, 255, 255, 0.8); -fx-padding: 8;">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList">
-                                        <String fx:value="Trier par" />
-                                <String fx:value="Nom (A-Z)" />
-                                <String fx:value="Nom (Z-A)" />
-                                <String fx:value="Date (Plus récent)" />
-                                <String fx:value="Date (Plus ancien)" />
-                                <String fx:value="Popularité" />
-                            </FXCollections>
-                        </items>
-                    </ChoiceBox>
-                </HBox>
-
-                <!-- ScrollPane for Courses -->
-                <ScrollPane fx:id="scrollPane" fitToWidth="true" pannable="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
-                    <content>
-                        <VBox fx:id="scrollContent" alignment="TOP_CENTER" spacing="20.0">
-                            <padding>
-                                <Insets bottom="20.0" left="10.0" right="10.0" top="10.0" />
-                            </padding>
-                            <children>
-                                <!-- Courses Grid -->
-                                <GridPane fx:id="coursesGrid" hgap="20.0" styleClass="grid" vgap="20.0">
-                                    <columnConstraints>
-                                        <ColumnConstraints percentWidth="33.33" />
-                                        <ColumnConstraints percentWidth="33.33" />
-                                        <ColumnConstraints percentWidth="33.33" />
-                                    </columnConstraints>
-                                </GridPane>
-
-                                <!-- No Courses Message -->
-                                <VBox fx:id="noCoursesBox" alignment="CENTER" managed="false" spacing="10.0" visible="false">
-                                    <children>
-                                        <Label styleClass="icon-large" text="📚">
-                                            <font>
-                                                <Font size="48.0" />
-                                            </font>
-                                        </Label>
-                                        <Label styleClass="alert-heading" text="Aucun cours disponible">
-                                            <font>
-                                                <Font size="24.0" />
-                                            </font>
-                                        </Label>
-                                        <Label styleClass="text-muted" text="Commencez par créer un nouveau cours" />
-                                    </children>
-                                </VBox>
-
-                                <!-- Load More Button -->
-                                <HBox alignment="CENTER">
-                                    <Button fx:id="loadMoreButton" onAction="#loadMoreAction" styleClass="btn,btn-primary,btn-lg,btn-animated,btn-hover" text="Afficher plus de cours">
-                                        <graphic>
-                                            <Label style="-fx-text-fill: white; -fx-font-size: 1.2em;" text="⬇">
-                                                <padding>
-                                                    <Insets left="5.0" />
-                                                </padding>
-                                            </Label>
-                                        </graphic>
-                                        <effect>
-                                            <DropShadow color="rgba(0,123,255,0.4)" radius="8" spread="0.3" />
-                                        </effect>
-                                    </Button>
-                                </HBox>
-                            </children>
-                        </VBox>
-                    </content>
-                </ScrollPane>
-            </children>
-        </VBox>
-    </children>
-    <stylesheets>
-                <URL value="@css/cours.css" />
-    </stylesheets>
-</AnchorPane>
-    </children>
-</StackPane>
+                  <!-- Right side circles with larger sizes and creative placements -->
+                  <Circle fx:id="circle7" centerX="650" centerY="200" fill="rgba(0,255,255,0.15)" radius="150" />
+                  <Circle fx:id="circle8" centerX="750" centerY="400" fill="rgba(0,255,255,0.15)" radius="180" />
+                  <Circle fx:id="circle9" centerX="850" centerY="250" fill="rgba(0,255,255,0.15)" radius="140" />
+                  <Circle fx:id="circle10" centerX="925" centerY="150" fill="rgba(0,255,255,0.15)" radius="120" />
+                  <Circle fx:id="circle11" centerX="800" centerY="300" fill="rgba(0,255,255,0.15)" radius="160" />
+                  <Circle fx:id="circle12" centerX="950" centerY="450" fill="rgba(0,255,255,0.15)" radius="130" />
+              </Pane>
+      
+              <AnchorPane fx:id="root" prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: rgba(22,22,22,0.8);" styleClass="root">
+          <children>
+      
+              <!-- Main Content Section -->
+              <VBox fx:id="mainBox" alignment="TOP_CENTER" layoutY="-0.8" prefHeight="701.0" prefWidth="1180.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
+                  <padding>
+                      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                  </padding>
+                  <children>
+                      <!-- Header -->
+                      <HBox alignment="CENTER_LEFT" spacing="20.0">
+                          <children>
+                                      <StackPane>
+                                          <Label mouseTransparent="true" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: default; -fx-font-size: 36px; -fx-padding: 10;" styleClass="display-5" text="Vos Cours">
+                                              <effect>
+                                                  <DropShadow color="#00b4db" radius="5" spread="0.2" />
+                                              </effect>
+                              </Label>
+                                      </StackPane>
+                                      <Button fx:id="createButton" onAction="#createAction" style="-fx-background-color: #00b4db; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 10; -fx-padding: 10 20;" text="Créer un nouveau cours">
+                                  <graphic>
+                                              <Label style="-fx-text-fill: white; -fx-font-size: 18px;" text="+" />
+                                  </graphic>
+                                          <effect>
+                                              <DropShadow color="#00b4db" radius="10" spread="0.2" />
+                                          </effect>
+                              </Button>
+                          </children>
+                      </HBox>
+            
+                      <!-- Search, Filter, and Sort Section -->
+                      <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 15; -fx-background-color: #f3f7ff; -fx-border-radius: 10; -fx-border-color: #d0e4ff; -fx-border-width: 1;">
+                          <TextField fx:id="searchField" prefHeight="48.0" prefWidth="400.0" promptText="🔍 Rechercher un cours..." style="-fx-font-size: 16px; -fx-background-radius: 12; -fx-border-color: #b3d1f5; -fx-border-radius: 12; -fx-padding: 8; -fx-background-color: rgba(255, 255, 255, 0.8);">
+                              <HBox.margin>
+                                  <Insets left="103.0" />
+                              </HBox.margin>
+                          </TextField>
+      
+                          <ChoiceBox fx:id="filterChoiceBox" prefWidth="200.0" style="-fx-font-size: 16px; -fx-background-radius: 12; -fx-border-color: #8dbbff; -fx-border-width: 1; -fx-background-color: rgba(255, 255, 255, 0.8); -fx-padding: 8;">
+                              <items>
+                                  <FXCollections fx:factory="observableArrayList">
+                                              <String fx:value="Sélectionnez une catégorie" />
+                                      <String fx:value="Mathématiques" />
+                                      <String fx:value="Physique" />
+                                      <String fx:value="Informatique" />
+                                      <String fx:value="Langues" />
+                                  </FXCollections>
+                              </items>
+                          </ChoiceBox>
+      
+                          <ChoiceBox fx:id="sortChoiceBox" prefWidth="200.0" style="-fx-font-size: 16px; -fx-background-radius: 12; -fx-border-color: #8dbbff; -fx-border-width: 1; -fx-background-color: rgba(255, 255, 255, 0.8); -fx-padding: 8;">
+                              <items>
+                                  <FXCollections fx:factory="observableArrayList">
+                                              <String fx:value="Trier par" />
+                                      <String fx:value="Nom (A-Z)" />
+                                      <String fx:value="Nom (Z-A)" />
+                                      <String fx:value="Date (Plus récent)" />
+                                      <String fx:value="Date (Plus ancien)" />
+                                      <String fx:value="Popularité" />
+                                  </FXCollections>
+                              </items>
+                          </ChoiceBox>
+                      </HBox>
+      
+                      <!-- ScrollPane for Courses -->
+                      <ScrollPane fx:id="scrollPane" fitToWidth="true" pannable="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
+                          <content>
+                              <VBox fx:id="scrollContent" alignment="TOP_CENTER" spacing="20.0">
+                                  <padding>
+                                      <Insets bottom="20.0" left="10.0" right="10.0" top="10.0" />
+                                  </padding>
+                                  <children>
+                                      <!-- Courses Grid -->
+                                      <GridPane fx:id="coursesGrid" hgap="20.0" styleClass="grid" vgap="20.0">
+                                          <columnConstraints>
+                                              <ColumnConstraints percentWidth="33.33" />
+                                              <ColumnConstraints percentWidth="33.33" />
+                                              <ColumnConstraints percentWidth="33.33" />
+                                          </columnConstraints>
+                                      </GridPane>
+      
+                                      <!-- No Courses Message -->
+                                      <VBox fx:id="noCoursesBox" alignment="CENTER" managed="false" spacing="10.0" visible="false">
+                                          <children>
+                                              <Label styleClass="icon-large" text="📚">
+                                                  <font>
+                                                      <Font size="48.0" />
+                                                  </font>
+                                              </Label>
+                                              <Label styleClass="alert-heading" text="Aucun cours disponible">
+                                                  <font>
+                                                      <Font size="24.0" />
+                                                  </font>
+                                              </Label>
+                                              <Label styleClass="text-muted" text="Commencez par créer un nouveau cours" />
+                                          </children>
+                                      </VBox>
+      
+                                      <!-- Load More Button -->
+                                      <HBox alignment="CENTER">
+                                          <Button fx:id="loadMoreButton" onAction="#loadMoreAction" styleClass="btn,btn-primary,btn-lg,btn-animated,btn-hover" text="Afficher plus de cours">
+                                              <graphic>
+                                                  <Label style="-fx-text-fill: white; -fx-font-size: 1.2em;" text="⬇">
+                                                      <padding>
+                                                          <Insets left="5.0" />
+                                                      </padding>
+                                                  </Label>
+                                              </graphic>
+                                              <effect>
+                                                  <DropShadow color="rgba(0,123,255,0.4)" radius="8" spread="0.3" />
+                                              </effect>
+                                          </Button>
+                                      </HBox>
+                                  </children>
+                              </VBox>
+                          </content>
+                      </ScrollPane>
+                  </children>
+              </VBox>
+          </children>
+          <stylesheets>
+                      <URL value="@css/cours.css" />
+          </stylesheets>
+      </AnchorPane>
+          </children>
+      </StackPane>
+   </center>
+</BorderPane>

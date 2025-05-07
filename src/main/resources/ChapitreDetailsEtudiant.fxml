@@ -1,70 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.ChapitreDetailsControllerEtudiant"
-            styleClass="chapter-details-container"
-            stylesheets="@css/cours.css">
-    
-    <VBox fx:id="mainContainer" spacing="24" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" 
-          AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
-        
-        <!-- En-tête du chapitre -->
-        <VBox styleClass="chapter-header" spacing="16">
-            <Label fx:id="chapterNumberLabel" styleClass="chapter-number-badge" text="Chapitre 1"/>
-            <Label fx:id="titleLabel" styleClass="chapter-title"/>
-        </VBox>
-        
-        <!-- Section des informations -->
-        <VBox styleClass="content-section" spacing="20">
-            <Label styleClass="section-title" text="Informations du chapitre"/>
-            
-            <GridPane styleClass="info-grid">
-                <columnConstraints>
-                    <ColumnConstraints hgrow="SOMETIMES" minWidth="100"/>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
-                
-                <Label styleClass="info-label" text="Description :" 
-                       GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                <Label fx:id="descriptionLabel" styleClass="info-value" wrapText="true"
-                      GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                
-                <Label styleClass="info-label" text="Date de création :" 
-                       GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                <Label fx:id="creationDateLabel" styleClass="info-value"
-                       GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-            </GridPane>
-        </VBox>
-        
-        <!-- Section PDF -->
-        <VBox fx:id="pdfSection" styleClass="content-section" spacing="20">
-            <Label styleClass="section-title" text="Contenu du chapitre"/>
-            
-            <VBox styleClass="pdf-section">
-                <HBox spacing="16" alignment="CENTER_LEFT">
-                    <Label fx:id="pdfStatusLabel" styleClass="info-value"/>
-                    <Region HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="downloadPdfButton" text="Télécharger" 
-                            styleClass="pdf-button, download-button"
-                            onAction="#downloadPdfAction"/>
-                    <Button fx:id="openPdfButton" text="Ouvrir" 
-                            styleClass="pdf-button, open-button"
-                            onAction="#openPdfAction"/>
-                </HBox>
-            </VBox>
-        </VBox>
-        
-        <!-- Footer -->
-        <HBox styleClass="footer-section" alignment="CENTER">
-            <Button fx:id="backButton" text="Retour au cours" styleClass="back-button"
-                    onAction="#backAction"/>
-        </HBox>
-        
-    </VBox>
-</AnchorPane>
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChapitreDetailsControllerEtudiant">
+   <top>
+       <fx:include source="fxml/Navbar.fxml" />
+   </top>
+    <center>
+      <AnchorPane styleClass="chapter-details-container" stylesheets="@css/cours.css">
+          
+          <VBox fx:id="mainContainer" spacing="24" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+              
+              <!-- En-tête du chapitre -->
+              <VBox spacing="16" styleClass="chapter-header">
+                  <Label fx:id="chapterNumberLabel" styleClass="chapter-number-badge" text="Chapitre 1" />
+                  <Label fx:id="titleLabel" styleClass="chapter-title" />
+              </VBox>
+              
+              <!-- Section des informations -->
+              <VBox spacing="20" styleClass="content-section">
+                  <Label styleClass="section-title" text="Informations du chapitre" />
+                  
+                  <GridPane styleClass="info-grid">
+                      <columnConstraints>
+                          <ColumnConstraints hgrow="SOMETIMES" minWidth="100" />
+                          <ColumnConstraints hgrow="ALWAYS" />
+                      </columnConstraints>
+                      
+                      <Label styleClass="info-label" text="Description :" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                      <Label fx:id="descriptionLabel" styleClass="info-value" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                      
+                      <Label styleClass="info-label" text="Date de création :" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                      <Label fx:id="creationDateLabel" styleClass="info-value" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
+                  </GridPane>
+              </VBox>
+              
+              <!-- Section PDF -->
+              <VBox fx:id="pdfSection" spacing="20" styleClass="content-section">
+                  <Label styleClass="section-title" text="Contenu du chapitre" />
+                  
+                  <VBox styleClass="pdf-section">
+                      <HBox alignment="CENTER_LEFT" spacing="16">
+                          <Label fx:id="pdfStatusLabel" styleClass="info-value" />
+                          <Region HBox.hgrow="ALWAYS" />
+                          <Button fx:id="downloadPdfButton" onAction="#downloadPdfAction" styleClass="pdf-button, download-button" text="Télécharger" />
+                          <Button fx:id="openPdfButton" onAction="#openPdfAction" styleClass="pdf-button, open-button" text="Ouvrir" />
+                      </HBox>
+                  </VBox>
+              </VBox>
+              
+              <!-- Footer -->
+              <HBox alignment="CENTER" styleClass="footer-section">
+                  <Button fx:id="backButton" onAction="#backAction" styleClass="back-button" text="Retour au cours" />
+              </HBox>
+              
+          </VBox>
+      </AnchorPane>
+   </center>
+</BorderPane>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EventListingController">
+    <stylesheets>
+        <URL value="@../css/show_event.css" />
+        <URL value="@../css/colors.css" />
+        <URL value="@../css/bootstrap.css" />
+        <URL value="@../css/dash.css" />
+        <URL value="@../css/drawer.css" />
+        <URL value="@../css/skeleton.css" />
+        <URL value="@../css/typographic.css" />
+        <URL value="@../css/immersive_scroll.css" />
+        <URL value="@../css/shapes.css" />
+    </stylesheets>
+    <top>
+        <fx:include source="../fxml/Navbar.fxml" />
+    </top>
+    <center>
+        <ScrollPane fx:id="scrollPane" fitToHeight="false" fitToWidth="true" styleClass="event-scroll-pane">
+            <content>
+                <VBox fx:id="mainBox" alignment="TOP_CENTER" spacing="20.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+                    <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                    </padding>
+                    <children>
+                        <HBox alignment="CENTER" spacing="20.0">
+                            <children>
+                                <StackPane>
+                                    <children>
+                                        <Label alignment="CENTER" mouseTransparent="true" style="-fx-text-fill: #91f2ff; -fx-font-weight: bold; -fx-cursor: default; -fx-font-size: 36px; -fx-padding: 10;" styleClass="display-5" text="Look Book &amp; Events Near You">
+                                            <effect>
+                                                <DropShadow color="#00b4db" radius="5" spread="0.2" />
+                                            </effect>
+                                        </Label>
+                                    </children>
+                                </StackPane>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="20" style="-fx-padding: 15; -fx-background-color: #f3f7ff; -fx-border-radius: 10; -fx-border-color: #d0e4ff; -fx-border-width: 1;">
+                            <children>
+                        <Button fx:id="chatbotToggler" onAction="#toggleChatbot" style="-fx-background-color: #00b4db; -fx-background-radius: 50; -fx-padding: 8;">
+                           <graphic>
+                              <ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/robotic.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <effect>
+                              <DropShadow color="#00b4db" radius="10" spread="0.2" />
+                           </effect>
+                        </Button>
+                                <TextField fx:id="searchQuery" prefHeight="48.0" prefWidth="400.0" promptText="🔍 What are you looking for..." style="-fx-font-size: 16px; -fx-background-radius: 12; -fx-border-color: #b3d1f5; -fx-border-radius: 12; -fx-padding: 8; -fx-background-color: rgba(255, 255, 255, 0.8);">
+                                    <HBox.margin>
+                                        <Insets left="103.0" />
+                                    </HBox.margin>
+                                </TextField>
+                                <ChoiceBox fx:id="searchCategory" prefWidth="200.0" style="-fx-font-size: 16px; -fx-background-radius: 12; -fx-border-color: #8dbbff; -fx-border-width: 1; -fx-background-color: rgba(255, 255, 255, 0.8); -fx-padding: 8;">
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <String fx:value="Workshop" />
+                                            <String fx:value="Hackathon" />
+                                            <String fx:value="Sports" />
+                                            <String fx:value="Networking" />
+                                            <String fx:value="Cultural" />
+                                        </FXCollections>
+                                    </items>
+                                </ChoiceBox>
+                                <TextField fx:id="searchLocation" prefHeight="48.0" prefWidth="200.0" promptText="Location" style="-fx-font-size: 16px; -fx-background-radius: 12; -fx-border-color: #b3d1f5; -fx-border-radius: 12; -fx-padding: 8; -fx-background-color: rgba(255, 255, 255, 0.8);" />
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="20.0">
+                            <children>
+                                <Button fx:id="showNormal" style="-fx-background-color: #00b4db; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 10; -fx-padding: 10 20;" text="Recent Events">
+                                    <effect>
+                                        <DropShadow color="#00b4db" radius="10" spread="0.2" />
+                                    </effect>
+                                </Button>
+                                <Button fx:id="showRecommended" style="-fx-background-color: #00b4db; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 10; -fx-padding: 10 20;" text="Recommended Events">
+                                    <effect>
+                                        <DropShadow color="#00b4db" radius="10" spread="0.2" />
+                                    </effect>
+                                </Button>
+                            </children>
+                        </HBox>
+                        <VBox fx:id="eventContainer" alignment="TOP_CENTER" spacing="20.0" style="-fx-padding: 10;">
+                            <children>
+                                <VBox fx:id="noEventsBox" alignment="CENTER" managed="false" spacing="10.0" style="-fx-background-color: white;" visible="false">
+                                    <children>
+                                        <Label styleClass="icon-large" text="📅">
+                                            <font>
+                                                <Font size="48.0" />
+                                            </font>
+                                        </Label>
+                                        <Label styleClass="alert-heading" text="Aucun événement disponible">
+                                            <font>
+                                                <Font size="24.0" />
+                                            </font>
+                                        </Label>
+                                        <Label styleClass="text-muted" text="Essayez de modifier vos critères de recherche" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+                        <HBox alignment="CENTER" spacing="20.0">
+                            <children>
+                                <Button fx:id="moreButton" style="-fx-background-color: #00b4db; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 10; -fx-padding: 10 20;" text="More" visible="false">
+                                    <graphic>
+                                        <Label style="-fx-text-fill: white; -fx-font-size: 1.2em;" text="⬇">
+                                            <padding>
+                                                <Insets left="5.0" />
+                                            </padding>
+                                        </Label>
+                                    </graphic>
+                                    <effect>
+                                        <DropShadow color="rgba(0,123,255,0.4)" radius="8" spread="0.3" />
+                                    </effect>
+                                </Button>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

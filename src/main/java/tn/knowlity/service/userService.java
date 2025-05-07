@@ -6,15 +6,46 @@ import tn.knowlity.entity.User;
 import tn.knowlity.tools.MyDataBase;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class userService implements IService {
     Connection cnx;
+    private final ScheduledExecutorService scheduler;
 
     public userService() {
         cnx = MyDataBase.getDataBase().getConnection();
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+    }
+
+    private String normalizeImagePath(String imagePath) {
+        if (imagePath == null || imagePath.isEmpty()) {
+            return null; // Or return a default image path if needed
+        }
+        // If already a relative path starting with /images/, return as is
+        if (imagePath.startsWith("/images/")) {
+            return imagePath;
+        }
+        // If it's a file name (e.g., image.jpg), prepend /images/
+        if (!imagePath.startsWith("/") && !imagePath.contains(":")) {
+            return "/images/" + imagePath;
+        }
+        // If it's a full path (e.g., src/main/resources/images/image.jpg), extract the file name
+        if (imagePath.contains("src/main/resources/images/")) {
+            return "/images/" + imagePath.substring(imagePath.lastIndexOf("images/") + 7);
+        }
+        // If it's a file:/ URL, extract the file name
+        if (imagePath.startsWith("file:/")) {
+            String fileName = imagePath.substring(imagePath.lastIndexOf("/") + 1);
+            return "/images/" + fileName;
+        }
+        // Otherwise, assume it's a file name and prepend /images/
+        return "/images/" + new java.io.File(imagePath).getName();
     }
 
     @Override
@@ -28,7 +59,7 @@ public class userService implements IService {
         ps.setString(4, user.getEmail());
         ps.setInt(5, user.getNum_telephone());
         ps.setString(6, user.getPassword());
-        ps.setString(7, user.getImage());
+        ps.setString(7, normalizeImagePath(user.getImage())); // Normalize to relative path
         ps.setString(8, user.getGenre());
         ps.setString(9, user.getLocalisation());
         ps.setDate(10, java.sql.Date.valueOf(java.time.LocalDate.now()));
@@ -58,7 +89,7 @@ public class userService implements IService {
         ps.setString(4, user.getEmail());
         ps.setInt(5, user.getNum_telephone());
         ps.setString(6, user.getPassword());
-        ps.setString(7, user.getImage());
+        ps.setString(7, normalizeImagePath(user.getImage())); // Normalize to relative path
         ps.setString(8, user.getGenre());
         ps.setString(9, user.getLocalisation());
         ps.setDate(10, java.sql.Date.valueOf(java.time.LocalDate.now()));
@@ -102,10 +133,12 @@ public class userService implements IService {
             user.setNum_telephone(rs.getInt("num_telephone"));
             user.setDate_naissance(rs.getDate("date_naissance"));
             user.setLocalisation(rs.getString("localisation"));
-            user.setImage(rs.getString("image"));
+            user.setImage(normalizeImagePath(rs.getString("image"))); // Normalize to relative path
             user.setPassword(rs.getString("password"));
             user.setGoogle_id(rs.getString("google_id"));
             String rolesStr = rs.getString("roles");
+            user.setBanned(rs.getInt("banned"));
+            user.setCreted_at(rs.getDate("created_at"));
             if (rolesStr != null && !rolesStr.isEmpty()) {
                 Gson gson = new Gson();
                 String[] roles = gson.fromJson(rolesStr, String[].class);
@@ -135,7 +168,7 @@ public class userService implements IService {
             user.setNum_telephone(rs.getInt("num_telephone"));
             user.setDate_naissance(rs.getDate("date_naissance"));
             user.setLocalisation(rs.getString("localisation"));
-            user.setImage(rs.getString("image"));
+            user.setImage(normalizeImagePath(rs.getString("image"))); // Normalize to relative path
             user.setGoogle_id(rs.getString("google_id"));
             String rolesStr = rs.getString("roles");
             if (rolesStr != null && !rolesStr.isEmpty()) {
@@ -146,6 +179,53 @@ public class userService implements IService {
             return user;
         }
         return null;
+    }
+
+    @Override
+    public void bannneruser(User user) throws SQLException {
+        LocalDateTime bannedUntil = LocalDateTime.now().plusMinutes(1);
+        Timestamp bannedUntilTimestamp = Timestamp.valueOf(bannedUntil);
+        String sql = "UPDATE user SET banned = ?, created_at = ? WHERE email = ?";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, 1);
+            ps.setTimestamp(2, bannedUntilTimestamp);
+            ps.setString(3, user.getEmail());
+
+            int rowsUpdated = ps.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Utilisateur avec email " + user.getEmail() + " banni avec succès.");
+                // Schedule unbanning task
+                scheduleUnban(user.getEmail());
+            } else {
+                System.out.println("Aucun utilisateur trouvé avec email " + user.getEmail() + ".");
+            }
+        }
+    }
+
+    private void scheduleUnban(String email) {
+        scheduler.schedule(() -> {
+            try {
+                unbanUser(email);
+                System.out.println("Utilisateur avec email " + email + " débanni avec succès.");
+            } catch (SQLException e) {
+                System.err.println("Erreur lors du débannissement de l'utilisateur avec email " + email + ": " + e.getMessage());
+            }
+        }, 1, TimeUnit.MINUTES);
+    }
+
+    private void unbanUser(String email) throws SQLException {
+        String sql = "UPDATE user SET banned = ? WHERE email = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, 0);
+            ps.setString(2, email);
+            int rowsUpdated = ps.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Utilisateur avec email " + email + " débanni.");
+            } else {
+                System.out.println("Aucun utilisateur trouvé avec email " + email + " pour débannissement.");
+            }
+        }
     }
 
     @Override
@@ -161,7 +241,7 @@ public class userService implements IService {
             user.setEmail(rs.getString("email"));
             user.setNum_telephone(rs.getInt("num_telephone"));
             user.setBanned(rs.getInt("banned"));
-            user.setImage(rs.getString("image"));
+            user.setImage((rs.getString("image"))); // Normalize to relative path
             String rolesStr = rs.getString("roles");
             if (rolesStr != null && !rolesStr.isEmpty()) {
                 Gson gson = new Gson();
@@ -173,6 +253,41 @@ public class userService implements IService {
         return users;
     }
 
+    public void bannner1user(User user) throws SQLException{
+        LocalDateTime bannedUntil = LocalDateTime.now().plusMinutes(15);  // Ajoute 15 minutes
+
+        // Convertir LocalDateTime en java.sql.Timestamp
+        Timestamp bannedUntilTimestamp = Timestamp.valueOf(bannedUntil);
+        String sql = "UPDATE user SET banned = ? ,created_at = ? WHERE email = ?";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, 1);
+            ps.setTimestamp(2, bannedUntilTimestamp);
+
+            ps.setString(4, user.getEmail());
+
+            int rowsUpdated = ps.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Utilisateur avec ID " + user.getEmail()+ " banni avec succès.");
+            } else {
+                System.out.println("Aucun utilisateur trouvé avec ID " + user.getEmail() + ".");
+            }
+        }
+    }
+
+
+    public void unbannneruser(User user) throws SQLException{
+        String sql="update user  set banned=?  where email=?";
+        PreparedStatement ps = cnx.prepareStatement(sql);
+
+        ps.setInt(1,0);
+
+        ps.setString(2, user.getEmail());
+
+        ps.executeUpdate();
+        System.out.println("code ajouté avec succées ");
+
+    }
     @Override
     public List<User> recherparnom(String nom) throws SQLException {
         String sql = "SELECT nom, prenom, email, num_telephone, roles FROM user WHERE nom LIKE ? OR prenom LIKE ? OR email LIKE ? OR num_telephone LIKE ?";
@@ -219,7 +334,7 @@ public class userService implements IService {
                     user.setNum_telephone(rs.getInt("num_telephone"));
                     user.setDate_naissance(rs.getDate("date_naissance"));
                     user.setLocalisation(rs.getString("localisation"));
-                    user.setImage(rs.getString("image"));
+                    user.setImage((rs.getString("image"))); // Normalize to relative path
                     user.setPassword(rs.getString("password"));
                     user.setGoogle_id(rs.getString("google_id"));
                 }
@@ -238,27 +353,27 @@ public class userService implements IService {
         ps.setString(3, email);
         ps.setString(4, localisation);
         ps.setInt(5, numtel);
-        ps.setString(6, image);
+        ps.setString(6, normalizeImagePath(image)); // Normalize to relative path
         ps.setInt(7, id);
         ps.executeUpdate();
         System.out.println("Utilisateur modifié avec succès");
     }
+
     @Override
-    public void ajouterverificationcode(String verifcode,String email) throws SQLException{
-        String sql="update user  set verification_code=? where email=?";
+    public void ajouterverificationcode(String verifcode, String email) throws SQLException {
+        String sql = "UPDATE user SET verification_code = ? WHERE email = ?";
         PreparedStatement ps = cnx.prepareStatement(sql);
 
         ps.setString(1, verifcode);
         ps.setString(2, email);
 
         ps.executeUpdate();
-        System.out.println("code ajouté avec succées ");
-
+        System.out.println("Code ajouté avec succès");
     }
-    @Override
-    public void modifierpassword(String password,String confirmpassword,String mail) throws SQLException{
 
-        String sql="update user  set password=?,confirm_password=? where email=?";
+    @Override
+    public void modifierpassword(String password, String confirmpassword, String mail) throws SQLException {
+        String sql = "UPDATE user SET password = ?, confirm_password = ? WHERE email = ?";
         PreparedStatement ps = cnx.prepareStatement(sql);
 
         ps.setString(1, password);
@@ -266,19 +381,18 @@ public class userService implements IService {
         ps.setString(3, mail);
 
         ps.executeUpdate();
-        System.out.println("PASSWORD CHANGé avec succés ");
-
+        System.out.println("Mot de passe changé avec succès");
     }
 
     @Override
     public User recherparemail(String email) throws SQLException {
-        String sql = "SELECT * FROM user WHERE email=?";
+        String sql = "SELECT * FROM user WHERE email = ?";
         User user = null;
 
-        try (PreparedStatement ps1 = cnx.prepareStatement(sql)) {
-            ps1.setString(1, email);
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, email);
 
-            try (ResultSet rs = ps1.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     user = new User();
                     user.setId(rs.getInt("id"));
@@ -288,13 +402,25 @@ public class userService implements IService {
                     user.setNum_telephone(rs.getInt("num_telephone"));
                     user.setDate_naissance(rs.getDate("date_naissance"));
                     user.setLocalisation(rs.getString("localisation"));
-                    user.setImage(rs.getString("image"));
+                    user.setImage(normalizeImagePath(rs.getString("image"))); // Normalize to relative path
                     user.setPassword(rs.getString("password"));
                     user.setVerification_code(rs.getString("verification_code"));
-
+                    user.setBanned(rs.getInt("banned"));
                 }
             }
         }
         return user;
+    }
+
+    // Optional: Shutdown scheduler when service is no longer needed
+    public void shutdown() {
+        scheduler.shutdown();
+        try {
+            if (!scheduler.awaitTermination(60, TimeUnit.SECONDS)) {
+                scheduler.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            scheduler.shutdownNow();
+        }
     }
 }
