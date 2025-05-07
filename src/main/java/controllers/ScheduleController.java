@@ -27,9 +27,9 @@ import org.json.JSONObject;
 import org.json.JSONException;
 
 public class ScheduleController {
-
-    private static final String API_URL = "";
-    private static final String BEARER_TOKEN = "";
+    private static final Dotenv dotenv = Dotenv.load();
+    private static final String API_URL = dotenv.get("HUGGING_FACE_API_URL");
+    private static final String BEARER_TOKEN = dotenv.get("HUGGING_FACE_TOKEN");
     private final User user = UserSessionManager.getInstance().getCurrentUser();
 
     @FXML
