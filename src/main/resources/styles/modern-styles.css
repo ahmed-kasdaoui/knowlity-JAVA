@@ -1,0 +1,60 @@
+/* modern-styles.css */
+
+/* Main container styling */
+#scheduleContainer {
+    -fx-background-color: transparent;
+}
+
+/* Week card styling */
+.week-card {
+    -fx-background-color: #f5f7ff;
+    -fx-background-radius: 8px;
+    -fx-border-color: #3b82f6;
+    -fx-border-width: 0 0 0 4px;
+    -fx-border-radius: 0 8px 8px 0;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
+}
+
+/* ScrollPane styling */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10px;
+    -fx-padding: 0 5 0 5;
+}
+
+.scroll-pane > .scroll-bar:vertical > .thumb {
+    -fx-background-color: #becde8;
+    -fx-background-radius: 10px;
+}
+
+.week-header {
+    -fx-font-family: 'Segoe UI', Arial;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 0 0 10px 0;
+}
+
+.course-item {
+    -fx-font-family: 'Segoe UI', Arial;
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+    -fx-padding: 4px 0;
+}
+
+.total-hours {
+    -fx-font-family: 'Segoe UI', Arial;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 8px 0 0 0;
+}

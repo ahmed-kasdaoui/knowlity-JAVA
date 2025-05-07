@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esprit.knowlity.controller.teacher.StatisticsController">
+    <left>
+        <fx:include source="../../../../../fxml/navbarE.fxml"/>
+    </left>
+    <center>
+      <StackPane prefHeight="750.0" prefWidth="1200.0" style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #2b5876, #4e4376);" stylesheets="@statistics.css">
+          <ScrollPane fitToHeight="true" fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+              <VBox alignment="TOP_CENTER" spacing="30">
+                  <padding>
+                      <Insets bottom="30" left="32" right="32" top="30" />
+                  </padding>
+                  <!-- Header Row -->
+                  <HBox alignment="CENTER_LEFT" spacing="18">
+                      <Label fx:id="dashboardTitle" styleClass="dashboard-title" text="Statistics" />
+                      <Region HBox.hgrow="ALWAYS" />
+                      <Button fx:id="backButton" styleClass="back-btn" text="Back" />
+                  </HBox>
+                  <!-- Summary Cards Row -->
+                  <HBox alignment="CENTER" spacing="24">
+                      <VBox style="-fx-background-color: linear-gradient(to bottom right, #43cea2, #185a9d);" styleClass="stat-card">
+                          <ImageView fitHeight="38" fitWidth="38" pickOnBounds="true" preserveRatio="true" style="-fx-effect: dropshadow(gaussian, #185a9d99, 2, 0.2, 0, 1);">
+                              <image>
+                                  <Image url="@../../../../../images/student_icon.png" />
+                              </image>
+                          </ImageView>
+                          <Label styleClass="stat-label" text="Participants" />
+                          <Label fx:id="participantsLabel" styleClass="stat-value" />
+                      </VBox>
+      
+                      <VBox style="-fx-background-color: linear-gradient(to bottom right, #6a11cb, #2575fc);" styleClass="stat-card">
+                          <ImageView fitHeight="38" fitWidth="38" pickOnBounds="true" preserveRatio="true" style="-fx-effect: dropshadow(gaussian, #2575fc99, 2, 0.2, 0, 1);">
+                              <image>
+                                  <Image url="@../../../../../images/waiting.png" />
+                              </image>
+                          </ImageView>
+                          <Label styleClass="stat-label" text="Completion Rate" />
+                          <Label fx:id="completionRateLabel" styleClass="stat-value" />
+                          <ProgressBar fx:id="completionRateProgressBar" prefWidth="120" style="-fx-accent: #2575fc; -fx-background-radius: 8; -fx-border-radius: 8;" />
+                      </VBox>
+                      <VBox style="-fx-background-color: linear-gradient(to bottom right, #11998e, #38ef7d);" styleClass="stat-card">
+                          <ImageView fitHeight="38" fitWidth="38" pickOnBounds="true" preserveRatio="true" style="-fx-effect: dropshadow(gaussian, #38ef7d99, 2, 0.2, 0, 1);">
+                              <image>
+                                  <Image url="@../../../../../images/success_icon.png" />
+                              </image>
+                          </ImageView>
+                          <Label styleClass="stat-label" text="Badges Earned" />
+                          <Label fx:id="badgeStatsLabel" styleClass="stat-value" />
+                          <ProgressBar fx:id="badgeProgressBar" prefWidth="120" style="-fx-accent: #38ef7d; -fx-background-radius: 8; -fx-border-radius: 8;" />
+                      </VBox>
+      
+                  </HBox>
+                  <!-- Charts Row -->
+                  <HBox alignment="CENTER" spacing="32">
+                      <VBox styleClass="chart-card">
+                          <Label styleClass="chart-title" text="Classement des étudiants">
+                              <VBox.margin>
+                                  <Insets bottom="10.0" />
+                              </VBox.margin>
+                          </Label>
+                          <ListView fx:id="rankingListView" prefHeight="250" prefWidth="400.0" styleClass="ranking-listview" />
+                      </VBox>
+      
+                      <VBox styleClass="chart-card">
+                          <Label styleClass="chart-title" text="Completion">
+                              <VBox.margin>
+                                  <Insets bottom="10.0" />
+                              </VBox.margin>
+                          </Label>
+                          <PieChart fx:id="completionPieChart" prefHeight="250" prefWidth="400.0" />
+                      </VBox>
+      
+                  </HBox>
+                  <!-- Performers Row -->
+                  <HBox alignment="CENTER" spacing="32">
+                      <VBox alignment="CENTER" prefHeight="100" prefWidth="220" spacing="6" styleClass="top-performer-card">
+                          <ImageView fitHeight="32" fitWidth="32" pickOnBounds="true">
+                              <image>
+                                  <Image url="@../../../../../images/top.png" />
+                              </image>
+                          </ImageView>
+                          <Label styleClass="performer-title" text="Top Performer" />
+                          <Label fx:id="topPerformerNameLabel" styleClass="performer-name" />
+                          <Label fx:id="topPerformerScoreLabel" styleClass="performer-score" />
+                      </VBox>
+                      <VBox alignment="CENTER" prefHeight="100" prefWidth="220" spacing="6" style="-fx-background-color: linear-gradient(to bottom right, #ff5858, #f09819); -fx-background-radius: 18; -fx-border-radius: 18;" styleClass="most-missed-question-card">
+                          <ImageView fitHeight="32" fitWidth="32" pickOnBounds="true" preserveRatio="true" style="-fx-effect: dropshadow(gaussian, #ff585899, 2, 0.2, 0, 1);">
+                              <image>
+                                  <Image url="@../../../../../images/error_icon.png" />
+                              </image>
+                          </ImageView>
+                          <Label styleClass="performer-title" text="Most Missed Question" />
+                          <Label fx:id="mostMissedQuestionLabel" maxWidth="140" styleClass="stat-value" wrapText="true" />
+                      </VBox>
+                      <VBox alignment="CENTER" prefHeight="100" prefWidth="220" spacing="6" styleClass="lowest-performer-card">
+                          <ImageView fitHeight="32" fitWidth="32" pickOnBounds="true">
+                              <image>
+                                  <Image url="@../../../../../images/low.png" />
+                              </image>
+                          </ImageView>
+                          <Label styleClass="performer-title" text="Lowest Performer" />
+                          <Label fx:id="bottomPerformerNameLabel" styleClass="performer-name" />
+                          <Label fx:id="bottomPerformerScoreLabel" styleClass="performer-score" />
+                      </VBox>
+                  </HBox>
+              </VBox>
+          </ScrollPane>
+      </StackPane>
+   </center>
+</BorderPane>

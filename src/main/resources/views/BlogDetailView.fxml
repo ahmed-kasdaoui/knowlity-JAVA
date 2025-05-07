@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view.BlogDetailController"
+            styleClass="blog-detail-view"
+            stylesheets="@../styles/blog-detail.css">
+    
+    <ScrollPane styleClass="detail-scroll-pane" fitToWidth="true" AnchorPane.topAnchor="0.0" 
+                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="70.0">
+        <VBox styleClass="detail-container">
+            <Label fx:id="titleLabel" styleClass="detail-title"/>
+            
+            <VBox styleClass="meta-info">
+                <Label fx:id="creatorLabel" styleClass="creator-name"/>
+                <Label fx:id="dateLabel" styleClass="date-info"/>
+            </VBox>
+            
+            <VBox styleClass="image-container">
+                <ImageView fx:id="blogImage" fitWidth="600" preserveRatio="true" 
+                          styleClass="detail-image"/>
+            </VBox>
+            
+            <TextFlow fx:id="contentFlow" styleClass="detail-content"/>
+        </VBox>
+    </ScrollPane>
+    
+    <Button text="Fermer" styleClass="close-button" onAction="#handleClose"
+            AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="20.0"/>
+            
+</AnchorPane>

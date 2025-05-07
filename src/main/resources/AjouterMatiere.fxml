@@ -134,6 +134,6 @@
         </VBox>
     </children>
     <stylesheets>
-        <URL value="@/styles/forms2.css" />
+        <URL value="@styles/forms2.css" />
     </stylesheets>
 </AnchorPane>

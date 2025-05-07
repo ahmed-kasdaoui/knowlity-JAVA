@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esprit.knowlity.controller.student.QuestionFormController">
+    <left>
+        <fx:include source="../../../../../fxml/navbarE.fxml"/>
+    </left>
+    <center>
+      <AnchorPane prefHeight="750" prefWidth="1200" style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #2b5876, #4e4376);">
+          <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <content>
+                  <StackPane minHeight="750" minWidth="1200" style="-fx-background-color: transparent;">
+                      <VBox alignment="CENTER" minHeight="750" minWidth="1200" spacing="20" style="-fx-background-color: transparent; -fx-padding: 20 100 20 100;">
+      
+                          <!-- Main Form Section -->
+                          <VBox spacing="10.0" style="-fx-background-color: #ffffff11; -fx-background-radius: 12; -fx-padding: 20;">
+                             <!-- Title -->
+                             <Text style="-fx-font-size: 40px; -fx-fill: #fff; -fx-font-family: 'Segoe UI Black'; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, #185a9d, 2, 0.2, 0, 1);" text="Question Form" />
+                              <!-- Title Field -->
+                              <VBox spacing="8">
+                                  <Label style="-fx-font-size: 14px; -fx-font-family: 'Segoe UI Semibold'; -fx-text-fill: White;" text="Title" />
+                                  <TextField fx:id="titleField" promptText="Enter question title..." style="-fx-background-radius: 10; -fx-font-size: 14px; -fx-padding: 8; -fx-border-color: #43cea2; -fx-border-radius: 10; -fx-border-width: 1;" />
+                              </VBox>
+      
+                              <!-- Statement Field -->
+                              <VBox spacing="8">
+                                  <Label style="-fx-font-size: 14px; -fx-font-family: 'Segoe UI Semibold'; -fx-text-fill: White;" text="Statement (Enoncé)" />
+                                  <TextArea fx:id="statementArea" prefRowCount="3" promptText="Enter the statement..." style="-fx-font-size: 14px; -fx-background-radius: 10;" />
+                              </VBox>
+      
+                              <!-- Code Snippet Field -->
+                              <VBox spacing="8">
+                                  <Label style="-fx-font-size: 14px; -fx-font-family: 'Segoe UI Semibold'; -fx-text-fill: White;" text="Code Snippet (optional)" />
+                                  <TextArea fx:id="codeSnippetArea" prefRowCount="3" promptText="Paste code here..." style="-fx-font-size: 14px; -fx-background-radius: 10;" />
+                              </VBox>
+         
+                                   <!-- Math Formula Section -->
+                             <VBox spacing="10">
+                                 <HBox alignment="CENTER_LEFT" spacing="15">
+                                     <CheckBox fx:id="hasMathFormulaCheck" style="-fx-font-size: 14px; -fx-font-family: 'Segoe UI Semibold'; -fx-text-fill: White;" text="Has Math Formula?" />
+                                     <Label style="-fx-font-size: 14px; -fx-font-family: 'Segoe UI Semibold'; -fx-text-fill: White;" text="Math Formula" />
+                                 </HBox>
+                                 <TextArea fx:id="mathFormulaArea" disable="true" prefRowCount="2" promptText="Enter math formula..." style="-fx-font-size: 14px; -fx-background-radius: 10;" />
+                             </VBox>
+         
+                             <!-- Metadata Section -->
+                             <HBox spacing="20" style="-fx-background-color: #ffffff11; -fx-background-radius: 12; -fx-padding: 15;">
+                                 <VBox prefWidth="150" spacing="8">
+                                     <Label style="-fx-font-size: 14px; -fx-font-family: 'Segoe UI Semibold'; -fx-text-fill: White;" text="Point" />
+                                     <TextField fx:id="pointField" promptText="Points" style="-fx-background-radius: 10; -fx-font-size: 14px; -fx-padding: 8; -fx-border-color: #43cea2; -fx-border-radius: 10; -fx-border-width: 1;" />
+                                 </VBox>
+                                 <VBox prefWidth="150" spacing="8">
+                                     <Label style="-fx-font-size: 14px; -fx-font-family: 'Segoe UI Semibold'; -fx-text-fill: White;" text="Order" />
+                                     <TextField fx:id="orderField" promptText="Order" style="-fx-background-radius: 10; -fx-font-size: 14px; -fx-padding: 8; -fx-border-color: #43cea2; -fx-border-radius: 10; -fx-border-width: 1;" />
+                                 </VBox>
+                                 <VBox prefWidth="200" spacing="8">
+                                     <Label style="-fx-font-size: 14px; -fx-font-family: 'Segoe UI Semibold'; -fx-text-fill: White;" text="Programming Language" />
+                                     <TextField fx:id="programmingLanguageField" promptText="e.g. Java, Python, ..." style="-fx-background-radius: 10; -fx-font-size: 14px; -fx-padding: 8; -fx-border-color: #43cea2; -fx-border-radius: 10; -fx-border-width: 1;" />
+                                 </VBox>
+                             </HBox>
+                          </VBox>
+      
+                          <!-- Buttons -->
+                          <HBox alignment="CENTER" spacing="20.0">
+                              <Button fx:id="saveButton" style="-fx-background-radius: 15; -fx-background-color: linear-gradient(to right, #43cea2, #185a9d); -fx-text-fill: white; -fx-font-size: 14px; -fx-font-family: 'Segoe UI Semibold'; -fx-padding: 10 40 10 40; -fx-effect: dropshadow(gaussian, #185a9d33, 3, 0.11, 0, 1);" text="Save" />
+                              <Button fx:id="cancelButton" style="-fx-background-radius: 15; -fx-background-color: linear-gradient(to right, #ff512f, #dd2476); -fx-text-fill: white; -fx-font-size: 14px; -fx-font-family: 'Segoe UI Semibold'; -fx-padding: 10 40 10 40; -fx-effect: dropshadow(gaussian, #ff512f44, 3, 0.11, 0, 1); -fx-cursor: hand; -fx-border-radius: 15; -fx-border-width: 1; -fx-border-color: #fff;" text="Back" />
+                          </HBox>
+                      </VBox>
+                  </StackPane>
+              </content>
+          </ScrollPane>
+      </AnchorPane>
+   </center>
+</BorderPane>

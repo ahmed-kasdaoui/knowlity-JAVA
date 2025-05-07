@@ -9,11 +9,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -21,15 +17,20 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import tn.esprit.models.Cours;
 import tn.esprit.services.ServiceCours;
+import tn.esprit.services.ServiceInscription;
 import javafx.scene.layout.StackPane;
 import javafx.scene.Node;
 import javafx.animation.PauseTransition;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.scene.control.Labeled;
+
 import java.util.prefs.Preferences;
 
 import java.io.IOException;
 import java.util.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.effect.DropShadow;
 
 public class ListeCoursControllerEtudiant {
 
@@ -94,6 +95,21 @@ public class ListeCoursControllerEtudiant {
 
     private SimpleIntegerProperty currentStep = new SimpleIntegerProperty(0);
     private List<GuideStep> guideSteps;
+
+    public void genererPlanning(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ScheduleView.fxml"));
+            Scene scene = new Scene(loader.load(), 800, 800);
+
+            // Créer une nouvelle fenêtre
+            Stage newStage = new Stage();
+            newStage.setScene(scene);
+            newStage.setTitle("Planning");
+            newStage.show();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     private static class GuideStep {
         final String message;
@@ -349,86 +365,169 @@ public class ListeCoursControllerEtudiant {
     }
 
     private VBox createCourseCard(Cours cours) {
-        // Card
         VBox card = new VBox();
         card.getStyleClass().add("course-card");
-        card.setAlignment(Pos.TOP_CENTER);
-        card.setMaxWidth(400);
-
-        // Header
+        card.setSpacing(0);
+        card.setMaxWidth(300);
+        card.setMinWidth(300);
+        
+        // Header with image
         StackPane header = new StackPane();
-        header.setPrefHeight(180.0);
+        header.setMinHeight(180);
+        header.setMaxHeight(180);
         header.getStyleClass().add("card-header");
 
         ImageView imageView = new ImageView();
         try {
-            imageView.setImage(new Image("file:Uploads/" + cours.getUrlImage()));
+            String imagePath = cours.getUrlImage();
+            if (imagePath != null && !imagePath.isEmpty()) {
+                if (imagePath.startsWith("http")) {
+                    // Si c'est une URL
+                    Image image = new Image(imagePath, 300, 180, false, true);
+                    imageView.setImage(image);
+                } else {
+                    // Si c'est un chemin local
+                    Image image = new Image("file:Uploads/" + imagePath, 300, 180, false, true);
+                    imageView.setImage(image);
+                }
+            } else {
+                throw new Exception("Image path is null or empty");
+            }
         } catch (Exception e) {
-            imageView.setImage(new Image("file:Uploads/default.jpg"));
+            System.out.println("Error loading course image: " + e.getMessage());
+            try {
+                Image defaultImage = new Image(getClass().getResourceAsStream("/images/default-course.jpg"), 300, 180, false, true);
+                imageView.setImage(defaultImage);
+            } catch (Exception ex) {
+                System.out.println("Error loading default image: " + ex.getMessage());
+                Rectangle placeholder = new Rectangle(300, 180, Color.LIGHTGRAY);
+                header.getChildren().add(placeholder);
+            }
         }
-        imageView.setFitHeight(180.0);
-        imageView.setFitWidth(300.0);
+
+        // Configuration de l'image
+        imageView.setFitWidth(300);
+        imageView.setFitHeight(180);
         imageView.setPreserveRatio(false);
-        imageView.getStyleClass().add("object-fit-cover");
+        imageView.getStyleClass().add("course-image");
 
-        Region overlay = new Region();
-        overlay.getStyleClass().add("image-overlay");
+        // Ajouter un effet d'assombrissement pour le texte
+        Rectangle overlay = new Rectangle(300, 180);
+        overlay.setFill(Color.rgb(0, 0, 0, 0.3));
+        
+        header.getChildren().addAll(imageView, overlay);
 
-        Label badge = new Label(cours.getMatiere() != null ? cours.getMatiere().getTitre() : "Sans matière");
-        badge.getStyleClass().add("badge");
-        StackPane.setAlignment(badge, Pos.TOP_LEFT);
-        StackPane.setMargin(badge, new Insets(10, 0, 0, 10));
+        // Body content
+        VBox body = new VBox(10);
+        body.setPadding(new Insets(15));
+        body.setStyle("-fx-background-color: white;");
 
-        header.getChildren().addAll(imageView, overlay, badge);
-
-        // Body
-        VBox body = new VBox(20);
-        body.getStyleClass().add("card-body");
-        body.setAlignment(Pos.CENTER);
-        body.setPadding(new Insets(20, 10, 10, 10));
-
+        // Titre du cours
         Label title = new Label(cours.getTitle());
-        title.getStyleClass().add("course-title");
         title.setWrapText(true);
+        title.getStyleClass().add("course-title");
+        title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
-        Label teacher = new Label("Enseignant: Chamseddine");
-        teacher.getStyleClass().add("teacher-name");
+        // Teacher info with icon
+        HBox teacher = new HBox(8);
+        teacher.setAlignment(Pos.CENTER_LEFT);
+        teacher.setPadding(new Insets(5, 0, 10, 0));
+        
+        // Create teacher icon as a circle with initials
+        StackPane teacherIcon = new StackPane();
+        teacherIcon.setPrefSize(32, 32);
+        Circle circle = new Circle(16);
+        circle.setFill(Color.LIGHTBLUE);
+        
+        String teacherName = "Enseignant inconnu";
+        String initials = "?";
+        if (cours.getEnseignant() != null) {
+            teacherName = cours.getEnseignant().getPrenom() + " " + cours.getEnseignant().getNom();
+            initials = String.valueOf(cours.getEnseignant().getPrenom().charAt(0)).toUpperCase();
+        }
+        
+        Label initialsLabel = new Label(initials);
+        initialsLabel.setTextFill(Color.WHITE);
+        initialsLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+        
+        teacherIcon.getChildren().addAll(circle, initialsLabel);
+        
+        Label teacherLabel = new Label(teacherName);
+        teacherLabel.getStyleClass().add("text-muted");
+        teacherLabel.setStyle("-fx-font-size: 13px;");
+        teacher.getChildren().addAll(teacherIcon, teacherLabel);
 
-        HBox stats = new HBox(20);
+        // Stats container
+        HBox stats = new HBox(30);
         stats.setAlignment(Pos.CENTER);
+        stats.setPadding(new Insets(10, 0, 10, 0));
+        stats.setStyle("-fx-background-color: #f8f9fa;");
 
-        VBox chapters = new VBox(5);
-        chapters.setAlignment(Pos.CENTER);
-        Label chaptersCount = new Label("10");
-        chaptersCount.getStyleClass().add("stat-count");
-        Label chaptersLabel = new Label("Chapitres");
-        chaptersLabel.getStyleClass().add("text-muted");
-        chapters.getChildren().addAll(chaptersCount, chaptersLabel);
-
-        VBox students = new VBox(5);
+        // Enrolled students count
+        VBox students = new VBox(3);
         students.setAlignment(Pos.CENTER);
-        Label studentsCount = new Label("10");
+        ServiceInscription serviceInscription = new ServiceInscription();
+        int numberOfStudents = serviceInscription.getNumberOfInscriptions(cours.getId());
+        Label studentsCount = new Label(String.valueOf(numberOfStudents));
         studentsCount.getStyleClass().add("stat-count");
-        Label studentsLabel = new Label("Apprenants");
+        studentsCount.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+        Label studentsLabel = new Label("Inscrits");
         studentsLabel.getStyleClass().add("text-muted");
+        studentsLabel.setStyle("-fx-font-size: 12px;");
         students.getChildren().addAll(studentsCount, studentsLabel);
 
-        stats.getChildren().addAll(chapters, students);
+        // Chapters count
+        VBox chapters = new VBox(3);
+        chapters.setAlignment(Pos.CENTER);
+        int numberOfChapters = serviceCours.getChapitres(cours).size();
+        Label chaptersCount = new Label(String.valueOf(numberOfChapters));
+        chaptersCount.getStyleClass().add("stat-count");
+        chaptersCount.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+        Label chaptersLabel = new Label("Chapitres");
+        chaptersLabel.getStyleClass().add("text-muted");
+        chaptersLabel.setStyle("-fx-font-size: 12px;");
+        chapters.getChildren().addAll(chaptersCount, chaptersLabel);
 
+        // Price info
+        VBox price = new VBox(3);
+        price.setAlignment(Pos.CENTER);
+        Label priceValue = new Label(cours.getPrix() + " DT");
+        priceValue.getStyleClass().add("stat-count");
+        priceValue.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+        Label priceLabel = new Label("Prix");
+        priceLabel.getStyleClass().add("text-muted");
+        priceLabel.setStyle("-fx-font-size: 12px;");
+        price.getChildren().addAll(priceValue, priceLabel);
+
+        // Add subject badge
+        Label subjectBadge = new Label(cours.getMatiere() != null ? cours.getMatiere().getTitre() : "Sans matière");
+        subjectBadge.getStyleClass().add("subject-badge");
+        subjectBadge.setStyle("-fx-background-color: rgba(255,255,255,0.9); -fx-padding: 5 10; -fx-background-radius: 15;");
+        StackPane.setAlignment(subjectBadge, Pos.TOP_LEFT);
+        StackPane.setMargin(subjectBadge, new Insets(10));
+        header.getChildren().add(subjectBadge);
+
+        stats.getChildren().addAll(students, chapters, price);
         body.getChildren().addAll(title, teacher, stats);
 
-        // Footer
+        // Footer with view button
         HBox footer = new HBox();
         footer.getStyleClass().add("card-footer");
         footer.setAlignment(Pos.CENTER);
-        footer.setPadding(new Insets(10));
+        footer.setPadding(new Insets(15));
+        footer.setStyle("-fx-background-color: white; -fx-border-color: #eee; -fx-border-width: 1 0 0 0;");
 
         Button viewButton = new Button("Voir le cours");
         viewButton.getStyleClass().addAll("btn", "btn-outline-primary", "btn-hover");
+        viewButton.setStyle("-fx-min-width: 150px;");
         viewButton.setOnAction(e -> viewCourse(cours));
         footer.getChildren().add(viewButton);
 
         card.getChildren().addAll(header, body, footer);
+        
+        // Ajouter un effet d'ombre à la carte
+        card.setEffect(new DropShadow(10, Color.rgb(0, 0, 0, 0.1)));
+        
         return card;
     }
 
@@ -512,6 +611,7 @@ public class ListeCoursControllerEtudiant {
             new GuideStep("Filtrez les cours par matière pour afficher uniquement ceux qui vous intéressent.", "filterChoiceBox", true),
             new GuideStep("Triez les cours selon différents critères pour les organiser comme vous le souhaitez.", "sortChoiceBox", true),
             new GuideStep("Les cours sont affichés ici sous forme de cartes. Cliquez sur 'Voir le cours' pour plus de détails.", "coursesGrid", true),
+            new GuideStep("Vous pouvez générer un planning personnalisé pour organiser vos cours plus efficacement.", "planningButton", true),
             new GuideStep("Si vous ne trouvez pas ce que vous cherchez, utilisez le bouton 'Afficher plus' pour voir plus de cours.", "loadMoreButton", true),
             new GuideStep("Vous pouvez maintenant explorer les cours ! N'hésitez pas à utiliser ces fonctionnalités pour trouver les cours qui vous intéressent.", null, true)
         );

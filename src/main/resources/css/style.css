@@ -1,0 +1,164 @@
+/* dashbaord.css - Stylesheet compatible avec les couleurs de l'interface */
+
+/* Style de base */
+.root {
+    -fx-background-color: #121212;
+    -fx-font-family: 'Arial';
+}
+
+/* Styles pour les boutons */
+.button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-alignment: center-left;
+    -fx-padding: 12px;
+    -fx-background-radius: 10px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: rgba(0, 255, 255, 0.1);
+}
+
+.button:pressed {
+    -fx-background-color: rgba(0, 255, 255, 0.2);
+}
+
+/* Bouton actif/sélectionné */
+.button.active {
+    -fx-background-color: rgba(0, 255, 255, 0.2);
+    -fx-text-fill: #00FFFF;
+}
+
+/* Bouton spécial (logout, add user) */
+.special-button {
+    -fx-background-color: linear-gradient(to right, #00FFFF, #008B8B);
+    -fx-background-radius: 50px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+    -fx-effect: dropshadow(gaussian, #008B8B, 25, 0.4, 3, 3);
+}
+
+.special-button:hover {
+    -fx-background-color: linear-gradient(to right, #00FFFF, #006B6B);
+}
+
+/* Styles pour les champs de texte */
+.text-field, .password-field, .date-picker {
+    -fx-font-size: 16px;
+    -fx-background-color: #1e1e1e;
+    -fx-text-fill: #00FFFF;
+    -fx-prompt-text-fill: #666666;
+    -fx-background-radius: 10px;
+    -fx-border-color: #333333;
+    -fx-border-radius: 10px;
+    -fx-border-width: 2px;
+    -fx-padding: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.2), 15, 0, 0, 0);
+}
+
+.text-field:focused, .password-field:focused, .date-picker:focused {
+    -fx-border-color: #00FFFF;
+}
+
+/* Style pour le champ de recherche */
+.search-field {
+    -fx-background-radius: 1000px;
+}
+
+/* Styles pour les labels */
+.label {
+    -fx-text-fill: white;
+}
+
+.label.cyan {
+    -fx-text-fill: #00FFFF;
+}
+
+.label.error {
+    -fx-text-fill: #00FFFF;
+    -fx-font-size: 12px;
+}
+
+.label.title {
+    -fx-font-size: 36px;
+    -fx-text-fill: #00FFFF;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #00FFFF, 10, 0.3, 0, 0);
+}
+
+/* Styles pour les panneaux */
+.pane {
+    -fx-background-color: rgba(30, 30, 30, 0.8);
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 15, 0, 0, 0);
+}
+
+.sidebar {
+    -fx-background-color: rgba(30, 30, 30, 0.8);
+}
+
+/* Styles pour la TableView */
+.table-view {
+    -fx-background-color: #1e1e1e;
+    -fx-border-color: #333333;
+    -fx-border-radius: 10px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #1e1e1e;
+    -fx-border-color: #333333;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-text-fill: #00FFFF;
+    -fx-font-weight: bold;
+}
+
+.table-view .table-cell {
+    -fx-text-fill: white;
+    -fx-border-color: #333333;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: #1e1e1e;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: #252525;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: rgba(0, 255, 255, 0.2);
+}
+
+/* Styles pour les RadioButton */
+.radio-button {
+    -fx-text-fill: #00FFFF;
+    -fx-font-weight: bold;
+}
+
+.radio-button .dot {
+    -fx-mark-highlight-color: #00FFFF;
+    -fx-mark-color: #00FFFF;
+}
+
+/* Styles pour les cercles d'arrière-plan */
+.circle-bg {
+    -fx-fill: rgba(0, 255, 255, 0.15);
+}
+
+/* Style pour l'image path label */
+.image-path-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+}
+
+/* Style pour l'image view */
+.image-view {
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.3), 10, 0, 0, 0);
+}

@@ -92,10 +92,7 @@ public class AjouterChapitreController {
             );
             File selectedFile = fileChooser.showOpenDialog(uploadButton.getScene().getWindow());
             if (selectedFile == null) {
-                fileLabel.setText("Aucun PDF");
-                fileLabel.getStyleClass().removeAll("text-success", "text-danger");
-                fileLabel.getStyleClass().add("text-muted");
-                return;
+                return; // User cancelled, keep existing file
             }
 
             // Validate file
@@ -109,7 +106,17 @@ public class AjouterChapitreController {
                 throw new IllegalArgumentException("Seuls les fichiers PDF sont acceptés.");
             }
 
-            uploadPDF(selectedFile);
+            // Generate unique filename
+            String newFilename = "chapter-" + UUID.randomUUID() + ".pdf";
+            Path destination = Paths.get(UPLOAD_DIR, newFilename);
+
+            // Copy file
+            Files.copy(selectedFile.toPath(), destination);
+
+            // Update fileLabel
+            fileLabel.setText(newFilename);
+            fileLabel.getStyleClass().removeAll("text-muted", "text-danger");
+            fileLabel.getStyleClass().add("text-success");
 
         } catch (Exception e) {
             fileLabel.setText("Erreur: " + e.getMessage());

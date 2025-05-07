@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.image.*?>
+
+<AnchorPane prefWidth="800.0" prefHeight="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21.0.2" fx:controller="controllers.ListQuizQuestionController">
+    <StackPane AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <!-- Background with gradient -->
+        <Rectangle width="800" height="600" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <fill>
+                <LinearGradient endX="0.0" endY="1.0">
+                    <stops>
+                        <Stop color="#f5f7fa" offset="0.0" />
+                        <Stop color="#e6eef8" offset="1.0" />
+                    </stops>
+                </LinearGradient>
+            </fill>
+        </Rectangle>
+
+        <VBox prefWidth="800.0" prefHeight="600.0">
+            <!-- Enhanced Navbar with gradient -->
+            <HBox prefHeight="70.0" style="-fx-padding: 0 25;">
+                <effect>
+                    <DropShadow color="#00000044" radius="10" spread="0.05" />
+                </effect>
+                <StackPane prefWidth="800.0" prefHeight="70.0">
+                    <Rectangle width="800" height="70">
+                        <fill>
+                            <LinearGradient endX="1.0" endY="0.0">
+                                <stops>
+                                    <Stop color="#3b28cc" offset="0.0" />
+                                    <Stop color="#6852e4" offset="1.0" />
+                                </stops>
+                            </LinearGradient>
+                        </fill>
+                    </Rectangle>
+                    <HBox alignment="CENTER_LEFT" prefHeight="70.0">
+                        <Label text="Knowlity Questions" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: white;">
+                            <HBox.margin>
+                                <Insets left="15" />
+                            </HBox.margin>
+                        </Label>
+                        <Region HBox.hgrow="ALWAYS" />
+                    </HBox>
+                </StackPane>
+            </HBox>
+
+            <!-- Content Area -->
+            <VBox alignment="TOP_CENTER" spacing="20" VBox.vgrow="ALWAYS" style="-fx-padding: 25 30;">
+                <!-- Search Bar with icon placeholder -->
+                <HBox alignment="CENTER" spacing="10">
+                    <StackPane>
+                        <HBox alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: #e0e0e0;">
+                            <padding>
+                                <Insets left="20" right="15" top="12" bottom="12" />
+                            </padding>
+                            <Label text="🔍" style="-fx-font-size: 14; -fx-text-fill: #9e9e9e;" />
+                            <TextField fx:id="searchField" promptText="Rechercher une question..." style="-fx-background-color: transparent; -fx-pref-width: 400; -fx-font-size: 14; -fx-prompt-text-fill: #9e9e9e;">
+                                <HBox.margin>
+                                    <Insets left="5" />
+                                </HBox.margin>
+                            </TextField>
+                        </HBox>
+                        <Button fx:id="clearSearchButton" text="✖" onAction="#clearSearch" visible="false"
+                                style="-fx-background-color: transparent; -fx-text-fill: #9e9e9e; -fx-cursor: hand;"
+                                StackPane.alignment="CENTER_RIGHT">
+                            <StackPane.margin>
+                                <Insets right="15" />
+                            </StackPane.margin>
+                        </Button>
+                    </StackPane>
+                </HBox>
+
+                <!-- Tab/Filter options -->
+                <HBox spacing="10" style="-fx-padding: 0 0 10 0;">
+                    <Button text="Toutes" style="-fx-background-color: #3b28cc; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 5 15;">
+                        <effect>
+                            <DropShadow color="#00000033" radius="3" spread="0.05" />
+                        </effect>
+                    </Button>
+                    <Button text="Mes Questions" style="-fx-background-color: #ffffff; -fx-text-fill: #666666; -fx-background-radius: 20; -fx-padding: 5 15;" />
+                    <Button text="Récentes" style="-fx-background-color: #ffffff; -fx-text-fill: #666666; -fx-background-radius: 20; -fx-padding: 5 15;" />
+                </HBox>
+
+                <!-- Card container -->
+                <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+                    <VBox fx:id="questionContainer" spacing="15" style="-fx-padding: 10;">
+                        <!-- Question cards will be added here dynamically -->
+                    </VBox>
+                </ScrollPane>
+            </VBox>
+
+            <!-- Action Buttons with modern styling -->
+            <HBox alignment="CENTER" spacing="15" style="-fx-padding: 20; -fx-background-color: white;">
+                <effect>
+                    <DropShadow color="#00000022" radius="10" spread="0.05" offsetY="-3" />
+                </effect>
+
+                <Button fx:id="createButton" onAction="#handleCreateQuestion" text="Créer une Question" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 30; -fx-cursor: hand; -fx-padding: 10 20;">
+                    <graphic>
+                        <Label text="+" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16;" />
+                    </graphic>
+                    <effect>
+                        <DropShadow color="#00000044" radius="5" spread="0.05" />
+                    </effect>
+                </Button>
+
+                <Button fx:id="editButton" onAction="#handleEditQuestion" text="Modifier" style="-fx-background-color: #FFA500; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 30; -fx-cursor: hand; -fx-padding: 10 20;">
+                    <graphic>
+                        <Label text="✏️" style="-fx-text-fill: white; -fx-font-size: 14;" />
+                    </graphic>
+                    <effect>
+                        <DropShadow color="#00000044" radius="5" spread="0.05" />
+                    </effect>
+                </Button>
+
+                <Button fx:id="deleteButton" onAction="#handleDeleteQuestion" text="Supprimer" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 30; -fx-cursor: hand; -fx-padding: 10 20;">
+                    <graphic>
+                        <Label text="🗑️" style="-fx-text-fill: white; -fx-font-size: 14;" />
+                    </graphic>
+                    <effect>
+                        <DropShadow color="#00000044" radius="5" spread="0.05" />
+                    </effect>
+                </Button>
+
+                <Button fx:id="addResponsesButton" onAction="#handleAddResponses" text="Ajouter Réponses" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 30; -fx-cursor: hand; -fx-padding: 10 20;">
+                    <graphic>
+                        <Label text="➕" style="-fx-text-fill: white; -fx-font-size: 14;" />
+                    </graphic>
+                    <effect>
+                        <DropShadow color="#00000044" radius="5" spread="0.05" />
+                    </effect>
+                </Button>
+
+                <Button fx:id="viewResponsesButton" onAction="#handleViewResponses" text="Voir Réponses" style="-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 30; -fx-cursor: hand; -fx-padding: 10 20;">
+                    <graphic>
+                        <Label text="👁️" style="-fx-text-fill: white; -fx-font-size: 14;" />
+                    </graphic>
+                    <effect>
+                        <DropShadow color="#00000044" radius="5" spread="0.05" />
+                    </effect>
+                </Button>
+            </HBox>
+        </VBox>
+    </StackPane>
+</AnchorPane>

@@ -338,7 +338,7 @@ public class EditChapitreController {
     @FXML
     void handleListes(ActionEvent event) {
         System.out.println("handleListes clicked");
-        loadScene("/ListeCours.fxml");
+        navigateToCourseDetails();
     }
     private void loadScene(String fxmlPath) {
         try {

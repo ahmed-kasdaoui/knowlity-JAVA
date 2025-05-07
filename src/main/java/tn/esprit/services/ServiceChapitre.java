@@ -20,7 +20,7 @@ public class ServiceChapitre implements IService<Chapitre> {
 
     @Override
     public void add(Chapitre chapitre) {
-        String qry = "INSERT INTO `chapitre` (`title`, `chap_order`, `cours_id`, `contenu`, `duree_estimee`, `nbr_vues`) VALUES (?,?,?,?,?,?)";
+        String qry = "INSERT INTO chapitre (title, chap_order, cours_id, contenu, duree_estimee, nbr_vues) VALUES (?,?,?,?,?,?)";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry, Statement.RETURN_GENERATED_KEYS);
             pstm.setString(1, chapitre.getTitle());
@@ -34,6 +34,14 @@ public class ServiceChapitre implements IService<Chapitre> {
             if (rs.next()) {
                 chapitre.setId(rs.getInt(1));
             }
+
+            // Update nbr_chapitre in cours table
+            String updateCoursQry = "UPDATE cours SET nbr_chapitre = (SELECT COUNT(*) FROM chapitre WHERE cours_id = ?) WHERE id = ?";
+            PreparedStatement updateCoursPstm = cnx.prepareStatement(updateCoursQry);
+            updateCoursPstm.setInt(1, chapitre.getCours().getId());
+            updateCoursPstm.setInt(2, chapitre.getCours().getId());
+            updateCoursPstm.executeUpdate();
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -42,7 +50,7 @@ public class ServiceChapitre implements IService<Chapitre> {
     @Override
     public List<Chapitre> getAll() {
         List<Chapitre> chapitres = new ArrayList<>();
-        String qry = "SELECT * FROM `chapitre`";
+        String qry = "SELECT * FROM chapitre";
         try {
             Statement stm = cnx.createStatement();
             ResultSet rs = stm.executeQuery(qry);
@@ -66,7 +74,7 @@ public class ServiceChapitre implements IService<Chapitre> {
 
     @Override
     public void update(Chapitre chapitre) {
-        String qry = "UPDATE `chapitre` SET `title`=?, `chap_order`=?, `cours_id`=?, `contenu`=?, `duree_estimee`=?, `nbr_vues`=? WHERE `id`=?";
+        String qry = "UPDATE chapitre SET title`=?, chap_order`=?, cours_id`=?, contenu`=?, duree_estimee`=?, nbr_vues`=? WHERE `id`=?";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setString(1, chapitre.getTitle());
@@ -77,6 +85,14 @@ public class ServiceChapitre implements IService<Chapitre> {
             pstm.setInt(6, chapitre.getNbrVues());
             pstm.setInt(7, chapitre.getId());
             pstm.executeUpdate();
+
+            // Update nbr_chapitre in cours table if cours_id changed
+            String updateCoursQry = "UPDATE cours SET nbr_chapitre = (SELECT COUNT(*) FROM chapitre WHERE cours_id = ?) WHERE id = ?";
+            PreparedStatement updateOldCoursPstm = cnx.prepareStatement(updateCoursQry);
+            updateOldCoursPstm.setInt(1, chapitre.getCours().getId());
+            updateOldCoursPstm.setInt(2, chapitre.getCours().getId());
+            updateOldCoursPstm.executeUpdate();
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -84,11 +100,19 @@ public class ServiceChapitre implements IService<Chapitre> {
 
     @Override
     public void delete(Chapitre chapitre) {
-        String qry = "DELETE FROM `chapitre` WHERE `id`=?";
+        String qry = "DELETE FROM chapitre WHERE `id`=?";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setInt(1, chapitre.getId());
             pstm.executeUpdate();
+
+            // Update nbr_chapitre in cours table
+            String updateCoursQry = "UPDATE cours SET nbr_chapitre = (SELECT COUNT(*) FROM chapitre WHERE cours_id = ?) WHERE id = ?";
+            PreparedStatement updateCoursPstm = cnx.prepareStatement(updateCoursQry);
+            updateCoursPstm.setInt(1, chapitre.getCours().getId());
+            updateCoursPstm.setInt(2, chapitre.getCours().getId());
+            updateCoursPstm.executeUpdate();
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -96,7 +120,7 @@ public class ServiceChapitre implements IService<Chapitre> {
 
     public Chapitre getById(int id) {
         Chapitre chapitre = null;
-        String qry = "SELECT * FROM `chapitre` WHERE `id`=?";
+        String qry = "SELECT * FROM chapitre WHERE `id`=?";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setInt(1, id);

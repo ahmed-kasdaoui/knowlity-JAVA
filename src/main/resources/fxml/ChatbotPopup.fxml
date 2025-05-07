@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="600" prefWidth="400" style="-fx-background-color: #ffffff; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 5);" stylesheets="@../css/chatbot.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChatbotController">
+
+    <!-- Chat Header -->
+    <VBox fx:id="chatHeader" styleClass="chat-header" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+        <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-padding: 0 0 10 0;">
+            <ImageView fx:id="chatbotLogo" fitHeight="40" fitWidth="40" styleClass="chatbot-logo">
+                <Image url="@../images/robotic.png" />
+            </ImageView>
+            <VBox spacing="2">
+                <Label styleClass="logo-text" text="Knowlity Bot" />
+                <Label styleClass="status-text" text="On-Ligne" />
+            </VBox>
+        </HBox>
+    </VBox>
+
+    <!-- Chat Body -->
+    <ScrollPane fx:id="chatBody" styleClass="chat-body" AnchorPane.bottomAnchor="100" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="90">
+        <VBox fx:id="messageContainer" spacing="10" style="-fx-background-color: transparent; -fx-padding: 0 15;" />
+    </ScrollPane>
+
+    <!-- Chat Footer -->
+    <HBox fx:id="chatFooter" styleClass="chat-footer" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <TextArea fx:id="messageInput" promptText="What are you thinking about ..." styleClass="message-input" />
+        <Button fx:id="sendMessage" onAction="#handleSendMessage" styleClass="send-button">
+            <graphic>
+                <ImageView fitHeight="20" fitWidth="20">
+                    <Image url="@../images/send_icon.png" />
+                </ImageView>
+            </graphic>
+        </Button>
+    </HBox>
+</AnchorPane>

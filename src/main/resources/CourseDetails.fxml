@@ -4,236 +4,242 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="root" prefHeight="800.0" prefWidth="1000.0" styleClass="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CourseDetailsController">
-    <children>
-        <!-- Navigation Bar from ListeCoursControllerEtudiant -->
-        <HBox alignment="CENTER_LEFT" spacing="30" style="-fx-background-color: linear-gradient(to right, #c9eaff, #eaf6ff); -fx-padding: 15; -fx-border-width: 0 0 2 0; -fx-border-color: #b3d1f5; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
-            <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #002244; -fx-font-family: 'Segoe UI', sans-serif;" text="Knowlity App pour les enseignants" textFill="#436839">
-                <font>
-                    <Font name="Blackadder ITC" size="12.0" />
-                </font>
-            </Label>
-            <Region HBox.hgrow="ALWAYS" />
-            <HBox alignment="CENTER" spacing="20">
-                <MenuButton style="-fx-background-color: rgba(255,255,255,0.6); -fx-text-fill: #002557; -fx-font-size: 17px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 18;" text="les Cours">
-                    <items>
-                        <MenuItem fx:id="mesOffresItem" onAction="#handleListes" style="-fx-font-size: 16px; -fx-text-fill: #002244;" text=" Mes favoris" />
-                        <MenuItem fx:id="autresOffresItem" onAction="#handleListes" style="-fx-font-size: 16px; -fx-text-fill: #002244;" text=" mes cours" />
-                    </items>
-                </MenuButton>
-                <Button onAction="#handleListes" style="-fx-background-color: rgba(255,255,255,0.6); -fx-text-fill: #002244; -fx-font-size: 17px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 20;" text="📋 Listes">
-                    <effect>
-                        <DropShadow color="#d0e5ff" radius="4" />
-                    </effect>
-                </Button>
-            </HBox>
-        </HBox>
-
-        <!-- Main Content -->
-        <VBox fx:id="mainBox" alignment="TOP_CENTER" spacing="20.0" styleClass="container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="112.0">
-            <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-            </padding>
-            <children>
-                <!-- Header Section -->
-                <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="header">
-                    <children>
-                        <Label fx:id="courseTitle" styleClass="display-4" text="Course Title">
-                            <font>
-                                <Font name="System Bold" size="36.0" />
-                            </font>
-                     <HBox.margin>
-                        <Insets left="26.0" />
-                     </HBox.margin>
-                        </Label>
-                        <HBox HBox.hgrow="ALWAYS" />
-                        <Button fx:id="backButton" onAction="#handleBackAction" styleClass="btn, btn-outline-secondary, btn-animated" text="Retour">
-                            <graphic>
-                                <Label styleClass="icon" text="←" />
-                            </graphic>
-                        </Button>
-                        <Button fx:id="deleteButton" onAction="#handleDeleteAction" styleClass="btn, btn-danger, btn-animated" text="Supprimer">
-                            <graphic>
-                                <Label styleClass="icon" text="🗑️" />
-                            </graphic>
-                        </Button>
-                        <Button fx:id="editButton" onAction="#handleEditAction" styleClass="btn, btn-warning, btn-animated" text="Modifier">
-                            <graphic>
-                                <Label styleClass="icon" text="✏️" />
-                            </graphic>
-                        </Button>
-                    </children>
-                </HBox>
-
-                <!-- Main Course Card -->
-                <VBox styleClass="card, card-hero, shadow-lg">
-                    <HBox>
-                        <!-- Image Section with Overlay -->
-                        <VBox styleClass="image-container">
-                            <ImageView fx:id="courseImage" fitHeight="236.0" fitWidth="500.0" preserveRatio="true" styleClass="object-fit-cover" />
-                            <VBox styleClass="image-overlay">
-                                <children>
-                                    <!-- Teacher Section -->
-                                    <VBox styleClass="card, card-inner">
-                                        <VBox spacing="10.0" styleClass="card-body">
-                                            <Label styleClass="section-title" text="Enseignant du cours">
-                                                <graphic>
-                                                    <Label styleClass="icon" text="👨‍🏫" />
-                                                </graphic>
-                                            </Label>
-                                            <HBox spacing="15.0">
-                                                <ImageView fx:id="teacherImage" fitHeight="60.0" fitWidth="60.0" preserveRatio="true" styleClass="rounded-circle, shadow-sm, border" />
-                                                <VBox>
-                                                    <Label styleClass="teacher-name" text="Chamseddine Doula" />
-                                                    <Label fx:id="teacherEmail" styleClass="text-muted" text="email@example.com" />
-                                                </VBox>
-                                            </HBox>
-                                        </VBox>
-                                    </VBox>
-                                </children>
-                            </VBox>
-                        </VBox>
-
-                        <!-- Content Section -->
-                        <VBox spacing="15.0" styleClass="card-body">
-                            <HBox spacing="10.0">
-                                <Label fx:id="matiereBadge" styleClass="badge, bg-primary" text="Matiere">
-                                    <padding>
-                                        <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
-                                    </padding>
-                                </Label>
-                                <Label fx:id="categorieBadge" styleClass="badge, bg-secondary" text="Categorie">
-                                    <padding>
-                                        <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
-                                    </padding>
-                                    <HBox.margin>
-                                        <Insets left="13.0" />
-                                    </HBox.margin>
-                                </Label>
-                            </HBox>
-
-                            <!-- Stats Section -->
-                            <GridPane hgap="20" styleClass="stats-grid, bg-light, rounded-3" vgap="10">
-                                <columnConstraints>
-                                    <ColumnConstraints percentWidth="33.33" />
-                                    <ColumnConstraints percentWidth="33.33" />
-                                    <ColumnConstraints percentWidth="33.33" />
-                                </columnConstraints>
-                                <children>
-                                    <VBox alignment="CENTER" GridPane.columnIndex="0">
-                                        <Label styleClass="stat-value, text-primary" text="10" />
-                                        <Label styleClass="text-muted" text="Chapitres" />
-                                    </VBox>
-                                    <VBox alignment="CENTER" GridPane.columnIndex="1">
-                                        <Label fx:id="dureeLabel" styleClass="stat-value, text-danger" text="0 h" />
-                                        <Label styleClass="text-muted" text="Durée totale" />
-                                    </VBox>
-                                    <VBox alignment="CENTER" GridPane.columnIndex="2">
-                                        <Label fx:id="prixLabel" styleClass="stat-value, text-success" text="Gratuit" />
-                                        <Label styleClass="text-muted" text="Prix" />
-                                    </VBox>
-                                    <VBox alignment="CENTER" prefHeight="45.0" prefWidth="139.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                                        <Label fx:id="langueLabel" styleClass="stat-label" text="Langue: ">
-                                            <padding>
-                                                <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
-                                            </padding>
-                                        </Label>
-                                        <Label styleClass="badge, bg-info" text="LANG">
-                                            <padding>
-                                                <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
-                                            </padding>
-                                        </Label>
-                                    </VBox>
-                                    <VBox alignment="CENTER" translateX="24.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                        <Label styleClass="stat-label" text="Étudiants: 10">
-                                            <graphic>
-                                                <Label styleClass="badge, bg-dark" text="10" />
-                                            </graphic>
-                                        </Label>
-                                    </VBox>
-                                </children>
-                                <rowConstraints>
-                                    <RowConstraints />
-                                    <RowConstraints />
-                                </rowConstraints>
-                            </GridPane>
-
-                            <!-- Payment Link Section -->
-                            <VBox fx:id="paymentBox" managed="false" spacing="5.0" styleClass="alert, alert-warning" visible="false">
-                                <Label styleClass="section-title" text="Lien de paiement:">
-                                    <graphic>
-                                        <Label styleClass="icon" text="🔗" />
-                                    </graphic>
-                                </Label>
-                                <Label fx:id="paymentLink" styleClass="text-break" text="Link" />
-                            </VBox>
-
-                            <!-- Favorites Section -->
-                            <HBox styleClass="alert, alert-info">
-                                <Label fx:id="favoritesLabel" styleClass="section-title" text="Ce cours est dans les favoris de 0 étudiant(s)">
-                                    <graphic>
-                                        <Label styleClass="icon" text="⭐" />
-                                    </graphic>
-                                </Label>
-                            </HBox>
-
-                            <!-- Stats Button -->
-                            <Button fx:id="statsButton" onAction="#handleStatsAction" styleClass="btn, btn-info, w-100, btn-animated" text="Afficher les statistiques">
-                                <graphic>
-                                    <Label styleClass="icon" text="📊" />
-                                </graphic>
-                            </Button>
-
-                            <!-- Description Section -->
-                            <VBox spacing="8.0">
-                                <Label styleClass="section-title" text="Description">
-                                    <graphic>
-                                        <Label styleClass="icon" text="📄" />
-                                    </graphic>
-                                </Label>
-                                <Label fx:id="descriptionLabel" styleClass="text-muted" text="Description" wrapText="true" />
-                            </VBox>
-                        </VBox>
-                    </HBox>
-                </VBox>
-
-                <!-- Chapters List -->
-                <VBox spacing="15.0">
-                    <Label styleClass="section-title, h2, mb-4" text="Liste des Chapitres">
-                        <graphic>
-                            <Label styleClass="icon, me-2" text="📋" />
-                        </graphic>
-                    </Label>
-                    <ScrollPane fx:id="chaptersScroll" fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
-                        <content>
-                            <GridPane fx:id="chaptersGrid" hgap="20.0" styleClass="grid" vgap="20.0">
-                                <columnConstraints>
-                                    <ColumnConstraints percentWidth="33.33" />
-                                    <ColumnConstraints percentWidth="33.33" />
-                                    <ColumnConstraints percentWidth="33.33" />
-                                </columnConstraints>
-                            </GridPane>
-                        </content>
-                    </ScrollPane>
-                </VBox>
-            </children>
-        </VBox>
-    </children>
-    <stylesheets>
-        <URL value="@/styles/course-details.css" />
-    </stylesheets>
-</AnchorPane>
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CourseDetailsController">
+   <left>
+       <fx:include source="fxml/navbarE.fxml" />
+   </left>
+    <center>
+      <StackPane style="-fx-background-color: #121212;">
+          <children>
+              <Pane fx:id="backgroundPane" mouseTransparent="true">
+                  <!-- Left side circles with larger sizes and varied placements -->
+                  <Circle fx:id="circle1" centerX="50" centerY="200" fill="rgba(0,255,255,0.15)" radius="150" />
+                  <Circle fx:id="circle2" centerX="100" centerY="400" fill="rgba(0,255,255,0.15)" radius="180" />
+                  <Circle fx:id="circle3" centerX="250" centerY="300" fill="rgba(0,255,255,0.15)" radius="140" />
+                  <Circle fx:id="circle4" centerX="350" centerY="150" fill="rgba(0,255,255,0.15)" radius="120" />
+                  <Circle fx:id="circle5" centerX="200" centerY="500" fill="rgba(0,255,255,0.15)" radius="160" />
+                  <Circle fx:id="circle6" centerX="50" centerY="350" fill="rgba(0,255,255,0.15)" radius="130" />
+                  <!-- Right side circles with larger sizes and creative placements -->
+                  <Circle fx:id="circle7" centerX="650" centerY="200" fill="rgba(0,255,255,0.15)" radius="150" />
+                  <Circle fx:id="circle8" centerX="750" centerY="400" fill="rgba(0,255,255,0.15)" radius="180" />
+                  <Circle fx:id="circle9" centerX="850" centerY="250" fill="rgba(0,255,255,0.15)" radius="140" />
+                  <Circle fx:id="circle10" centerX="925" centerY="150" fill="rgba(0,255,255,0.15)" radius="120" />
+                  <Circle fx:id="circle11" centerX="800" centerY="300" fill="rgba(0,255,255,0.15)" radius="160" />
+                  <Circle fx:id="circle12" centerX="950" centerY="450" fill="rgba(0,255,255,0.15)" radius="130" />
+              </Pane>
+              <AnchorPane fx:id="root" prefHeight="800.0" prefWidth="1000.0" style="-fx-background-color: rgba(22,22,22,0.8);" styleClass="root">
+                  <children>
+                      <!-- CONTENU PRINCIPAL (VBox, etc.) à garder inchangé -->
+                      <VBox fx:id="mainBox" alignment="TOP_CENTER" layoutY="39.2" prefHeight="761.0" prefWidth="1180.0" spacing="20.0" style="-fx-background-color: transparent;" styleClass="container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="39.0">
+                          <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                          </padding>
+                          <children>
+                              <!-- Header Section -->
+                              <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="header">
+                                  <children>
+                                      <Label fx:id="courseTitle" styleClass="display-4" text="Course Title">
+                                          <font>
+                                              <Font name="System Bold" size="36.0" />
+                                          </font>
+                                          <HBox.margin>
+                                              <Insets left="26.0" />
+                                          </HBox.margin>
+                                      </Label>
+                                      <HBox HBox.hgrow="ALWAYS" />
+                                      <Button fx:id="backButton" onAction="#handleBackAction" styleClass="btn, btn-outline-secondary, btn-animated" text="Retour">
+                                          <graphic>
+                                              <Label styleClass="icon" text="←" />
+                                          </graphic>
+                                      </Button>
+                                      <Button fx:id="deleteButton" onAction="#handleDeleteAction" styleClass="btn, btn-danger, btn-animated" text="Supprimer">
+                                          <graphic>
+                                              <Label styleClass="icon" text="🗑️" />
+                                          </graphic>
+                                      </Button>
+                                      <Button fx:id="editButton" onAction="#handleEditAction" styleClass="btn, btn-warning, btn-animated" text="Modifier">
+                                          <graphic>
+                                              <Label styleClass="icon" text="✏️" />
+                                          </graphic>
+                                      </Button>
+                                  </children>
+                              </HBox>
+      
+                              <!-- Main Course Card -->
+                              <VBox styleClass="card, card-hero, shadow-lg">
+                                  <HBox>
+                                      <!-- Image Section with Overlay -->
+                                      <VBox styleClass="image-container">
+                                          <ImageView fx:id="courseImage" fitHeight="236.0" fitWidth="500.0" preserveRatio="true" styleClass="object-fit-cover" />
+                                          <VBox styleClass="image-overlay">
+                                              <children>
+                                                  <!-- Teacher Section -->
+                                                  <VBox styleClass="card, card-inner">
+                                                      <VBox spacing="10.0" styleClass="card-body">
+                                                          <Label styleClass="section-title" text="Enseignant du cours">
+                                                              <graphic>
+                                                                  <Label styleClass="icon" text="👨‍🏫" />
+                                                              </graphic>
+                                                          </Label>
+                                                          <HBox spacing="15.0">
+                                                              <ImageView fx:id="teacherImage" fitHeight="60.0" fitWidth="60.0" preserveRatio="true" styleClass="rounded-circle, shadow-sm, border" />
+                                                              <VBox>
+                                                                  <Label fx:id="teacherLbael" styleClass="teacher-name" text="Chamseddine Doula" />
+                                                                  <Label fx:id="teacherEmail" styleClass="text-muted" text="email@example.com" />
+                                                              </VBox>
+                                                          </HBox>
+                                                      </VBox>
+                                                  </VBox>
+                                              </children>
+                                          </VBox>
+                                      </VBox>
+      
+                                      <!-- Content Section -->
+                                      <VBox spacing="15.0" styleClass="card-body">
+                                          <HBox spacing="10.0">
+                                              <Label fx:id="matiereBadge" styleClass="badge, bg-primary" text="Matiere">
+                                                  <padding>
+                                                      <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                                                  </padding>
+                                              </Label>
+                                              <Label fx:id="categorieBadge" styleClass="badge, bg-secondary" text="Categorie">
+                                                  <padding>
+                                                      <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                                                  </padding>
+                                                  <HBox.margin>
+                                                      <Insets left="13.0" />
+                                                  </HBox.margin>
+                                              </Label>
+                                          </HBox>
+      
+                                          <!-- Stats Section -->
+                                          <GridPane hgap="20" styleClass="stats-grid, bg-light, rounded-3" vgap="10">
+                                              <columnConstraints>
+                                                  <ColumnConstraints percentWidth="33.33" />
+                                                  <ColumnConstraints percentWidth="33.33" />
+                                                  <ColumnConstraints percentWidth="33.33" />
+                                              </columnConstraints>
+                                              <children>
+                                                  <VBox alignment="CENTER" GridPane.columnIndex="0">
+                                                      <Label fx:id="nbr_chapitre" styleClass="stat-value, text-primary" text="10" />
+                                                      <Label styleClass="text-muted" text="Chapitres" />
+                                                  </VBox>
+                                                  <VBox alignment="CENTER" GridPane.columnIndex="1">
+                                                      <Label fx:id="dureeLabel" styleClass="stat-value, text-danger" text="0 h" />
+                                                      <Label styleClass="text-muted" text="Durée totale" />
+                                                  </VBox>
+                                                  <VBox alignment="CENTER" GridPane.columnIndex="2">
+                                                      <Label fx:id="prixLabel" styleClass="stat-value, text-success" text="Gratuit" />
+                                                      <Label styleClass="text-muted" text="Prix" />
+                                                  </VBox>
+                                                  <VBox alignment="CENTER" prefHeight="45.0" prefWidth="139.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                                      <Label fx:id="langueLabel" styleClass="stat-label" text="Langue: ">
+                                                          <padding>
+                                                              <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                                                          </padding>
+                                                      </Label>
+                                                      <Label styleClass="badge, bg-info" text="LANG">
+                                                          <padding>
+                                                              <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                                                          </padding>
+                                                      </Label>
+                                                  </VBox>
+                                                  <VBox alignment="CENTER" translateX="24.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                      <Label styleClass="stat-label" text="Étudiants: 10">
+                                                          <graphic>
+                                                              <Label styleClass="badge, bg-dark" text="10" />
+                                                          </graphic>
+                                                      </Label>
+                                                  </VBox>
+                                              </children>
+                                              <rowConstraints>
+                                                  <RowConstraints />
+                                                  <RowConstraints />
+                                              </rowConstraints>
+                                          </GridPane>
+      
+                                          <!-- Payment Link Section -->
+                                          <VBox fx:id="paymentBox" managed="false" spacing="5.0" styleClass="alert, alert-warning" visible="false">
+                                              <Label styleClass="section-title" text="Lien de paiement:">
+                                                  <graphic>
+                                                      <Label styleClass="icon" text="🔗" />
+                                                  </graphic>
+                                              </Label>
+                                              <Label fx:id="paymentLink" styleClass="text-break" text="Link" />
+                                          </VBox>
+      
+                                          <!-- Favorites Section -->
+                                          <HBox styleClass="alert, alert-info">
+                                              <Label fx:id="favoritesLabel" styleClass="section-title" text="Ce cours est dans les favoris de 0 étudiant(s)">
+                                                  <graphic>
+                                                      <Label styleClass="icon" text="⭐" />
+                                                  </graphic>
+                                              </Label>
+                                          </HBox>
+      
+                                          <!-- Stats Button -->
+                                          <Button fx:id="statsButton" onAction="#handleStatsAction" styleClass="btn, btn-info, w-100, btn-animated" text="Afficher les statistiques">
+                                              <graphic>
+                                                  <Label styleClass="icon" text="📊" />
+                                              </graphic>
+                                          </Button>
+      
+                                          <!-- Description Section -->
+                                          <VBox spacing="8.0">
+                                              <Label styleClass="section-title" text="Description">
+                                                  <graphic>
+                                                      <Label styleClass="icon" text="📄" />
+                                                  </graphic>
+                                              </Label>
+                                              <Label fx:id="descriptionLabel" styleClass="text-muted" text="Description" wrapText="true" />
+                                          </VBox>
+                                 <Button mnemonicParsing="false" onAction="#handleevaluation" style="-fx-background-color: #00b4db; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 10; -fx-padding: 10 20;" text="voir les evaluations" />
+                                 <Button layoutX="25.0" layoutY="379.0" mnemonicParsing="false" onAction="#handleQuiz" prefHeight="40.0" prefWidth="175.0" style="-fx-background-color: #00b4db; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 10; -fx-padding: 10 20;" text="voir les Quiz" />
+                                      </VBox>
+                                  </HBox>
+                              </VBox>
+      
+                              <!-- Chapters List -->
+                              <VBox spacing="15.0">
+                                  <Label style="-fx-text-fill: white;" styleClass="section-title, h2, mb-4" text="Liste des Chapitres">
+                                      <graphic>
+                                          <Label styleClass="icon, me-2" text="📋" />
+                                      </graphic>
+                                  </Label>
+                                  <ScrollPane fx:id="chaptersScroll" fitToWidth="true" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
+                                      <content>
+                                          <GridPane fx:id="chaptersGrid" hgap="20.0" styleClass="grid" vgap="20.0">
+                                              <columnConstraints>
+                                                  <ColumnConstraints percentWidth="33.33" />
+                                                  <ColumnConstraints percentWidth="33.33" />
+                                                  <ColumnConstraints percentWidth="33.33" />
+                                              </columnConstraints>
+                                          </GridPane>
+                                      </content>
+                                  </ScrollPane>
+                              </VBox>
+                          </children>
+                      </VBox>
+                  </children>
+                  <stylesheets>
+                      <URL value="@styles/course-details.css" />
+                  </stylesheets>
+              </AnchorPane>
+          </children>
+      </StackPane>
+   </center>
+</BorderPane>

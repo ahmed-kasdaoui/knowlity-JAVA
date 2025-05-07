@@ -1,0 +1,200 @@
+/* Import fonts (use system fallbacks if external fonts aren't loaded) */
+@import url("https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700");
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700");
+
+/* Root container */
+VBox#root {
+  -fx-background-color: #f5f5f8; /* Light gray background from .bg-gray */
+  -fx-padding: 20;
+  -fx-alignment: top-center;
+  -fx-spacing: 20;
+}
+
+/* Main content area */
+.product-title {
+  -fx-font-family: "Montserrat";
+  -fx-font-size: 28px;
+  -fx-font-weight: 600;
+  -fx-text-fill: #222222; /* Dark text from h1-h6 */
+}
+
+.meta-item {
+  -fx-font-family: "Roboto";
+  -fx-font-size: 14px;
+  -fx-text-fill: #848484; /* Gray text from p, a, li */
+}
+
+/* Event Image */
+#eventImage {
+  -fx-fit-width: 600;
+  -fx-fit-height: 300;
+  -fx-preserve-ratio: true;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, 2);
+}
+
+/* TabPane Styling */
+.tab-pane {
+  -fx-background-color: #ffffff;
+  -fx-border-color: #e5e5e5;
+  -fx-border-width: 1;
+  -fx-background-radius: 5;
+  -fx-border-radius: 5;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+  -fx-background-color: #ffffff;
+}
+
+.tab-pane .tab {
+  -fx-background-color: #f5f5f8;
+  -fx-padding: 10 20;
+}
+
+.tab-pane .tab:selected {
+  -fx-background-color: #18BEBC; /* Primary teal from .btn-primary */
+}
+
+.tab-pane .tab .tab-label {
+  -fx-font-family: "Montserrat";
+  -fx-font-size: 14px;
+  -fx-font-weight: 500;
+  -fx-text-fill: #848484;
+}
+
+.tab-pane .tab:selected .tab-label {
+  -fx-text-fill: #ffffff;
+}
+
+.tab-pane .tab-content-area {
+  -fx-padding: 20;
+}
+
+.tab-title {
+  -fx-font-family: "Montserrat";
+  -fx-font-size: 20px;
+  -fx-font-weight: 600;
+  -fx-text-fill: #222222;
+}
+
+.description-text {
+  -fx-font-family: "Roboto";
+  -fx-font-size: 14px;
+  -fx-text-fill: #848484;
+  -fx-wrap-text: true;
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+}
+
+/* Stats Grid (Details Tab) */
+.stats-grid {
+  -fx-hgap: 10;
+  -fx-vgap: 10;
+  -fx-padding: 15;
+  -fx-background-color: #ffffff;
+  -fx-border-color: #e5e5e5;
+  -fx-border-width: 1;
+  -fx-background-radius: 5;
+  -fx-border-radius: 5;
+}
+
+.stats-grid .stat-item {
+  -fx-font-family: "Roboto";
+  -fx-font-size: 14px;
+  -fx-text-fill: #848484;
+  -fx-alignment: center;
+}
+
+/* Location Tab */
+.location-title {
+  -fx-font-family: "Montserrat";
+  -fx-font-size: 18px;
+  -fx-font-weight: 500;
+  -fx-text-fill: #222222;
+}
+
+.location-text {
+  -fx-font-family: "Roboto";
+  -fx-font-size: 14px;
+  -fx-text-fill: #848484;
+}
+
+/* Sidebar */
+.sidebar {
+  -fx-alignment: top-center;
+  -fx-spacing: 15;
+}
+
+/* Price Widget */
+.price-widget {
+  -fx-background-color: #18BEBC;
+  -fx-padding: 15;
+  -fx-background-radius: 5;
+  -fx-alignment: center;
+  -fx-spacing: 5;
+}
+
+.price-title {
+  -fx-font-family: "Montserrat";
+  -fx-font-size: 18px;
+  -fx-font-weight: 500;
+  -fx-text-fill: #ffffff;
+}
+
+.price-value {
+  -fx-font-family: "Roboto";
+  -fx-font-size: 24px;
+  -fx-font-weight: 600;
+  -fx-text-fill: #ffffff;
+}
+
+/* Organizer Profile Widget */
+.user-widget {
+  -fx-background-color: #ffffff;
+  -fx-border-color: #e5e5e5;
+  -fx-border-width: 1;
+  -fx-background-radius: 5;
+  -fx-border-radius: 5;
+  -fx-padding: 15;
+  -fx-alignment: center;
+  -fx-spacing: 10;
+}
+
+.user-widget .rounded-circle {
+  -fx-fit-width: 150;
+  -fx-fit-height: 150;
+}
+
+.user-name {
+  -fx-font-family: "Montserrat";
+  -fx-font-size: 18px;
+  -fx-font-weight: 500;
+  -fx-text-fill: #222222;
+}
+
+.member-time {
+  -fx-font-family: "Roboto";
+  -fx-font-size: 14px;
+  -fx-text-fill: #848484;
+}
+
+.user-widget .reserve-button {
+  -fx-background-color: #18BEBC;
+  -fx-text-fill: #ffffff;
+  -fx-font-family: "Montserrat";
+  -fx-font-size: 14px;
+  -fx-font-weight: 500;
+  -fx-padding: 10 20;
+  -fx-background-radius: 4;
+  -fx-border-radius: 4;
+}
+
+.user-widget .reserve-button:hover {
+  -fx-background-color: #e65c00; /* Hover color from .btn-main-md */
+}
+
+/* Map View */
+#mapView {
+  -fx-border-color: #e5e5e5;
+  -fx-border-width: 1;
+  -fx-background-color: #ffffff;
+}

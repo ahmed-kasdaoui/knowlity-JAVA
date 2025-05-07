@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.shape.SVGPath?>
+
+<AnchorPane prefWidth="850.0" prefHeight="650.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21.0.2" fx:controller="controllers.ListQuizResponseController">
+    <StackPane AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <!-- Background with gradient -->
+        <Rectangle width="850" height="650">
+            <fill>
+                <LinearGradient endX="0.0" endY="1.0">
+                    <stops>
+                        <Stop color="#E6F0FA" offset="0.0" />
+                        <Stop color="#EBF4FF" offset="1.0" />
+                    </stops>
+                </LinearGradient>
+            </fill>
+        </Rectangle>
+
+        <VBox prefWidth="850.0" prefHeight="650.0" spacing="25" style="-fx-padding: 30;">
+            <!-- Header Section -->
+            <VBox spacing="8" style="-fx-background-color: linear-gradient(to right, #2B6CB0, #3182CE); -fx-background-radius: 20; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0, 0, 5);">
+                <Label text="Liste des Réponses de la Question" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: white;">
+                    <font>
+                        <Font name="Arial Rounded MT Bold" size="28.0" />
+                    </font>
+                </Label>
+
+                <Label fx:id="questionLabel" text="Question : [Question Text]" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #F7FAFC; -fx-wrap-text: true; -fx-max-width: 790;">
+                    <VBox.margin>
+                        <Insets top="8" />
+                    </VBox.margin>
+                </Label>
+            </VBox>
+
+            <!-- ListView Container -->
+            <StackPane VBox.vgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 12, 0, 0, 4);">
+                <ListView fx:id="responseList" style="-fx-background-color: transparent; -fx-background-radius: 15; -fx-border-color: transparent;">
+                    <placeholder>
+                        <Label text="Aucune réponse disponible" style="-fx-text-fill: #718096; -fx-font-size: 16;" />
+                    </placeholder>
+                    <style>
+                        -fx-font-size: 15;
+                        .list-cell {
+                        -fx-background-color: #FFFFFF;
+                        -fx-padding: 15;
+                        -fx-border-color: #E2E8F0;
+                        -fx-border-width: 0 0 1 0;
+                        -fx-background-radius: 10;
+                        }
+                        .list-cell:odd {
+                        -fx-background-color: #F7FAFC;
+                        }
+                        .list-cell:hover {
+                        -fx-background-color: #EBF4FF;
+                        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);
+                        }
+                        .list-cell:empty {
+                        -fx-background-color: transparent;
+                        -fx-border-width: 0;
+                        }
+                    </style>
+                </ListView>
+            </StackPane>
+
+            <!-- Action Buttons -->
+            <HBox alignment="CENTER" spacing="20">
+                <Button fx:id="editButton" onAction="#handleEditResponses" text="Modifier" style="-fx-background-color: #F6AD55; -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold; -fx-background-radius: 50; -fx-padding: 12 30; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 4); -fx-background-color: #F6AD55; -fx-transition: all 0.3s; :hover { -fx-background-color: #ED8936; -fx-scale-x: 1.05; -fx-scale-y: 1.05; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 15, 0, 0, 6); }">
+                    <graphic>
+                        <SVGPath content="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" style="-fx-fill: white;" />
+                    </graphic>
+                </Button>
+
+                <Button fx:id="deleteButton" onAction="#handleDeleteResponses" text="Supprimer" style="-fx-background-color: #F56565; -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold; -fx-background-radius: 50; -fx-padding: 12 30; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 4); -fx-background-color: #F56565; -fx-transition: all 0.3s; :hover { -fx-background-color: #E53E3E; -fx-scale-x: 1.05; -fx-scale-y: 1.05; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 15, 0, 0, 6); }">
+                    <graphic>
+                        <SVGPath content="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" style="-fx-fill: white;" />
+                    </graphic>
+                </Button>
+
+                <Button fx:id="backButton" onAction="#handleBack" text="Retour" style="-fx-background-color: #3182CE; -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold; -fx-background-radius: 50; -fx-padding: 12 30; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 4); -fx-background-color: #3182CE; -fx-transition: all 0.3s; :hover { -fx-background-color: #2B6CB0; -fx-scale-x: 1.05; -fx-scale-y: 1.05; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 15, 0, 0, 6); }">
+                    <graphic>
+                        <SVGPath content="M15 19l-7-7 7-7" style="-fx-fill: white; -fx-stroke: white;" />
+                    </graphic>
+                </Button>
+            </HBox>
+        </VBox>
+    </StackPane>
+</AnchorPane>

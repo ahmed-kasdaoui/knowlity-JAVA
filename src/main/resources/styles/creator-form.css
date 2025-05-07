@@ -1,0 +1,93 @@
+.form-container {
+    -fx-background-color: white;
+    background-color: white;
+    -fx-padding: 20;
+    padding: 20px;
+}
+
+.form-title {
+    -fx-font-size: 24;
+    font-size: 24px;
+    -fx-font-weight: bold;
+    font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.text-field, .text-area {
+    -fx-padding: 8;
+    padding: 8px;
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    border-radius: 4px;
+    -fx-border-color: #dcdcdc;
+    border-color: #dcdcdc;
+    -fx-border-width: 1;
+    border-width: 1px;
+    -fx-background-color: white;
+    background-color: white;
+}
+
+.text-field:focused, .text-area:focused {
+    -fx-border-color: #6A11CB;
+    border-color: #6A11CB;
+    -fx-effect: dropshadow(gaussian, rgba(106, 17, 203, 0.2), 4, 0, 0, 0);
+}
+
+.error-field {
+    -fx-border-color: #e74c3c;
+    border-color: #e74c3c;
+    -fx-effect: dropshadow(gaussian, rgba(231, 76, 60, 0.2), 4, 0, 0, 0);
+}
+
+.valid-field {
+    -fx-border-color: #2ecc71;
+    border-color: #2ecc71;
+    -fx-effect: dropshadow(gaussian, rgba(46, 204, 113, 0.2), 4, 0, 0, 0);
+}
+
+.error-label {
+    -fx-text-fill: #e74c3c;
+    -fx-font-size: 12;
+    font-size: 12px;
+    -fx-padding: 4 0 0 0;
+    padding: 4px 0 0 0;
+    -fx-opacity: 0;
+    opacity: 0;
+}
+
+.error-label.visible {
+    -fx-opacity: 1;
+    opacity: 1;
+}
+
+.save-button {
+    -fx-background-color: #6A11CB;
+    background-color: #6A11CB;
+    -fx-text-fill: white;
+    -fx-padding: 8 16;
+    padding: 8px 16px;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    cursor: pointer;
+}
+
+.save-button:hover {
+    -fx-background-color: #5a0fb0;
+    background-color: #5a0fb0;
+}
+
+.cancel-button {
+    -fx-background-color: #e0e0e0;
+    background-color: #e0e0e0;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 8 16;
+    padding: 8px 16px;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    cursor: pointer;
+}
+
+.cancel-button:hover {
+    -fx-background-color: #d0d0d0;
+    background-color: #d0d0d0;
+}

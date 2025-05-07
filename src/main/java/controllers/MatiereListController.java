@@ -249,13 +249,13 @@ public class MatiereListController {
             
             // Ajouter les styles si nécessaire
             scene.getStylesheets().add(getClass().getResource("/styles/forms2.css").toExternalForm());
-            
+
             stage.setScene(scene);
             
             // Rendre la fenêtre modale
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initOwner((Stage) ((Node) event.getSource()).getScene().getWindow());
-
+            stage.setResizable(false);
             // Configurer le callback pour le retour
             stage.setOnHidden(e -> {
                 loadMatieres();
@@ -289,7 +289,7 @@ public class MatiereListController {
             // Rendre la fenêtre modale
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initOwner(cardsContainer.getScene().getWindow());
-
+            stage.setResizable(false);
             // Configurer le contrôleur
             DetailsMatiereController controller = loader.getController();
             controller.setMatiere(matiere);
@@ -319,7 +319,7 @@ public class MatiereListController {
             // Créer la scène
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            
+            stage.setResizable(false);
             // Rendre la fenêtre modale
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initOwner(cardsContainer.getScene().getWindow());

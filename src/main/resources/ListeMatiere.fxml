@@ -6,57 +6,61 @@
 <?import de.jensd.fx.glyphs.fontawesome.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controllers.MatiereListController"
-      stylesheets="@./css/matieres.css"
-      spacing="20">
-
-    <!-- Header Section -->
-    <HBox styleClass="page-header" alignment="CENTER_LEFT">
-        <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
-            <FontAwesomeIconView glyphName="BOOK" styleClass="title-icon"/>
-            <Label text="Liste des Matières" styleClass="page-title">
-                <HBox.margin>
-                    <Insets left="10"/>
-                </HBox.margin>
-            </Label>
-        </HBox>
-
-        <!-- Search Box -->
-        <HBox styleClass="search-container" alignment="CENTER">
-            <StackPane>
-                <TextField fx:id="searchField" promptText="Rechercher une matière..." styleClass="search-field"/>
-                <FontAwesomeIconView glyphName="SEARCH" styleClass="search-icon" StackPane.alignment="CENTER_LEFT">
-                    <StackPane.margin>
-                        <Insets left="12"/>
-                    </StackPane.margin>
-                </FontAwesomeIconView>
-            </StackPane>
-        </HBox>
-
-        <!-- Add Button -->
-        <Button fx:id="addButton" styleClass="add-button" onAction="#createAction">
-            <graphic>
-                <HBox spacing="5" alignment="CENTER">
-                    <FontAwesomeIconView glyphName="PLUS"/>
-                    <Label text="Ajouter une matière" textFill="WHITE"/>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.MatiereListController"
+            stylesheets="@css/matieres.css">
+    <left>
+        <fx:include source="fxml/navbarA.fxml"/>
+    </left>
+    <center>
+        <VBox spacing="20">
+            <!-- Header Section -->
+            <HBox styleClass="page-header" alignment="CENTER_LEFT">
+                <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                    <FontAwesomeIconView glyphName="BOOK" styleClass="title-icon"/>
+                    <Label text="Liste des Matières" styleClass="page-title">
+                        <HBox.margin>
+                            <Insets left="10"/>
+                        </HBox.margin>
+                    </Label>
                 </HBox>
-            </graphic>
-        </Button>
-    </HBox>
 
-    <!-- Cards Container -->
-    <ScrollPane fitToWidth="true" styleClass="transparent-scroll-pane" VBox.vgrow="ALWAYS">
-        <FlowPane fx:id="cardsContainer" styleClass="cards-container" hgap="20" vgap="20"/>
-    </ScrollPane>
+                <!-- Search Box -->
+                <HBox styleClass="search-container" alignment="CENTER">
+                    <StackPane>
+                        <TextField fx:id="searchField" promptText="Rechercher une matière..." styleClass="search-field"/>
+                        <FontAwesomeIconView glyphName="SEARCH" styleClass="search-icon" StackPane.alignment="CENTER_LEFT">
+                            <StackPane.margin>
+                                <Insets left="12"/>
+                            </StackPane.margin>
+                        </FontAwesomeIconView>
+                    </StackPane>
+                </HBox>
 
-    <!-- Empty State -->
-    <StackPane fx:id="emptyState" styleClass="empty-state">
-        <HBox alignment="CENTER" spacing="10">
-            <FontAwesomeIconView glyphName="INBOX" size="24" styleClass="empty-icon"/>
-            <Label text="Aucune matière trouvée" styleClass="empty-state-text"/>
-        </HBox>
-    </StackPane>
+                <!-- Add Button -->
+                <Button fx:id="addButton" styleClass="add-button" onAction="#createAction">
+                    <graphic>
+                        <HBox spacing="5" alignment="CENTER">
+                            <FontAwesomeIconView glyphName="PLUS"/>
+                            <Label text="Ajouter une matière" textFill="WHITE"/>
+                        </HBox>
+                    </graphic>
+                </Button>
+            </HBox>
 
-</VBox>
+            <!-- Cards Container -->
+            <ScrollPane fitToWidth="true" styleClass="transparent-scroll-pane" VBox.vgrow="ALWAYS">
+                <FlowPane fx:id="cardsContainer" styleClass="cards-container" hgap="20" vgap="20"/>
+            </ScrollPane>
+
+            <!-- Empty State -->
+            <StackPane fx:id="emptyState" styleClass="empty-state">
+                <HBox alignment="CENTER" spacing="10">
+                    <FontAwesomeIconView glyphName="INBOX" size="24" styleClass="empty-icon"/>
+                    <Label text="Aucune matière trouvée" styleClass="empty-state-text"/>
+                </HBox>
+            </StackPane>
+        </VBox>
+    </center>
+</BorderPane>

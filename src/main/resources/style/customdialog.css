@@ -1,0 +1,109 @@
+/* CustomDialog.css */
+.custom-dialog-root {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0.2, 0, 4);
+    -fx-padding: 40;
+}
+
+.custom-dialog-vbox {
+    -fx-background-color: transparent;
+    -fx-alignment: center;
+}
+
+.custom-dialog-icon {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.2, 0, 2);
+}
+
+.custom-dialog-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a1a;
+    -fx-padding: 0 0 10 0;
+}
+
+.custom-dialog-message {
+    -fx-font-size: 16px;
+    -fx-text-fill: #4a4a4a;
+    -fx-padding: 0 20 20 20;
+    -fx-text-alignment: center;
+}
+
+.custom-dialog-ok-button {
+    -fx-background-color: linear-gradient(to right, #4facfe, #00f2fe);
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 25;
+    -fx-padding: 12 40 12 40;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(79, 172, 254, 0.3), 10, 0.2, 0, 3);
+    -fx-border-color: transparent;
+}
+
+.custom-dialog-ok-button:hover {
+    -fx-background-color: linear-gradient(to right, #00f2fe, #4facfe);
+    -fx-effect: dropshadow(gaussian, rgba(79, 172, 254, 0.5), 15, 0.3, 0, 5);
+}
+
+/* ConfirmationDialog styles */
+.confirmation-dialog-root {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 20;
+}
+
+.confirmation-dialog-vbox {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 20;
+    -fx-padding: 40;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0.2, 0, 4);
+}
+
+.confirmation-dialog-icon {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.2, 0, 2);
+}
+
+.confirmation-dialog-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a1a;
+    -fx-padding: 0 0 10 0;
+}
+
+.confirmation-dialog-message {
+    -fx-font-size: 16px;
+    -fx-text-fill: #4a4a4a;
+    -fx-text-alignment: center;
+}
+
+.confirmation-dialog-cancel-button {
+    -fx-background-color: #f1f3f5;
+    -fx-text-fill: #1a1a1a;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 25;
+    -fx-padding: 12 30 12 30;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.2, 0, 2);
+}
+
+.confirmation-dialog-cancel-button:hover {
+    -fx-background-color: #e0e2e5;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0.3, 0, 3);
+}
+
+.confirmation-dialog-ok-button {
+    -fx-background-color: linear-gradient(to right, #ff6b6b, #ff8e53);
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 25;
+    -fx-padding: 12 30 12 30;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(255, 107, 107, 0.3), 10, 0.2, 0, 3);
+}
+
+.confirmation-dialog-ok-button:hover {
+    -fx-background-color: linear-gradient(to right, #ff8e53, #ff6b6b);
+    -fx-effect: dropshadow(gaussian, rgba(255, 107, 107, 0.5), 15, 0.3, 0, 5);
+}

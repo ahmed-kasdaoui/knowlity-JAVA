@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="20" styleClass="form-section" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EditEventRegistrationController" stylesheets="/css/event_admin.css">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+    <Label fx:id="titleLabel" text="Edit Event Registration" styleClass="title"/>
+    <fx:include source="UserEventRegistrationForm.fxml" fx:id="registrationForm" prefWidth="600"/>
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="backButton" text="Back to List" styleClass="reset-btn"/>
+    </HBox>
+</VBox>

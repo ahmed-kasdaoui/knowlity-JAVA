@@ -1,0 +1,102 @@
+.table-view {     
+    -fx-background-color: rgba(30,30,30,0.8);     
+    -fx-border-color: #00FFFF;     
+    -fx-border-width: 2px;     
+    -fx-border-radius: 5px;     
+    -fx-effect: dropshadow(three-pass-box, rgba(0,255,255,0.5), 10, 0, 0, 0);     
+    -fx-padding: 5px; 
+}  
+
+/* Style des lignes */ 
+.table-row-cell {     
+    -fx-background-color: rgba(30,30,30,0.8);     
+    -fx-text-fill: white;     
+    -fx-border-color: transparent transparent rgba(0,255,255,0.1) transparent;     
+    -fx-border-width: 0 0 1px 0;     
+    -fx-cell-size: 35px; 
+}  
+
+.table-row-cell:filled:selected {     
+    -fx-background-color: rgba(0, 255, 255, 0.3);     
+    -fx-background-insets: 0, 0 0 1 0; 
+}  
+
+.table-row-cell:hover {     
+    -fx-background-color: rgba(0, 255, 255, 0.2);     
+    -fx-background-insets: 0, 0 0 1 0;     
+    -fx-transition: background-color 0.3s; 
+}  
+
+/* Style des colonnes */ 
+.table-column {     
+    -fx-background-color: rgba(30,30,30,0.8);     
+    -fx-border-color: transparent; 
+}  
+
+.table-cell {     
+    -fx-alignment: CENTER;     
+    -fx-text-fill: white;     
+    -fx-font-size: 12px;     
+    -fx-padding: 5px; 
+}  
+
+/* Texte d'en-tête de colonnes */ 
+.table-view .column-header-background {     
+    -fx-background-color: rgba(30,30,30,0.95);     
+    -fx-background-radius: 5px 5px 0 0;     
+    -fx-padding: 5px 0px 5px 0px; 
+}  
+
+.table-view .column-header, .table-view .filler {     
+    -fx-background-color: rgba(30,30,30,0.95);     
+    -fx-border-color: transparent transparent #00FFFF transparent;     
+    -fx-border-width: 0 0 2px 0; 
+}  
+
+.table-view .column-header .label {     
+    -fx-text-fill: #00FFFF;     
+    -fx-font-weight: bold;     
+    -fx-font-size: 13px;     
+    -fx-padding: 10px 5px; 
+}  
+
+/* Scrollbars personnalisées */ 
+.table-view .scroll-bar:vertical, .table-view .scroll-bar:horizontal {     
+    -fx-background-color: rgba(30,30,30,0.8); 
+}  
+
+.table-view .scroll-bar:vertical .thumb, .table-view .scroll-bar:horizontal .thumb {     
+    -fx-background-color: rgba(0,255,255,0.5);     
+    -fx-background-radius: 5px; 
+}  
+
+.table-view .scroll-bar:vertical .thumb:hover, .table-view .scroll-bar:horizontal .thumb:hover {     
+    -fx-background-color: rgba(0,255,255,0.8); 
+}  
+
+/* Effet de focus */ 
+.table-view:focused {     
+    -fx-border-color: #00FFFF;     
+    -fx-border-width: 2px;     
+    -fx-effect: dropshadow(three-pass-box, rgba(0,255,255,0.8), 15, 0, 0, 0); 
+}  
+
+/* Animation subtile lors de la sélection */ 
+.table-row-cell:filled:selected {     
+    -fx-background-insets: 0;     
+    -fx-background-radius: 0; 
+} 
+
+/* Fond du champ de texte du DatePicker */ 
+/* Conteneur du bouton */ 
+#searchField {     
+    -fx-background-color: transparent;     
+    placeholder:"text";     
+    -fx-border-width: 0;     
+    -fx-font-size: 16px;     
+    -fx-padding: 10px 15px;     
+    -fx-background-radius: 25px;     
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 0);     
+    -fx-background-color: rgba(30,30,30,0.8);     
+    -fx-pref-width: 400px; 
+}

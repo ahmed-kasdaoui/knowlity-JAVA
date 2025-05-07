@@ -74,4 +74,19 @@ public class ServiceInscription {
             System.out.println(e.getMessage());
         }
     }
+
+    public int getNumberOfInscriptions(int coursId) {
+        String qry = "SELECT COUNT(*) FROM `cours_user` WHERE `cours_id`=?";
+        try {
+            PreparedStatement pstm = cnx.prepareStatement(qry);
+            pstm.setInt(1, coursId);
+            ResultSet rs = pstm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return 0;
+    }
 } 

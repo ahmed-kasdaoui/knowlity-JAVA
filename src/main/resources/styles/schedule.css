@@ -1,0 +1,59 @@
+.root {
+    -fx-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title-label {
+    -fx-text-fill: #1e40af;
+    -fx-font-weight: bold;
+}
+
+.week-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.1, 0, 2);
+    -fx-padding: 20;
+    -fx-border-radius: 10;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.week-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0.2, 0, 4);
+    -fx-translate-y: -2;
+}
+
+.week-title {
+    -fx-text-fill: #1e40af;
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+}
+
+.course-item {
+    -fx-text-fill: #4b5563;
+    -fx-font-size: 14;
+}
+
+.total-hours {
+    -fx-text-fill: #1e40af;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+}
+
+.header-container {
+    -fx-alignment: center-left;
+    -fx-spacing: 10;
+}
+
+.divider {
+    -fx-background-color: #3b82f6;
+    -fx-padding: 1 0 0 0;
+}
+
+.week-header {
+    -fx-spacing: 10;
+    -fx-alignment: center-left;
+}
+
+.icon {
+    -fx-fill: #3b82f6;
+}

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.knowlity.controller.FrontController">
+    <top>
+        <HBox alignment="CENTER_LEFT" style="-fx-background-color: linear-gradient(to right, #00b4db, #0083b0); -fx-padding: 15px;">
+            <ImageView fx:id="test" fitHeight="88.0" fitWidth="147.0" preserveRatio="true">
+                <image>
+                    <Image url="@../images/knowlity.png" />
+                </image>
+            </ImageView>
+            <Text fill="WHITE" fontSmoothingType="LCD" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-padding: 0 0 0 10;" text="KnowLity" />
+
+            <HBox alignment="CENTER" prefHeight="72.0" prefWidth="998.0" spacing="20" style="-fx-padding: 0 0 0 50;">
+                <!-- Menu Items -->
+                <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Home" />
+
+                <!-- Events Menu -->
+                <MenuButton style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Events">
+                    <items>
+                        <MenuItem text="Events test" />
+                        <MenuItem text="My Events" />
+                        <MenuItem text="My Reservation" />
+                    </items>
+                </MenuButton>
+
+                <!-- Courses Menu -->
+                <MenuButton style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Courses">
+                    <items>
+                        <MenuItem text="View all courses" />
+                        <MenuItem text="View my courses" />
+                    </items>
+                </MenuButton>
+
+                <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Testimonials" />
+                <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Contact Us" />
+                <Button onAction="#pageUpdate" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Profile" />
+                <Button onAction="#logout" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;" text="Logout" />
+            </HBox>
+        </HBox>
+    </top>
+
+    <center>
+        <!-- Main content will go here -->
+        <StackPane prefHeight="532.0" prefWidth="4257.0">
+            <Text style="-fx-font-size: 24px; -fx-fill: #0083b0;" text="Main Content Area">
+            <StackPane.margin>
+               <Insets top="500.0" />
+            </StackPane.margin></Text>
+        </StackPane>
+    </center>
+</BorderPane>

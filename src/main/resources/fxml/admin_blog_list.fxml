@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view.AdminBlogListController"
+            styleClass="admin-blog-list">
+
+    <!-- Left: Navigation Bar -->
+    <left>
+        <fx:include source="navbarA.fxml"/>
+    </left>
+
+    <!-- Center: Existing VBox Content -->
+    <center>
+        <VBox>
+            <!-- Admin Navigation Bar -->
+            <HBox fx:id="adminNavbar" styleClass="admin-navbar" spacing="10">
+                <padding>
+                    <Insets top="10" right="20" bottom="10" left="20"/>
+                </padding>
+
+                <Label text="Administration des Blogs" styleClass="nav-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button fx:id="notificationButton" styleClass="notification-button">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="BELL" size="16"/>
+                    </graphic>
+                </Button>
+
+                <Button fx:id="newBlogButton" text="Nouveau Blog" styleClass="new-blog-button">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="PLUS" size="16"/>
+                    </graphic>
+                </Button>
+            </HBox>
+
+            <!-- Search Bar -->
+            <HBox styleClass="search-container" spacing="10">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+
+                <TextField fx:id="searchField" promptText="Rechercher un blog..." styleClass="search-field"/>
+            </HBox>
+
+            <!-- Blog List -->
+            <ScrollPane fx:id="scrollPane" fitToWidth="true" styleClass="blog-scroll-pane">
+                <GridPane fx:id="blogContainer" styleClass="blog-container"/>
+            </ScrollPane>
+        </VBox>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,261 @@
+/* --- Modern Statistics Dashboard CSS --- */
+
+.dashboard-title {
+    -fx-font-size: 36px;
+    -fx-font-family: 'Segoe UI Black', Arial, sans-serif;
+    -fx-text-fill: #fff;
+    -fx-padding: 0 0 10 0;
+}
+
+.back-btn {
+    -fx-background-radius: 16;
+    -fx-background-color: linear-gradient(to right, #ff512f, #dd2476);
+    -fx-text-fill: white;
+    -fx-font-size: 17px;
+    -fx-font-family: 'Segoe UI Semibold', Arial, sans-serif;
+    -fx-cursor: hand;
+    -fx-padding: 10 32 10 32;
+    -fx-effect: dropshadow(gaussian, #ff512f44, 8, 0.24, 0, 2);
+}
+
+.stat-card {
+    -fx-background-color: #fff;
+    -fx-background-radius: 18;
+    -fx-padding: 22 34 22 34;
+    -fx-min-width: 160;
+    -fx-max-width: 180;
+    -fx-min-height: 150;
+    -fx-alignment: center;
+    -fx-spacing: 2;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 16;
+    -fx-cursor: pointer;
+    -fx-transition: box-shadow 0.2s;
+}
+.stat-card:hover {
+    -fx-effect: dropshadow(gaussian, #4e437688, 16, 0.22, 0, 2);
+}
+
+.stat-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222;
+}
+
+.stat-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #fbfbfb;
+    -fx-font-family: 'Segoe UI Semibold';
+}
+
+.chart-card {
+    -fx-background-color: linear-gradient(to bottom right, #43cea2, #185a9d);
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, #23252633, 10, 0.13, 0, 2);
+    -fx-padding: 18 18 14 18;
+    -fx-min-width: 350;
+    -fx-alignment: center;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 14;
+}
+.chart-card:hover {
+    -fx-effect: dropshadow(gaussian, #4e437688, 18, 0.22, 0, 2);
+}
+
+.performer-card {
+    -fx-background-color: linear-gradient(to bottom right, #ffe259, #ffa751);
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, #23252622, 8, 0.16, 0, 2);
+    -fx-padding: 16 22 16 22;
+    -fx-min-width: 220;
+    -fx-alignment: top_left;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 14;
+}
+.performer-card:hover {
+    -fx-effect: dropshadow(gaussian, #4e437688, 18, 0.22, 0, 2);
+}
+
+.chart-title {
+    -fx-font-size: 17px;
+    -fx-text-fill: #fbfbfb;
+    -fx-font-family: 'Segoe UI Semibold';
+}
+
+/* Glassy effect for cards (optional): */
+.stat-card, .chart-card, .performer-card {
+    -fx-background-insets: 0, 1;
+    -fx-border-radius: 14;
+    -fx-border-width: 1;
+}
+
+/* Enhanced gradients for more vibrancy */
+.chart-card {
+    -fx-background-color: linear-gradient(to bottom right, #36d1c4 0%, #5b86e5 100%);
+}
+
+/* Beautiful PieChart Styling */
+.chart-card .chart-title {
+    -fx-font-size: 18px;
+    -fx-font-family: 'Segoe UI Semibold';
+    -fx-text-fill: #fff;
+    -fx-padding: 0 0 12 0;
+}
+
+.chart-card .pie-chart {
+    -fx-background-color: transparent;
+    -fx-background-radius: 16;
+    -fx-padding: 12 0 0 0;
+    -fx-effect: dropshadow(gaussian, #23252633, 10, 0.13, 0, 2);
+}
+
+.chart-card .chart-legend {
+    -fx-background-color: transparent;
+    -fx-font-size: 14px;
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-text-fill: #fff;
+}
+
+.chart-card .chart-legend-item-symbol {
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: #fff;
+    -fx-border-width: 1;
+}
+
+.chart-card .chart-content {
+    -fx-background-color: transparent;
+}
+
+.chart-card .pie-label {
+    -fx-font-size: 15px;
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-text-fill: #fff;
+}
+
+
+/* Beautiful Ranking ListView Styling */
+.ranking-listview {
+    -fx-background-color: rgba(255,255,255,0.25);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1.2;
+    -fx-padding: 10 0 10 0;
+    -fx-font-family: 'Segoe UI Semibold', Arial, sans-serif;
+    -fx-font-size: 15px;
+    -fx-effect: dropshadow(gaussian, #23252633, 8, 0.15, 0, 2);
+}
+.ranking-listview .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #222;
+    -fx-padding: 8 18 8 18;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #e0e0e055;
+    -fx-font-size: 15px;
+    -fx-font-family: 'Segoe UI Semibold', Arial, sans-serif;
+    -fx-transition: background 0.2s;
+}
+.ranking-listview .list-cell:filled:selected, .ranking-listview .list-cell:filled:hover {
+    -fx-background-color: linear-gradient(to right, #c9ffbf, #ffafbd);
+    -fx-text-fill: #222;
+}
+.ranking-listview .list-cell:first {
+    -fx-background-color: linear-gradient(to right, #ffe259, #ffa751);
+    -fx-font-weight: bold;
+    -fx-text-fill: #b78628;
+}
+.ranking-listview .list-cell:nth-child(2) {
+    -fx-background-color: linear-gradient(to right, #e0eafc, #cfdef3);
+    -fx-text-fill: #6e7ca0;
+}
+.ranking-listview .list-cell:nth-child(3) {
+    -fx-background-color: linear-gradient(to right, #f7b267, #f4845f);
+    -fx-text-fill: #a96c1f;
+}
+.ranking-listview .scroll-bar:vertical .thumb {
+    -fx-background-color: #36d1c4;
+    -fx-background-radius: 8;
+}
+.ranking-listview .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.performer-card {
+    -fx-background-color: linear-gradient(to bottom right, #f7971e 0%, #ffd200 100%, #f7971e 100%);
+}
+
+/* Most Missed Question Card */
+.most-missed-question-card {
+    -fx-background-color: linear-gradient(to bottom right, #ff5858 0%, #f09819 100%);
+    -fx-background-radius: 18;
+    -fx-effect: dropshadow(gaussian, #ff585844, 8, 0.24, 0, 2);
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-border-color: #f44336;
+    -fx-padding: 18 16 18 16;
+    -fx-alignment: center;
+}
+
+.most-missed-question-card .performer-title,
+.most-missed-question-card .stat-value {
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+    -fx-font-size: 15px;
+    -fx-text-fill: #fff;
+    -fx-font-family: 'Segoe UI Semibold';
+}
+
+/* Top and Lowest Performer Custom Styles */
+.top-performer-card {
+    -fx-background-color: linear-gradient(to bottom right, #ffe259 0%,#43e97b 100%);
+    -fx-background-radius: 18;
+    -fx-effect: dropshadow(gaussian, #43e97b44, 8, 0.24, 0, 2);
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-border-color: #cddc39;
+    -fx-padding: 18 16 18 16;
+    -fx-alignment: center;
+}
+
+.top-performer-card .performer-title,
+.top-performer-card .performer-name,
+.top-performer-card .performer-score {
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+    -fx-font-size: 15px;
+    -fx-text-fill: #fff;
+}
+
+.top-performer-card ImageView {
+    -fx-margin-top: 6px;
+}
+
+
+.lowest-performer-card {
+    -fx-background-color: linear-gradient(to bottom right, #ff5858 0%, #f857a6 100%);
+    -fx-background-radius: 18;
+    -fx-effect: dropshadow(gaussian, #ff585844, 8, 0.24, 0, 2);
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-border-color: #f44336;
+    -fx-padding: 18 16 18 16;
+    -fx-alignment: center;
+}
+
+.lowest-performer-card .performer-title,
+.lowest-performer-card .performer-name,
+.lowest-performer-card .performer-score {
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+    -fx-font-size: 15px;
+    -fx-text-fill: #fff;
+}
+
+.lowest-performer-card ImageView {
+    -fx-margin-top: 6px;
+}
+

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="view.RoleSelectionController"
+           stylesheets="@../styles/role-selection.css">
+
+    <VBox alignment="CENTER" spacing="40"
+          styleClass="role-selection-container"
+          maxWidth="800">
+        <padding>
+            <Insets top="50" right="50" bottom="50" left="50"/>
+        </padding>
+
+        <ImageView fitWidth="120" fitHeight="120" preserveRatio="true">
+            <image>
+                <Image url="@/images/logo.png"/>
+            </image>
+            <effect>
+                <javafx.scene.effect.DropShadow radius="10" spread="0.1" color="#00000022"/>
+            </effect>
+        </ImageView>
+
+        <Text styleClass="welcome-text" text="Bienvenue sur Knowlity"/>
+        <Text styleClass="select-role-text" text="Sélectionnez votre rôle"/>
+
+        <HBox alignment="CENTER" spacing="40">
+            <VBox styleClass="role-card" onMouseClicked="#handleAdminSelection" alignment="CENTER" spacing="20">
+                <Text styleClass="role-icon" text="👨‍💼"/>
+                <Text styleClass="role-title" text="Administrateur"/>
+                <Text styleClass="role-description" text="Gérer tous les blogs" textAlignment="CENTER" wrappingWidth="200"/>
+                <FontIcon iconLiteral="fas-chevron-right" styleClass="role-arrow"/>
+            </VBox>
+
+            <VBox styleClass="role-card" onMouseClicked="#handleUserSelection" alignment="CENTER" spacing="20">
+                <Text styleClass="role-icon" text="👤"/>
+                <Text styleClass="role-title" text="Utilisateur"/>
+                <Text styleClass="role-description" text="Consulter les blogs" textAlignment="CENTER" wrappingWidth="200"/>
+                <FontIcon iconLiteral="fas-chevron-right" styleClass="role-arrow"/>
+            </VBox>
+        </HBox>
+    </VBox>
+</StackPane>

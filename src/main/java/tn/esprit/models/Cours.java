@@ -3,8 +3,10 @@ package tn.esprit.models;
 import java.util.ArrayList;
 import java.util.List;
 import tn.esprit.services.ServiceCours;
+import tn.knowlity.entity.User;
 
 public class Cours {
+    private User enseignant;
     private int id;
     private String title;
     private String description;
@@ -17,6 +19,14 @@ public class Cours {
 
     public Cours() {
         this.chapitres = new ArrayList<>();
+    }
+
+    public User getEnseignant() {
+        return enseignant;
+    }
+
+    public void setEnseignant(User enseignant) {
+        this.enseignant = enseignant;
     }
 
     public Cours(int id, String title, String description, String urlImage, Matiere matiere, String langue, int prix, String lienDePaiment) {
@@ -132,4 +142,6 @@ public class Cours {
                 ", lienDePaiment='" + lienDePaiment + '\'' +
                 "}\n";
     }
+
+
 }

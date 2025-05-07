@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+
+<AnchorPane prefWidth="800.0" prefHeight="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21.0.2" fx:controller="controllers.TakeQuizController">
+    <VBox alignment="CENTER" spacing="25" style="-fx-background-color: linear-gradient(to bottom, #1a237e, #3949ab); -fx-padding: 30;" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <!-- Quiz Title avec effet de lumière -->
+        <StackPane>
+            <Rectangle width="550" height="60" arcWidth="20" arcHeight="20" style="-fx-fill: rgba(255,255,255,0.08); -fx-stroke: rgba(255,255,255,0.15); -fx-stroke-width: 1;" />
+            <Label fx:id="quizTitleLabel" style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: #ffffff;" text="Quiz Title">
+                <effect>
+                    <DropShadow color="#00000066" radius="4" spread="0.1" />
+                </effect>
+            </Label>
+        </StackPane>
+
+        <!-- Timer Label amélioré -->
+        <HBox alignment="CENTER" style="-fx-background-color: rgba(255,255,255,0.1); -fx-background-radius: 20; -fx-padding: 8 15;">
+            <SVGPath content="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm-0.5-13H13v6l5.2 3.2-0.8 1.3L11 15V7z" fill="white" scaleX="0.7" scaleY="0.7" />
+            <Label fx:id="timerLabel" style="-fx-font-size: 18; -fx-text-fill: #ffffff; -fx-font-weight: bold;" text="Temps écoulé : 00:00">
+                <HBox.margin>
+                    <Insets left="10" />
+                </HBox.margin>
+            </Label>
+        </HBox>
+
+        <!-- Indicateur de progression -->
+        <HBox alignment="CENTER" spacing="10">
+            <Label style="-fx-font-size: 14; -fx-text-fill: #d1c4e9;" text="Question:" />
+            <Label fx:id="progressLabel" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #ffffff;" text="1/10" />
+            <ProgressBar fx:id="progressBar" progress="0.1" style="-fx-pref-width: 200; -fx-pref-height: 8;" />
+        </HBox>
+
+        <!-- Question Card améliorée -->
+        <VBox fx:id="questionBox" alignment="CENTER" spacing="20" style="-fx-background-color: rgba(255,255,255,0.08); -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 12, 0, 0, 5); -fx-padding: 30; -fx-max-width: 650;" VBox.vgrow="ALWAYS">
+            <!-- HBox for Question Label and Play Button -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label fx:id="questionLabel" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #ffffff; -fx-wrap-text: true;" text="Question Text" HBox.hgrow="ALWAYS" />
+                <Button fx:id="playButton" onAction="#handlePlayVoice" style="-fx-background-color: #4caf50; -fx-text-fill: white; -fx-font-size: 14; -fx-pref-width: 100; -fx-pref-height: 40; -fx-background-radius: 10; -fx-cursor: hand; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 1);" text="Lire">
+                    <graphic>
+                        <SVGPath fx:id="playIcon" content="M8 5v14l11-7z" fill="WHITE" scaleX="0.8" scaleY="0.8" />
+                    </graphic>
+                </Button>
+            </HBox>
+            <Separator style="-fx-background-color: #7986cb; -fx-opacity: 0.5;" />
+            <VBox fx:id="responseBox" alignment="CENTER_LEFT" spacing="15" style="-fx-padding: 15 0 10 10;" />
+        </VBox>
+
+        <!-- Navigation Buttons -->
+        <HBox alignment="CENTER" spacing="25" style="-fx-padding: 15;">
+            <Button fx:id="prevButton" onAction="#handlePreviousQuestion" style="-fx-background-color: #ff5722; -fx-text-fill: white; -fx-font-size: 15; -fx-pref-width: 130; -fx-pref-height: 45; -fx-background-radius: 10; -fx-cursor: hand; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 1);" text="Précédent">
+                <graphic>
+                    <SVGPath content="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="WHITE" />
+                </graphic>
+            </Button>
+            <Button fx:id="nextButton" onAction="#handleNextQuestion" style="-fx-background-color: #4caf50; -fx-text-fill: white; -fx-font-size: 15; -fx-pref-width: 130; -fx-pref-height: 45; -fx-background-radius: 10; -fx-cursor: hand; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 1);" text="Suivant">
+                <graphic>
+                    <SVGPath content="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" fill="WHITE" />
+                </graphic>
+            </Button>
+            <Button fx:id="submitButton" onAction="#handleSubmitQuiz" style="-fx-background-color: #2196f3; -fx-text-fill: white; -fx-font-size: 15; -fx-pref-width: 130; -fx-pref-height: 45; -fx-background-radius: 10; -fx-cursor: hand; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 1);" text="Soumettre" visible="false">
+                <graphic>
+                    <SVGPath content="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="WHITE" />
+                </graphic>
+            </Button>
+        </HBox>
+    </VBox>
+
+    <!-- Écran des résultats (initialement caché) -->
+    <StackPane fx:id="resultsPane" visible="false" style="-fx-background-color: rgba(0,0,0,0.8);" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <VBox alignment="CENTER" spacing="25" style="-fx-background-color: linear-gradient(to bottom, #303f9f, #1a237e); -fx-background-radius: 20; -fx-padding: 40; -fx-max-width: 650; -fx-max-height: 500; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 20, 0, 0, 10);">
+            <Label style="-fx-font-size: 36; -fx-font-weight: bold; -fx-text-fill: #ffffff;" text="Résultats">
+                <effect>
+                    <DropShadow />
+                </effect>
+            </Label>
+
+            <HBox alignment="CENTER" spacing="15">
+                <SVGPath content="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8z" fill="#69f0ae" scaleX="2" scaleY="2" />
+            </HBox>
+
+            <VBox spacing="15" style="-fx-background-color: rgba(255,255,255,0.1); -fx-background-radius: 15; -fx-padding: 20; -fx-alignment: center;">
+                <HBox alignment="CENTER" spacing="10">
+                    <Label style="-fx-font-size: 18; -fx-text-fill: #b3e5fc;" text="Score:" />
+                    <Label fx:id="scoreLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #ffffff;" text="8/10" />
+                </HBox>
+
+                <HBox alignment="CENTER" spacing="10">
+                    <Label style="-fx-font-size: 18; -fx-text-fill: #b3e5fc;" text="Pourcentage:" />
+                    <Label fx:id="percentageLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #ffffff;" text="80%" />
+                </HBox>
+
+                <HBox alignment="CENTER" spacing="10">
+                    <Label style="-fx-font-size: 18; -fx-text-fill: #b3e5fc;" text="Temps:" />
+                    <Label fx:id="finalTimeLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #ffffff;" text="03:45" />
+                </HBox>
+
+                <Separator style="-fx-background-color: #7986cb; -fx-opacity: 0.5;" />
+
+                <Label fx:id="feedbackLabel" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #69f0ae;" text="Excellent travail!" wrapText="true" />
+            </VBox>
+
+            <Label style="-fx-font-size: 16; -fx-text-fill: #81d4fa; -fx-font-style: italic;" text="Prenez une capture d'écran pour conserver votre score!" />
+
+            <HBox alignment="CENTER" spacing="20">
+                <Button fx:id="reviewButton" style="-fx-background-color: #ff9800; -fx-text-fill: white; -fx-font-size: 15; -fx-pref-width: 180; -fx-pref-height: 45; -fx-background-radius: 10; -fx-cursor: hand; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 1);" text="Revoir les réponses">
+                    <graphic>
+                        <SVGPath content="M14 5h8v2h-8zm0 5.5h8v2h-8zm0 5.5h8v2h-8zM2 11.5C2 15.08 4.92 18 8.5 18H9v2l3-3-3-3v2h-.5C6.02 16 4 13.98 4 11.5S6.02 7 8.5 7H12V5H8.5C4.92 5 2 7.92 2 11.5z" fill="WHITE" />
+                    </graphic>
+                </Button>
+                <Button fx:id="finishButton" style="-fx-background-color: #2196f3; -fx-text-fill: white; -fx-font-size: 15; -fx-pref-width: 180; -fx-pref-height: 45; -fx-background-radius: 10; -fx-cursor: hand; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 1);" text="Terminer">
+                    <graphic>
+                        <SVGPath content="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="WHITE" />
+                    </graphic>
+                </Button>
+            </HBox>
+        </VBox>
+    </StackPane>
+</AnchorPane>
